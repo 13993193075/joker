@@ -1,6 +1,6 @@
 {
   "name": "@yoooloo42/joker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/13993193075/joker/issues"
   },
-  "homepage": "https://github.com/13993193075/joker#readme"
+  "homepage": "https://github.com/13993193075/joker#readme",
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "xlsx": "^0.18.5"
+  }
 }
