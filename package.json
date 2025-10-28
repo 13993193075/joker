@@ -1,6 +1,6 @@
 {
   "name": "@yoooloo42/joker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,12 @@
   "dependencies": {
     "file-saver": "^2.0.5",
     "xlsx": "^0.18.5"
-  }
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./libs/*": "./src/libs/*.js"
+  },
+  "files": [
+    "src"
+  ]
 }
