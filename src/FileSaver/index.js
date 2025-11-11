@@ -43,7 +43,9 @@ function jsonToExcel({
   }
 }
 
-const bean = {
+export {
     jsonToExcel
 }
-export default bean
+export default {
+    jsonToExcel
+}
