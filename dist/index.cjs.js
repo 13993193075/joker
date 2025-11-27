@@ -2,6 +2,33 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var vue = require('vue');
+
+function _arrayLikeToArray(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
+}
+function _arrayWithoutHoles(r) {
+  if (Array.isArray(r)) return _arrayLikeToArray(r);
+}
+function _iterableToArray(r) {
+  if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
+}
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _toConsumableArray(r) {
+  return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread();
+}
+function _unsupportedIterableToArray(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+  }
+}
+
 /*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
 /* vim: set ts=2: */
 /*exported XLSX */
@@ -15865,25 +15892,29 @@ var FileSaver$1 = /*@__PURE__*/getDefaultExportFromCjs(FileSaver_minExports);
  * @param {Array<string>} keys - 对应表头的数据字段名（英文键名）
  * @param {string} filename - 导出的文件名
  */
-function jsonToExcel({
-  json,
-  header,
-  keys,
-  filename = 'excel-file',
-}) {
+function jsonToExcel(_ref) {
+  var json = _ref.json,
+    header = _ref.header,
+    keys = _ref.keys,
+    _ref$filename = _ref.filename,
+    filename = _ref$filename === void 0 ? 'excel-file' : _ref$filename;
   // 1. 转换数据格式
-  const data = json.map(item => keys.map(key => item[key]));
-  
+  var data = json.map(function (item) {
+    return keys.map(function (key) {
+      return item[key];
+    });
+  });
+
   // 2. 将表头和数据组合
-  const aoa = [header, ...data];
+  var aoa = [header].concat(_toConsumableArray(data));
 
   // 3. 创建工作簿和工作表
-  const ws = utils.aoa_to_sheet(aoa);
-  const wb = utils.book_new();
+  var ws = utils.aoa_to_sheet(aoa);
+  var wb = utils.book_new();
   utils.book_append_sheet(wb, ws, 'Sheet1');
 
   // 4. 生成 Excel 文件
-  const wbout = writeSync(wb, {
+  var wbout = writeSync(wb, {
     bookType: 'xlsx',
     bookSST: true,
     type: 'array'
@@ -15891,20 +15922,982 @@ function jsonToExcel({
 
   // 5. 保存文件
   try {
-    FileSaver$1.saveAs(
-      new Blob([wbout], { type: 'application/octet-stream' }),
-      `${filename}.xlsx`
-    );
+    FileSaver$1.saveAs(new Blob([wbout], {
+      type: 'application/octet-stream'
+    }), "".concat(filename, ".xlsx"));
   } catch (e) {
     if (typeof console !== 'undefined') console.log(e, wbout);
   }
 }
 var FileSaver = {
-    jsonToExcel
+  jsonToExcel: jsonToExcel
 };
 
-var index = {FileSaver};
+var ly0default = {
+  myProps: {
+    uploadUrl: '',
+    tip: '',
+    // 提示信息
+    limit: 1,
+    // 允许上传的文件个数
+    size: 2048,
+    // 允许上传的文件大小，单位：KB
+    type: '',
+    // 允许上传的文件类型 示例："image/jpeg", "image/png", "image/webp", "text/plain"
+    avatar: {
+      // 头像
+      width: "120px",
+      height: "160px"
+    }
+  },
+  carplate: {
+    // 车牌识别
+    width: "400px",
+    height: "300px"
+  }
+};
+
+var script$5 = {
+        props: ['myProps'], // 注释见default.js中的myProps
+        data(){return {
+            fileList: []
+        }},
+        computed: {
+            myProps0(){
+                return Object.assign(ly0default.myProps, this.myProps)
+            },
+            limit(){
+                return this.myProps0.limit
+            }
+        },
+        methods: {
+            hdlBeforeUpload (file) {
+                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
+                let isFileSize = file.size / 1024 < this.myProps0.size;
+
+                if (!isFileType) {
+                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
+                    return false
+                }
+                if (!isFileSize) {
+                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
+                    return false
+                }
+
+                this.$message('正在上传 ...');
+                return true
+            },
+            // eslint-disable-next-line
+            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
+            },
+            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
+                // 重置文件列表
+                this.fileList = fileList;
+
+                // 返回上传结果
+                let fileList0 = [];
+                fileList.forEach(i=>{
+                    fileList0.push({
+                        src: i.response.data.src
+                    });
+                });
+                this.$emit('getUploadResult', {
+                    fileList: fileList0
+                });
+            },
+            hdlSuccess (response, file, fileList) { // 上传
+                if (response.code === 0) {
+                    // 重置文件列表
+                    this.fileList = fileList;
+
+                    // 返回上传结果
+                    let fileList0 = [];
+                    fileList.forEach(i=>{
+                        fileList0.push({
+                            src: i.response.data.src
+                        });
+                    });
+                    this.$emit('getUploadResult', {
+                        fileList: fileList0
+                    });
+                    this.$message({
+                        type: 'info',
+                        message: '上传成功'
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '上传失败'
+                    });
+                }
+            },
+            hdlDeleteAll () { // 删除全部已上传文件
+                // 重置文件列表
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            }
+        }
+    };
+
+const _hoisted_1$5 = { class: "el-upload__tip" };
+const _hoisted_2$5 = {
+  key: 0,
+  style: {"font-size":"xx-small"}
+};
+
+function render$5(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_el_button = vue.resolveComponent("el-button");
+  const _component_el_upload = vue.resolveComponent("el-upload");
+
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.createVNode(_component_el_upload, {
+      action: $options.myProps0.uploadUrl,
+      "file-list": $data.fileList,
+      "list-type": "text",
+      "before-upload": $options.hdlBeforeUpload,
+      "on-preview": $options.hdlPreview,
+      "on-remove": $options.hdlRemove,
+      "on-success": $options.hdlSuccess,
+      limit: $options.limit
+    }, {
+      tip: vue.withCtx(() => [
+        vue.createElementVNode("span", _hoisted_1$5, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.limit + "个文件"), 1 /* TEXT */)
+      ]),
+      default: vue.withCtx(() => [
+        vue.createVNode(_component_el_button, {
+          size: "small",
+          type: "primary"
+        }, {
+          default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+            vue.createTextVNode("点击上传", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        })
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
+    ($data.fileList.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$5, vue.toDisplayString("已上传"+$data.fileList.length+"个文件"), 1 /* TEXT */))
+      : vue.createCommentVNode("v-if", true),
+    ($data.fileList.length>0)
+      ? (vue.openBlock(), vue.createBlock(_component_el_button, {
+          key: 1,
+          size: "small",
+          style: {"margin-top":"10px"},
+          onClick: $options.hdlDeleteAll
+        }, {
+          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+            vue.createTextVNode("删除全部已上传文件", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["onClick"]))
+      : vue.createCommentVNode("v-if", true)
+  ]))
+}
+
+script$5.render = render$5;
+script$5.__file = "src/upload/Upload.vue";
+
+var script$4 = {
+        props: ['myProps'], // 注释见default.js中的myProps
+        data(){return {
+            fileList: []
+        }},
+        computed: {
+            myProps0(){
+                return Object.assign(ly0default.myProps, this.myProps)
+            }
+        },
+        methods: {
+            hdlStyleAvatarBox(){
+                return "width:" + this.myProps0.avatar.width + "; " +
+                    "height:" + this.myProps0.avatar.height + "; " +
+                    "position: relative; " +
+                    "overflow: hidden; " +
+                    "cursor: pointer;"
+            },
+            hdlStyleAvatarImage(){
+                return "display: block;" +
+                    "width:" + this.myProps0.avatar.width + "; " +
+                    "height:" + this.myProps0.avatar.height + ";"
+            },
+            hdlStyleAvatarIcon(){
+                return "display: block; " +
+                    "width:" + this.myProps0.avatar.width + "; " +
+                    "height:" + this.myProps0.avatar.height + "; " +
+                    "line-height:" + this.myProps0.avatar.height + "; " +
+                    "font-size: 28px; " +
+                    "color: #8c939d; " +
+                    "text-align: center;"
+            },
+            hdlBeforeUpload (file) {
+                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
+                let isFileSize = file.size / 1024 < this.myProps0.size;
+
+                if (!isFileType) {
+                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
+                    return false
+                }
+                if (!isFileSize) {
+                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
+                    return false
+                }
+
+                this.$message('正在上传 ...');
+                return true
+            },
+            // eslint-disable-next-line
+            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
+            },
+            // eslint-disable-next-line
+            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
+                // 重置文件列表
+                // 因为只能上传1个图片，移除即清空
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            },
+            // eslint-disable-next-line
+            hdlSuccess (response, file, fileList) { // 上传
+                if (response.code === 0) {
+                    // 重置文件列表
+                    // 因为只能上传1个图片，这里需要清空图片列表
+                    this.fileList = [];
+                    this.fileList.push(file);
+
+                    // 返回上传结果
+                    this.$emit('getUploadResult', {
+                        fileList: [{
+                            src: response.data.src
+                        }]
+                    });
+                    this.$message({
+                        type: 'info',
+                        message: '上传成功'
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '上传失败'
+                    });
+                }
+            },
+            hdlDeleteAll () { // 删除全部已上传文件
+                // 重置文件列表
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            }
+        }
+    };
+
+const _hoisted_1$4 = ["src"];
+const _hoisted_2$4 = { key: 0 };
+
+function render$4(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_Plus = vue.resolveComponent("Plus");
+  const _component_el_icon = vue.resolveComponent("el-icon");
+  const _component_el_upload = vue.resolveComponent("el-upload");
+  const _component_el_button = vue.resolveComponent("el-button");
+
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.createVNode(_component_el_upload, {
+      class: "avatar",
+      style: vue.normalizeStyle($options.hdlStyleAvatarBox()),
+      action: $options.myProps0.uploadUrl,
+      "file-list": $data.fileList,
+      "show-file-list": false,
+      "before-upload": $options.hdlBeforeUpload,
+      "on-preview": $options.hdlPreview,
+      "on-remove": $options.hdlRemove,
+      "on-success": $options.hdlSuccess
+    }, {
+      default: vue.withCtx(() => [
+        ($data.fileList.length>0 && $data.fileList[0].response.data.src)
+          ? (vue.openBlock(), vue.createElementBlock("img", {
+              key: 0,
+              src: $data.fileList[0].response.data.src,
+              style: vue.normalizeStyle($options.hdlStyleAvatarImage())
+            }, null, 12 /* STYLE, PROPS */, _hoisted_1$4))
+          : (vue.openBlock(), vue.createBlock(_component_el_icon, {
+              key: 1,
+              class: "avatar-uploader-icon",
+              style: vue.normalizeStyle($options.hdlStyleAvatarIcon())
+            }, {
+              default: vue.withCtx(() => [
+                vue.createVNode(_component_Plus)
+              ]),
+              _: 1 /* STABLE */
+            }, 8 /* PROPS */, ["style"]))
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
+    ($data.fileList.length>0 && $data.fileList[0].response.data.src)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$4, [
+          vue.createVNode(_component_el_button, {
+            size: "small",
+            icon: "el-icon-delete",
+            style: {"margin-top":"10px"},
+            onClick: $options.hdlDeleteAll
+          }, {
+            default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+              vue.createTextVNode("删除", -1 /* CACHED */)
+            ]))]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["onClick"])
+        ]))
+      : vue.createCommentVNode("v-if", true)
+  ]))
+}
+
+script$4.render = render$4;
+script$4.__scopeId = "data-v-0b647a60";
+script$4.__file = "src/upload/Upload-avatar.vue";
+
+var script$3 = {
+        props: ['myProps'],
+        data(){return {
+            fileList: []
+        }},
+        computed: {
+            myProps0(){
+                return Object.assign(ly0default.myProps, this.myProps)
+            }
+        },
+        methods: {
+            hdlStyleAvatarBox(){
+                return "width:" + (this.myProps0.avatar ? this.myProps0.avatar.width : ly0default.carplate.width) + "; " +
+                    "height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + "; " +
+                    "position: relative; " +
+                    "overflow: hidden; " +
+                    "cursor: pointer;"
+            },
+            hdlStyleAvatarImage(){
+                return "display: block;" +
+                    "width:" + (this.myProps0.avatar ? this.myProps0.avatar.width : ly0default.carplate.width) + "; " +
+                    "height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + ";"
+            },
+            hdlStyleAvatarIcon(){
+                return "display: block; " +
+                    "width:" + (this.myProps0.avatar ? this.myProps0.avatar.width : ly0default.carplate.width) + "; " +
+                    "height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + "; " +
+                    "line-height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + "; " +
+                    "font-size: 28px; " +
+                    "color: #8c939d; " +
+                    "text-align: center;"
+            },
+            hdlBeforeUpload (file) {
+                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
+                let isFileSize = file.size / 1024 < this.myProps0.size;
+
+                if (!isFileType) {
+                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
+                    return false
+                }
+                if (!isFileSize) {
+                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
+                    return false
+                }
+
+                this.$message('正在上传 ...');
+                return true
+            },
+            // eslint-disable-next-line
+            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
+            },
+            // eslint-disable-next-line
+            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
+                // 重置文件列表
+                // 因为只能上传1个图片，移除即清空
+                this.fileList = [];
+
+                // 返回上传和检测结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            },
+            // eslint-disable-next-line
+            hdlSuccess (response, file, fileList) { // 上传
+                if (response.code === 0) {
+                    // 重置文件列表
+                    // 因为只能上传1个图片，这里需要清空图片列表
+                    this.fileList = [];
+                    this.fileList.push(file);
+
+                    // 返回上传结果
+                    this.$emit('getUploadResult', {
+                        src: response.data.src,
+                        result: response.data.result
+                    });
+                    this.$message({
+                        type: 'info',
+                        message: '上传成功'
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '上传失败'
+                    });
+                }
+            },
+            hdlDeleteAll () { // 删除全部已上传文件
+                // 重置文件列表
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            }
+        }
+    };
+
+const _hoisted_1$3 = ["src"];
+const _hoisted_2$3 = { key: 0 };
+
+function render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_Plus = vue.resolveComponent("Plus");
+  const _component_el_icon = vue.resolveComponent("el-icon");
+  const _component_el_upload = vue.resolveComponent("el-upload");
+  const _component_el_button = vue.resolveComponent("el-button");
+
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.createVNode(_component_el_upload, {
+      class: "avatar",
+      style: vue.normalizeStyle($options.hdlStyleAvatarBox()),
+      action: $options.myProps0.uploadUrl,
+      "file-list": $data.fileList,
+      "show-file-list": false,
+      "before-upload": $options.hdlBeforeUpload,
+      "on-preview": $options.hdlPreview,
+      "on-remove": $options.hdlRemove,
+      "on-success": $options.hdlSuccess
+    }, {
+      default: vue.withCtx(() => [
+        ($data.fileList.length>0 && $data.fileList[0].response.data.src)
+          ? (vue.openBlock(), vue.createElementBlock("img", {
+              key: 0,
+              src: $data.fileList[0].response.data.src,
+              style: vue.normalizeStyle($options.hdlStyleAvatarImage())
+            }, null, 12 /* STYLE, PROPS */, _hoisted_1$3))
+          : (vue.openBlock(), vue.createBlock(_component_el_icon, {
+              key: 1,
+              class: "avatar-uploader-icon",
+              style: vue.normalizeStyle($options.hdlStyleAvatarIcon())
+            }, {
+              default: vue.withCtx(() => [
+                vue.createVNode(_component_Plus)
+              ]),
+              _: 1 /* STABLE */
+            }, 8 /* PROPS */, ["style"]))
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
+    ($data.fileList.length>0 && $data.fileList[0].src)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$3, [
+          vue.createVNode(_component_el_button, {
+            size: "small",
+            icon: "el-icon-delete",
+            style: {"margin-top":"10px"},
+            onClick: $options.hdlDeleteAll
+          }, {
+            default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+              vue.createTextVNode("删除", -1 /* CACHED */)
+            ]))]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["onClick"])
+        ]))
+      : vue.createCommentVNode("v-if", true)
+  ]))
+}
+
+script$3.render = render$3;
+script$3.__scopeId = "data-v-6fc32e0e";
+script$3.__file = "src/upload/Upload-carplate.vue";
+
+var script$2 = {
+        props: ['myProps'],
+        data(){return {
+            fileList: []
+        }},
+        computed: {
+            myProps0(){
+                return Object.assign(ly0default.myProps, this.myProps)
+            }
+        },
+        methods: {
+            hdlBeforeUpload (file) {
+                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
+                let isFileSize = file.size / 1024 < this.myProps0.size;
+
+                if (!isFileType) {
+                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
+                    return false
+                }
+                if (!isFileSize) {
+                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
+                    return false
+                }
+
+                this.$message('正在上传 ...');
+                return true
+            },
+            // eslint-disable-next-line
+            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
+            },
+            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
+                // 重置文件列表
+                this.fileList = fileList;
+
+                // 返回上传结果
+                let fileList0 = [];
+                fileList.forEach(i=>{
+                    fileList0.push({
+                        src: i.response.data.src
+                    });
+                });
+                this.$emit('getUploadResult', {
+                    fileList: fileList0
+                });
+            },
+            hdlSuccess (response, file, fileList) { // 上传
+                if (response.code === 0) {
+                    // 重置文件列表
+                    this.fileList = fileList;
+
+                    // 返回上传结果
+                    let fileList0 = [];
+                    fileList.forEach(i=>{
+                        fileList0.push({
+                            src: i.response.data.src
+                        });
+                    });
+                    this.$emit('getUploadResult', {
+                        fileList: fileList0
+                    });
+                    this.$message({
+                        type: 'info',
+                        message: '上传成功'
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '上传失败'
+                    });
+                }
+            },
+            hdlDeleteAll () { // 删除全部已上传文件
+                // 重置文件列表
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            }
+        }
+    };
+
+const _hoisted_1$2 = { class: "el-upload__tip" };
+const _hoisted_2$2 = {
+  key: 0,
+  style: {"font-size":"xx-small"}
+};
+
+function render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_Upload = vue.resolveComponent("Upload");
+  const _component_el_icon = vue.resolveComponent("el-icon");
+  const _component_el_upload = vue.resolveComponent("el-upload");
+  const _component_el_button = vue.resolveComponent("el-button");
+
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.createVNode(_component_el_upload, {
+      action: $options.myProps0.uploadUrl,
+      "file-list": $data.fileList,
+      "list-type": "text",
+      "before-upload": $options.hdlBeforeUpload,
+      "on-preview": $options.hdlPreview,
+      "on-remove": $options.hdlRemove,
+      "on-success": $options.hdlSuccess,
+      limit: $options.myProps0.limit,
+      drag: ""
+    }, {
+      tip: vue.withCtx(() => [
+        vue.createElementVNode("div", _hoisted_1$2, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个文件"), 1 /* TEXT */)
+      ]),
+      default: vue.withCtx(() => [
+        vue.createVNode(_component_el_icon, null, {
+          default: vue.withCtx(() => [
+            vue.createVNode(_component_Upload)
+          ]),
+          _: 1 /* STABLE */
+        }),
+        _cache[0] || (_cache[0] = vue.createElementVNode("div", { class: "el-upload__text" }, [
+          vue.createTextVNode("将文件拖到此处，或"),
+          vue.createElementVNode("em", null, "点击上传")
+        ], -1 /* CACHED */))
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
+    ($data.fileList.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$2, vue.toDisplayString("已上传"+$data.fileList.length+"个文件"), 1 /* TEXT */))
+      : vue.createCommentVNode("v-if", true),
+    ($data.fileList.length>0)
+      ? (vue.openBlock(), vue.createBlock(_component_el_button, {
+          key: 1,
+          size: "small",
+          style: {"margin-top":"10px"},
+          onClick: $options.hdlDeleteAll
+        }, {
+          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+            vue.createTextVNode("删除全部已上传文件", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["onClick"]))
+      : vue.createCommentVNode("v-if", true)
+  ]))
+}
+
+script$2.render = render$2;
+script$2.__file = "src/upload/Upload-drag.vue";
+
+var script$1 = {
+        props: ['myProps'],
+        data(){return {
+            fileList: []
+        }},
+        computed: {
+            myProps0(){
+                return Object.assign(ly0default.myProps, this.myProps)
+            }
+        },
+        methods: {
+            hdlBeforeUpload (file) {
+                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
+                let isFileSize = file.size / 1024 < this.myProps0.size;
+
+                if (!isFileType) {
+                    this.$message.error('上传图片的格式只能是 ' + this.myProps0.type);
+                    return false
+                }
+                if (!isFileSize) {
+                    this.$message.error('上传图片的大小不能超过 ' + this.myProps0.size + ' KB');
+                    return false
+                }
+
+                this.$message('正在上传 ...');
+                return true
+            },
+            // eslint-disable-next-line
+            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
+            },
+            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
+                // 重置文件列表
+                this.fileList = fileList;
+
+                // 返回上传结果
+                let fileList0 = [];
+                fileList.forEach(i=>{
+                    fileList0.push({
+                        src: i.response.data.src
+                    });
+                });
+                this.$emit('getUploadResult', {
+                    fileList: fileList0
+                });
+            },
+            hdlSuccess (response, file, fileList) { // 上传
+                if (response.code === 0) {
+                    // 重置文件列表
+                    this.fileList = fileList;
+
+                    // 返回上传结果
+                    let fileList0 = [];
+                    fileList.forEach(i=>{
+                        fileList0.push({
+                            src: i.response.data.src
+                        });
+                    });
+                    this.$emit('getUploadResult', {
+                        fileList: fileList0
+                    });
+                    this.$message({
+                        type: 'info',
+                        message: '上传成功'
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '上传失败'
+                    });
+                }
+            },
+            hdlDeleteAll () { // 删除全部已上传图片
+                // 重置文件列表
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            }
+        }
+    };
+
+const _hoisted_1$1 = { class: "el-upload__tip" };
+const _hoisted_2$1 = {
+  key: 0,
+  style: {"font-size":"xx-small"}
+};
+
+function render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_el_button = vue.resolveComponent("el-button");
+  const _component_el_upload = vue.resolveComponent("el-upload");
+
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.createVNode(_component_el_upload, {
+      action: $options.myProps0.uploadUrl,
+      "file-list": $data.fileList,
+      "list-type": "picture",
+      "before-upload": $options.hdlBeforeUpload,
+      "on-preview": $options.hdlPreview,
+      "on-remove": $options.hdlRemove,
+      "on-success": $options.hdlSuccess,
+      limit: $options.myProps0.limit
+    }, {
+      tip: vue.withCtx(() => [
+        vue.createElementVNode("div", _hoisted_1$1, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个图片"), 1 /* TEXT */)
+      ]),
+      default: vue.withCtx(() => [
+        vue.createVNode(_component_el_button, {
+          size: "small",
+          type: "primary"
+        }, {
+          default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+            vue.createTextVNode("点击上传", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        })
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
+    ($data.fileList.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$1, vue.toDisplayString("已上传"+$data.fileList.length+"个图片"), 1 /* TEXT */))
+      : vue.createCommentVNode("v-if", true),
+    ($data.fileList.length>0)
+      ? (vue.openBlock(), vue.createBlock(_component_el_button, {
+          key: 1,
+          size: "small",
+          style: {"margin-top":"10px"},
+          onClick: $options.hdlDeleteAll
+        }, {
+          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+            vue.createTextVNode("删除全部已上传图片", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["onClick"]))
+      : vue.createCommentVNode("v-if", true)
+  ]))
+}
+
+script$1.render = render$1;
+script$1.__file = "src/upload/Upload-picture.vue";
+
+var script = {
+        props: ['myProps'],
+        data: function () {
+            return {
+                fileList: [],
+                dialogImageUrl: '',
+                dialogVisible: false
+            }
+        },
+        computed: {
+            myProps0(){
+                return Object.assign(ly0default.myProps, this.myProps)
+            }
+        },
+        methods: {
+            hdlBeforeUpload (file) {
+                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
+                let isFileSize = file.size / 1024 < this.myProps0.size;
+
+                if (!isFileType) {
+                    this.$message.error('上传图片的格式只能是 ' + this.myProps0.type);
+                    return false
+                }
+                if (!isFileSize) {
+                    this.$message.error('上传图片的大小不能超过 ' + this.myProps0.size + ' KB');
+                    return false
+                }
+
+                this.$message('正在上传 ...');
+                return true
+            },
+            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
+                // 重置文件列表
+                this.fileList = fileList;
+
+                // 返回上传结果
+                let fileList0 = [];
+                fileList.forEach(i=>{
+                    fileList0.push({
+                        src: i.response.data.src
+                    });
+                });
+                this.$emit('getUploadResult', {
+                    fileList: fileList0
+                });
+            },
+            hdlSuccess (response, file, fileList) { // 上传
+                if (response.code === 0) {
+                    // 重置文件列表
+                    this.fileList = fileList;
+
+                    // 返回上传结果
+                    let fileList0 = [];
+                    fileList.forEach(i=>{
+                        fileList0.push({
+                            src: i.response.data.src
+                        });
+                    });
+                    this.$emit('getUploadResult', {
+                        fileList: fileList0
+                    });
+                    this.$message({
+                        type: 'info',
+                        message: '上传成功'
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '上传失败'
+                    });
+                }
+            },
+            hdlDeleteAll () { // 删除全部已上传图片
+                // 重置文件列表
+                this.fileList = [];
+
+                // 返回上传结果
+                this.$emit('getUploadResult', {
+                    fileList: []
+                });
+            }
+        }
+    };
+
+const _hoisted_1 = { class: "el-upload__tip" };
+const _hoisted_2 = ["src"];
+const _hoisted_3 = {
+  key: 0,
+  style: {"font-size":"xx-small"}
+};
+
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_Plus = vue.resolveComponent("Plus");
+  const _component_el_icon = vue.resolveComponent("el-icon");
+  const _component_el_upload = vue.resolveComponent("el-upload");
+  const _component_el_dialog = vue.resolveComponent("el-dialog");
+  const _component_el_button = vue.resolveComponent("el-button");
+
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.createVNode(_component_el_upload, {
+      action: $options.myProps0.uploadUrl,
+      "file-list": _ctx.fileList,
+      "list-type": "picture-card",
+      "before-upload": $options.hdlBeforeUpload,
+      "on-preview": $options.hdlPreview,
+      "on-remove": $options.hdlRemove,
+      "on-success": $options.hdlSuccess,
+      limit: $options.myProps0.limit
+    }, {
+      tip: vue.withCtx(() => [
+        vue.createElementVNode("div", _hoisted_1, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个图片"), 1 /* TEXT */)
+      ]),
+      default: vue.withCtx(() => [
+        vue.createVNode(_component_el_icon, null, {
+          default: vue.withCtx(() => [
+            vue.createVNode(_component_Plus)
+          ]),
+          _: 1 /* STABLE */
+        })
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
+    vue.createVNode(_component_el_dialog, {
+      modelValue: _ctx.dialogVisible,
+      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((_ctx.dialogVisible) = $event))
+    }, {
+      default: vue.withCtx(() => [
+        vue.createElementVNode("img", {
+          width: "100%",
+          src: _ctx.dialogImageUrl,
+          alt: ""
+        }, null, 8 /* PROPS */, _hoisted_2)
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["modelValue"]),
+    (_ctx.fileList.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3, vue.toDisplayString("已上传"+_ctx.fileList.length+"个图片"), 1 /* TEXT */))
+      : vue.createCommentVNode("v-if", true),
+    (_ctx.fileList.length>0)
+      ? (vue.openBlock(), vue.createBlock(_component_el_button, {
+          key: 1,
+          size: "small",
+          style: {"margin-top":"10px"},
+          onClick: $options.hdlDeleteAll
+        }, {
+          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+            vue.createTextVNode("删除全部已上传图片", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["onClick"]))
+      : vue.createCommentVNode("v-if", true)
+  ]))
+}
+
+script.render = render;
+script.__file = "src/upload/Upload-picture-card.vue";
+
+var upload = {
+  Upload: script$5,
+  Upload_avatar: script$4,
+  Upload_carplate: script$3,
+  Upload_drag: script$2,
+  Upload_picture: script$1,
+  Upload_pictureCard: script
+};
+
+var index = {
+  install: function install(app, options) {
+    // 全局注册组件
+    app.component('ly0Upload', upload.Upload);
+    app.component('ly0Upload_avatar', upload.Upload_avatar);
+    app.component('ly0Upload_carplate', upload.Upload_carplate);
+    app.component('ly0Upload_drag', upload.Upload_drag);
+    app.component('ly0Upload_picture', upload.Upload_picture);
+    app.component('ly0Upload_pictureCard', upload.Upload_pictureCard);
+  },
+  FileSaver: FileSaver,
+  upload: upload
+};
 
 exports.FileSaver = FileSaver;
 exports.default = index;
+exports.upload = upload;
 //# sourceMappingURL=index.cjs.js.map
