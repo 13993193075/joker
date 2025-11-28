@@ -2,7 +2,7 @@
     <div>
         <el-upload
                 :action="myProps0.uploadUrl"
-                :file-list="fileList"
+                v-model:file-list="fileList"
                 list-type="text"
                 :before-upload="hdlBeforeUpload"
                 :on-preview="hdlPreview"
@@ -11,7 +11,7 @@
                 :limit="myProps0.limit"
                 drag
         >
-            <el-icon><Upload /></el-icon>
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
             <template #tip>
               <div class="el-upload__tip">&nbsp;{{myProps0.tip ? myProps0.tip : "可以上传" + myProps0.limit + "个文件"}}</div>
@@ -34,7 +34,7 @@
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {

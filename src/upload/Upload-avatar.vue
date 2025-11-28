@@ -4,15 +4,15 @@
                 class="avatar"
                 :style="hdlStyleAvatarBox()"
                 :action="myProps0.uploadUrl"
-                :file-list="fileList"
+                v-model:file-list="fileList"
                 :show-file-list="false"
                 :before-upload="hdlBeforeUpload"
                 :on-preview="hdlPreview"
                 :on-remove="hdlRemove"
                 :on-success="hdlSuccess"
         >
-            <img v-if="fileList.length>0 && fileList[0].response.data.src" :src="fileList[0].response.data.src" :style="hdlStyleAvatarImage()">
-            <el-icon v-else class=" avatar-uploader-icon" :style="hdlStyleAvatarIcon()"><Plus /></el-icon>
+            <img v-if="fileList.length>0 && fileList[0].response.data.src" :src="fileList[0].response.data.src" class="avatar" :style="hdlStyleAvatarImage()">
+            <el-icon v-else class="avatar-uploader-icon" :style="hdlStyleAvatarIcon()"><Plus /></el-icon>
         </el-upload>
         <div v-if="fileList.length>0 && fileList[0].response.data.src">
             <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdlDeleteAll">删除</el-button>
@@ -39,7 +39,7 @@
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {

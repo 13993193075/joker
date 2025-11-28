@@ -1,7 +1,7 @@
 <template><div>
         <el-upload
                 :action="myProps0.uploadUrl"
-                :file-list="fileList"
+                v-model:file-list="fileList"
                 list-type="picture-card"
                 :before-upload="hdlBeforeUpload"
                 :on-preview="hdlPreview"
@@ -15,7 +15,7 @@
             </template>
         </el-upload>
         <el-dialog v-model="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
+            <img w-full :src="dialogImageUrl" alt="Preview Image">
         </el-dialog>
         <div v-if="fileList.length>0" style="font-size:xx-small">{{"已上传"+fileList.length+"个图片"}}</div>
         <el-button v-if="fileList.length>0" size="small" style="margin-top:10px;" @click="hdlDeleteAll">删除全部已上传图片</el-button>
@@ -37,7 +37,7 @@
         },
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {

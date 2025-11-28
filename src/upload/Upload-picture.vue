@@ -2,7 +2,7 @@
     <div>
         <el-upload
                 :action="myProps0.uploadUrl"
-                :file-list="fileList"
+                v-model:file-list="fileList"
                 list-type="picture"
                 :before-upload="hdlBeforeUpload"
                 :on-preview="hdlPreview"
@@ -32,7 +32,7 @@
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {

@@ -15964,7 +15964,7 @@ var script$5 = {
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             },
             limit(){
                 return this.myProps0.limit
@@ -15985,6 +15985,7 @@ var script$5 = {
                 }
 
                 this.$message('正在上传 ...');
+                
                 return true
             },
             // eslint-disable-next-line
@@ -16057,6 +16058,7 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
     vue.createVNode(_component_el_upload, {
       action: $options.myProps0.uploadUrl,
       "file-list": $data.fileList,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
       "list-type": "text",
       "before-upload": $options.hdlBeforeUpload,
       "on-preview": $options.hdlPreview,
@@ -16072,7 +16074,7 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
           size: "small",
           type: "primary"
         }, {
-          default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
             vue.createTextVNode("点击上传", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */
@@ -16090,7 +16092,7 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
           style: {"margin-top":"10px"},
           onClick: $options.hdlDeleteAll
         }, {
-          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+          default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传文件", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */
@@ -16109,7 +16111,7 @@ var script$4 = {
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {
@@ -16216,6 +16218,7 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
       style: vue.normalizeStyle($options.hdlStyleAvatarBox()),
       action: $options.myProps0.uploadUrl,
       "file-list": $data.fileList,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
       "show-file-list": false,
       "before-upload": $options.hdlBeforeUpload,
       "on-preview": $options.hdlPreview,
@@ -16227,6 +16230,7 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
           ? (vue.openBlock(), vue.createElementBlock("img", {
               key: 0,
               src: $data.fileList[0].response.data.src,
+              class: "avatar",
               style: vue.normalizeStyle($options.hdlStyleAvatarImage())
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$4))
           : (vue.openBlock(), vue.createBlock(_component_el_icon, {
@@ -16250,7 +16254,7 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
             style: {"margin-top":"10px"},
             onClick: $options.hdlDeleteAll
           }, {
-            default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+            default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
               vue.createTextVNode("删除", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
@@ -16271,7 +16275,7 @@ var script$3 = {
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {
@@ -16377,6 +16381,7 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
       style: vue.normalizeStyle($options.hdlStyleAvatarBox()),
       action: $options.myProps0.uploadUrl,
       "file-list": $data.fileList,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
       "show-file-list": false,
       "before-upload": $options.hdlBeforeUpload,
       "on-preview": $options.hdlPreview,
@@ -16388,6 +16393,7 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
           ? (vue.openBlock(), vue.createElementBlock("img", {
               key: 0,
               src: $data.fileList[0].response.data.src,
+              class: "avatar",
               style: vue.normalizeStyle($options.hdlStyleAvatarImage())
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$3))
           : (vue.openBlock(), vue.createBlock(_component_el_icon, {
@@ -16411,7 +16417,7 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
             style: {"margin-top":"10px"},
             onClick: $options.hdlDeleteAll
           }, {
-            default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+            default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
               vue.createTextVNode("删除", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
@@ -16432,7 +16438,7 @@ var script$2 = {
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {
@@ -16515,7 +16521,7 @@ const _hoisted_2$2 = {
 };
 
 function render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_Upload = vue.resolveComponent("Upload");
+  const _component_upload_filled = vue.resolveComponent("upload-filled");
   const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_upload = vue.resolveComponent("el-upload");
   const _component_el_button = vue.resolveComponent("el-button");
@@ -16524,6 +16530,7 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
     vue.createVNode(_component_el_upload, {
       action: $options.myProps0.uploadUrl,
       "file-list": $data.fileList,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
       "list-type": "text",
       "before-upload": $options.hdlBeforeUpload,
       "on-preview": $options.hdlPreview,
@@ -16536,13 +16543,13 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
         vue.createElementVNode("div", _hoisted_1$2, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个文件"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
-        vue.createVNode(_component_el_icon, null, {
+        vue.createVNode(_component_el_icon, { class: "el-icon--upload" }, {
           default: vue.withCtx(() => [
-            vue.createVNode(_component_Upload)
+            vue.createVNode(_component_upload_filled)
           ]),
           _: 1 /* STABLE */
         }),
-        _cache[0] || (_cache[0] = vue.createElementVNode("div", { class: "el-upload__text" }, [
+        _cache[1] || (_cache[1] = vue.createElementVNode("div", { class: "el-upload__text" }, [
           vue.createTextVNode("将文件拖到此处，或"),
           vue.createElementVNode("em", null, "点击上传")
         ], -1 /* CACHED */))
@@ -16559,7 +16566,7 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
           style: {"margin-top":"10px"},
           onClick: $options.hdlDeleteAll
         }, {
-          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+          default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传文件", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */
@@ -16578,7 +16585,7 @@ var script$1 = {
         }},
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {
@@ -16668,6 +16675,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
     vue.createVNode(_component_el_upload, {
       action: $options.myProps0.uploadUrl,
       "file-list": $data.fileList,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
       "list-type": "picture",
       "before-upload": $options.hdlBeforeUpload,
       "on-preview": $options.hdlPreview,
@@ -16683,7 +16691,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
           size: "small",
           type: "primary"
         }, {
-          default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
+          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
             vue.createTextVNode("点击上传", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */
@@ -16701,7 +16709,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
           style: {"margin-top":"10px"},
           onClick: $options.hdlDeleteAll
         }, {
-          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+          default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传图片", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */
@@ -16724,7 +16732,7 @@ var script = {
         },
         computed: {
             myProps0(){
-                return Object.assign(ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, this.myProps)
             }
         },
         methods: {
@@ -16819,6 +16827,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     vue.createVNode(_component_el_upload, {
       action: $options.myProps0.uploadUrl,
       "file-list": _ctx.fileList,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((_ctx.fileList) = $event)),
       "list-type": "picture-card",
       "before-upload": $options.hdlBeforeUpload,
       "on-preview": $options.hdlPreview,
@@ -16841,13 +16850,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
     vue.createVNode(_component_el_dialog, {
       modelValue: _ctx.dialogVisible,
-      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((_ctx.dialogVisible) = $event))
+      "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((_ctx.dialogVisible) = $event))
     }, {
       default: vue.withCtx(() => [
         vue.createElementVNode("img", {
-          width: "100%",
+          "w-full": "",
           src: _ctx.dialogImageUrl,
-          alt: ""
+          alt: "Preview Image"
         }, null, 8 /* PROPS */, _hoisted_2)
       ]),
       _: 1 /* STABLE */
@@ -16862,7 +16871,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           style: {"margin-top":"10px"},
           onClick: $options.hdlDeleteAll
         }, {
-          default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+          default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传图片", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */

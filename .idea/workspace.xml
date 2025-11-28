@@ -5,23 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e871ee06-5d63-433c-b70c-646d3ae024fc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/Upload-drag.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/Upload-picture-card.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/Upload-picture.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/Upload.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/default.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/upload/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/index.cjs.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.cjs.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/index.cjs.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.cjs.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/index.esm.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.esm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/index.esm.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.esm.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rollup.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/rollup.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/upload/Upload-drag.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-drag.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/upload/Upload-picture-card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-picture-card.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/upload/Upload-picture.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-picture.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/upload/Upload.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,24 +112,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/ly/joker/src",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2025.2.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/ly/joker&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.2.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\ly\joker\src" />
@@ -167,7 +162,10 @@
       <workItem from="1762954535616" duration="153000" />
       <workItem from="1763740484942" duration="391000" />
       <workItem from="1763772570971" duration="4837000" />
-      <workItem from="1764215597733" duration="8589000" />
+      <workItem from="1764215597733" duration="8776000" />
+      <workItem from="1764261967332" duration="45000" />
+      <workItem from="1764300168660" duration="8890000" />
+      <workItem from="1764326272999" duration="6000" />
     </task>
     <servers />
   </component>
