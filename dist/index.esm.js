@@ -16222,10 +16222,10 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
       "on-success": $options.hdlSuccess
     }, {
       default: withCtx(() => [
-        ($data.fileList.length>0 && $data.fileList[0].response.data.src)
+        ($data.fileList.length>0 && $data.fileList[0].src)
           ? (openBlock(), createElementBlock("img", {
               key: 0,
-              src: $data.fileList[0].response.data.src,
+              src: $data.fileList[0].src,
               class: "avatar",
               style: normalizeStyle($options.hdlStyleAvatarImage())
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$4))
@@ -16242,7 +16242,7 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
-    ($data.fileList.length>0 && $data.fileList[0].response.data.src)
+    ($data.fileList.length>0 && $data.fileList[0].src)
       ? (openBlock(), createElementBlock("div", _hoisted_2$4, [
           createVNode(_component_el_button, {
             size: "small",
@@ -16385,10 +16385,10 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
       "on-success": $options.hdlSuccess
     }, {
       default: withCtx(() => [
-        ($data.fileList.length>0 && $data.fileList[0].response.data.src)
+        ($data.fileList.length>0 && $data.fileList[0].src)
           ? (openBlock(), createElementBlock("img", {
               key: 0,
-              src: $data.fileList[0].response.data.src,
+              src: $data.fileList[0].src,
               class: "avatar",
               style: normalizeStyle($options.hdlStyleAvatarImage())
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$3))

@@ -6,17 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e871ee06-5d63-433c-b70c-646d3ae024fc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.cjs.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.cjs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.cjs.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.cjs.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.esm.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.esm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.esm.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.esm.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/upload/Upload-drag.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-drag.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/upload/Upload-picture-card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-picture-card.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/upload/Upload-picture.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-picture.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/upload/Upload.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,6 +158,8 @@
       <workItem from="1764261967332" duration="45000" />
       <workItem from="1764300168660" duration="8890000" />
       <workItem from="1764326272999" duration="6000" />
+      <workItem from="1764329561888" duration="1011000" />
+      <workItem from="1764330607925" duration="8000" />
     </task>
     <servers />
   </component>
