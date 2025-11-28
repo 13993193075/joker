@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e871ee06-5d63-433c-b70c-646d3ae024fc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/menu/Index.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/menu/default.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.cjs.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.cjs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.cjs.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.cjs.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.esm.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.esm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.esm.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.esm.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-avatar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/upload/Upload-carplate.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +112,7 @@
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/ly/joker&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/ly/joker/src&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -129,6 +126,7 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\ly\joker\src" />
+      <recent name="C:\ly\joker\src\form" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\ly\joker\src" />
@@ -165,6 +163,8 @@
       <workItem from="1764329561888" duration="1011000" />
       <workItem from="1764330607925" duration="8000" />
       <workItem from="1764330898648" duration="3294000" />
+      <workItem from="1764335744950" duration="7580000" />
+      <workItem from="1764351373431" duration="97000" />
     </task>
     <servers />
   </component>

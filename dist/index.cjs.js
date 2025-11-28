@@ -15933,6 +15933,293 @@ var FileSaver = {
   jsonToExcel: jsonToExcel
 };
 
+var ly0default$1 = {
+  myProps: {
+    mode: 'horizontal',
+    defaultActive: '',
+    backgroundColor: '#545c64',
+    textColor: '#fff',
+    activeTextColor: '#ffd04b',
+    styleBase: 'border: none;',
+    style: '',
+    menu: []
+  }
+};
+
+var script$6 = {
+    props: ['scopeThis', 'myProps'],
+    computed: {
+        myProps0(){
+            return Object.assign({}, ly0default$1.myProps, this.myProps)
+        }
+    },
+    methods: {
+        handleSelect(
+            key,
+            // keyPath
+        ) {
+            this.handleRun(key, this.myProps.menu, '');
+        },
+        handleOpen() {},
+            // key,
+            // keyPath
+        handleClose() {},
+            // key,
+            // keyPath
+            // 执行菜单句柄
+        handleRun(
+            index, // 目标索引
+            menu, // 当前菜单
+            indexFather, // 父节点索引
+        ) {
+            let result = false;
+            // 遍历菜单节点
+            for (let i = 0; i < menu.length; i++) {
+                // 内部索引继承
+                let index0 = indexFather ? indexFather + '-' + i : '' + i;
+                // 节点存在自定义索引
+                if (!!menu[i].index && index === menu[i].index) {
+                    if (menu[i].handle) {
+                        menu[i].handle(this.scopeThis, index);
+                    }
+                    result = true;
+                    break
+                }
+                // 节点不存在自定义索引
+                if (index === index0) {
+                    if (menu[i].handle) {
+                        menu[i].handle(this.scopeThis, index);
+                    }
+                    result = true;
+                    break
+                }
+                // 存在子节点，递归调用
+                if (!!menu[i].menu && menu[i].menu.length > 0) {
+                    result = this.handleRun(index, menu[i].menu, index0);
+                    if (!!result) {
+                        break
+                    }
+                }
+            }
+            return result
+        },
+    },
+};
+
+function render$6(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_el_menu_item = vue.resolveComponent("el-menu-item");
+  const _component_el_sub_menu = vue.resolveComponent("el-sub-menu");
+  const _component_el_menu = vue.resolveComponent("el-menu");
+
+  return (vue.openBlock(), vue.createBlock(_component_el_menu, {
+    mode: $options.myProps0.mode,
+    "default-active": $options.myProps0.defaultActive,
+    onOpen: $options.handleOpen,
+    onClose: $options.handleClose,
+    onSelect: $options.handleSelect,
+    "background-color": $options.myProps0.backgroundColor,
+    "text-color": $options.myProps0.textColor,
+    "active-text-color": $options.myProps0.activeTextColor,
+    "menu-trigger": "hover",
+    style: vue.normalizeStyle($options.myProps0.styleBase + ' ' + $options.myProps0.style)
+  }, {
+    default: vue.withCtx(() => [
+      vue.createCommentVNode(" 第1层 "),
+      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.myProps.menu, (item, index) => {
+        return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
+          key: item.index ? item.index : String(index)
+        }, [
+          (!item.menu || item.menu.length === 0)
+            ? (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
+                key: 0,
+                index: item.index ? item.index : String(index),
+                disabled: 
+                    'disabled' in item
+                    ? item.disabled
+                    : 'hdlDisabled' in item
+                        ? item.hdlDisabled($props.scopeThis, item, index)
+                        : false
+                
+              }, {
+                default: vue.withCtx(() => [
+                  vue.createTextVNode(vue.toDisplayString(item.title), 1 /* TEXT */)
+                ]),
+                _: 2 /* DYNAMIC */
+              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+            : (vue.openBlock(), vue.createBlock(_component_el_sub_menu, {
+                key: 1,
+                index: item.index ? item.index : String(index)
+              }, {
+                title: vue.withCtx(() => [
+                  vue.createTextVNode(vue.toDisplayString(item.title), 1 /* TEXT */)
+                ]),
+                default: vue.withCtx(() => [
+                  (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.menu, (item0, index0) => {
+                    return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
+                      key: item0.index ? item0.index : String(index) + '-' + String(index0)
+                    }, [
+                      (!item0.menu || item0.menu.length === 0)
+                        ? (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
+                            key: 0,
+                            index: item0.index ? item0.index : String(index) + '-' + String(index0),
+                            disabled: 
+                            'disabled' in item0
+                            ? item0.disabled
+                            : 'hdlDisabled' in item0
+                                ? item0.hdlDisabled($props.scopeThis, item0, index0)
+                                : false
+                        
+                          }, {
+                            default: vue.withCtx(() => [
+                              vue.createTextVNode(vue.toDisplayString(item0.title), 1 /* TEXT */)
+                            ]),
+                            _: 2 /* DYNAMIC */
+                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                        : (vue.openBlock(), vue.createBlock(_component_el_sub_menu, {
+                            key: 1,
+                            index: item0.index ? item0.index : String(index) + '-' + String(index0)
+                          }, {
+                            title: vue.withCtx(() => [
+                              vue.createTextVNode(vue.toDisplayString(item0.title), 1 /* TEXT */)
+                            ]),
+                            default: vue.withCtx(() => [
+                              (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item0.menu, (item1, index1) => {
+                                return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
+                                  key: 
+                                item1.index
+                                ? item1.index
+                                : String(index) + '-' + String(index0) + '-' + String(index1)
+                            
+                                }, [
+                                  (!item1.menu || item1.menu.length === 0)
+                                    ? (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
+                                        key: 0,
+                                        index: 
+                                    item1.index
+                                    ? item1.index
+                                    : String(index) + '-' + String(index0) + '-' + String(index1)
+                                ,
+                                        disabled: 
+                                    'disabled' in item1
+                                    ? item1.disabled
+                                    : 'hdlDisabled' in item1
+                                        ? item1.hdlDisabled($props.scopeThis, item1, index1)
+                                        : false
+                                
+                                      }, {
+                                        default: vue.withCtx(() => [
+                                          vue.createTextVNode(vue.toDisplayString(item1.title), 1 /* TEXT */)
+                                        ]),
+                                        _: 2 /* DYNAMIC */
+                                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                    : (vue.openBlock(), vue.createBlock(_component_el_sub_menu, {
+                                        key: 1,
+                                        index: 
+                                    item1.index
+                                    ? item1.index
+                                    : String(index) + '-' + String(index0) + '-' + String(index1)
+                                
+                                      }, {
+                                        title: vue.withCtx(() => [
+                                          vue.createTextVNode(vue.toDisplayString(item1.title), 1 /* TEXT */)
+                                        ]),
+                                        default: vue.withCtx(() => [
+                                          (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item1.menu, (item2, index2) => {
+                                            return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
+                                              key: 
+                                        item2.index
+                                        ? item2.index
+                                        : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
+                                    
+                                            }, [
+                                              (!item2.menu || item2.menu.length === 0)
+                                                ? (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
+                                                    key: 0,
+                                                    index: 
+                                            item2.index
+                                            ? item2.index
+                                            : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
+                                        ,
+                                                    disabled: 
+                                            'disabled' in item2
+                                            ? item2.disabled
+                                            : 'hdlDisabled' in item2
+                                                ? item2.hdlDisabled($props.scopeThis, item2, index2)
+                                                : false
+                                        
+                                                  }, {
+                                                    default: vue.withCtx(() => [
+                                                      vue.createTextVNode(vue.toDisplayString(item2.title), 1 /* TEXT */)
+                                                    ]),
+                                                    _: 2 /* DYNAMIC */
+                                                  }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                                : vue.createCommentVNode("v-if", true),
+                                              vue.createVNode(_component_el_sub_menu, {
+                                                else: "",
+                                                index: 
+                                            item2.index
+                                            ? item2.index
+                                            : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
+                                        
+                                              }, {
+                                                title: vue.withCtx(() => [
+                                                  vue.createTextVNode(vue.toDisplayString(item2.title), 1 /* TEXT */)
+                                                ]),
+                                                default: vue.withCtx(() => [
+                                                  (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item2.menu, (item3, index3) => {
+                                                    return (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
+                                                      key: 
+                                                item3.index
+                                                ? item3.index
+                                                : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
+                                            ,
+                                                      index: 
+                                                    item3.index
+                                                    ? item3.index
+                                                    : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
+                                                ,
+                                                      disabled: 
+                                                    'disabled' in item3
+                                                    ? item3.disabled
+                                                    : 'hdlDisabled' in item3
+                                                        ? item3.hdlDisabled($props.scopeThis, item3, index3)
+                                                        : false
+                                                
+                                                    }, {
+                                                      default: vue.withCtx(() => [
+                                                        vue.createTextVNode(vue.toDisplayString(item3.title), 1 /* TEXT */)
+                                                      ]),
+                                                      _: 2 /* DYNAMIC */
+                                                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                                  }), 128 /* KEYED_FRAGMENT */))
+                                                ]),
+                                                _: 2 /* DYNAMIC */
+                                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"])
+                                            ], 64 /* STABLE_FRAGMENT */))
+                                          }), 128 /* KEYED_FRAGMENT */))
+                                        ]),
+                                        _: 2 /* DYNAMIC */
+                                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
+                                ], 64 /* STABLE_FRAGMENT */))
+                              }), 128 /* KEYED_FRAGMENT */))
+                            ]),
+                            _: 2 /* DYNAMIC */
+                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
+                    ], 64 /* STABLE_FRAGMENT */))
+                  }), 128 /* KEYED_FRAGMENT */))
+                ]),
+                _: 2 /* DYNAMIC */
+              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
+        ], 64 /* STABLE_FRAGMENT */))
+      }), 128 /* KEYED_FRAGMENT */))
+    ]),
+    _: 1 /* STABLE */
+  }, 8 /* PROPS */, ["mode", "default-active", "onOpen", "onClose", "onSelect", "background-color", "text-color", "active-text-color", "style"]))
+}
+
+script$6.render = render$6;
+script$6.__file = "src/menu/index.vue";
+
 var ly0default = {
   myProps: {
     uploadUrl: '',
@@ -16895,6 +17182,7 @@ var upload = {
 var index = {
   install: function install(app, options) {
     // 全局注册组件
+    app.component('ly0Menu', script$6);
     app.component('ly0Upload', upload.Upload);
     app.component('ly0Upload_avatar', upload.Upload_avatar);
     app.component('ly0Upload_carplate', upload.Upload_carplate);
