@@ -11,10 +11,10 @@
                 :on-remove="hdlRemove"
                 :on-success="hdlSuccess"
         >
-            <img v-if="fileList.length>0 && fileList[0].src" :src="fileList[0].src" class="avatar" :style="hdlStyleAvatarImage()">
+            <img v-if="fileList.length>0 && fileList[0].response && fileList[0].response.data && fileList[0].response.data.src" :src="fileList[0].response.data.src" class="avatar" :style="hdlStyleAvatarImage()">
             <el-icon v-else class="avatar-uploader-icon" :style="hdlStyleAvatarIcon()"><Plus /></el-icon>
         </el-upload>
-        <div v-if="fileList.length>0 && fileList[0].src">
+        <div v-if="fileList.length>0 && fileList[0].response && fileList[0].response.data && fileList[0].response.data.src">
             <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdlDeleteAll">删除</el-button>
         </div>
     </div>
