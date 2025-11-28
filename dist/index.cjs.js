@@ -15940,6 +15940,7 @@ var ly0default$1 = {
     backgroundColor: '#545c64',
     textColor: '#fff',
     activeTextColor: '#ffd04b',
+    horizontalHeight: '50px',
     styleBase: 'border: none;',
     style: '',
     menu: []
@@ -16021,7 +16022,9 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
     "text-color": $options.myProps0.textColor,
     "active-text-color": $options.myProps0.activeTextColor,
     "menu-trigger": "hover",
-    style: vue.normalizeStyle($options.myProps0.styleBase + ' ' + $options.myProps0.style)
+    style: vue.normalizeStyle('--el-menu-horizontal-height: ' + $options.myProps0.horizontalHeight + '; ' +
+            $options.myProps0.styleBase + ' ' +
+            $options.myProps0.style)
   }, {
     default: vue.withCtx(() => [
       vue.createCommentVNode(" 第1层 "),

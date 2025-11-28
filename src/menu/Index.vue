@@ -9,7 +9,9 @@
         :text-color="myProps0.textColor"
         :active-text-color="myProps0.activeTextColor"
         menu-trigger="hover"
-        :style="myProps0.styleBase + ' ' + myProps0.style"
+        :style="'--el-menu-horizontal-height: ' + myProps0.horizontalHeight + '; ' +
+            myProps0.styleBase + ' ' +
+            myProps0.style"
     >
         <!-- 第1层 -->
         <template
