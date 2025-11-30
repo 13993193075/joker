@@ -4,21 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e871ee06-5d63-433c-b70c-646d3ae024fc" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/Form.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/Form.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/Index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/InputBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/InputBox.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/LabelBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/LabelBox.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/default.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/default.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/style-input.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/style-input.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/style-label.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/style-label.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/style.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/form/style.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/test-fields-value.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/form/test.js" beforeDir="false" />
-    </list>
+    <list default="true" id="e871ee06-5d63-433c-b70c-646d3ae024fc" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -176,7 +162,7 @@
       <workItem from="1764351656786" duration="258000" />
       <workItem from="1764352502177" duration="964000" />
       <workItem from="1764353658003" duration="10000" />
-      <workItem from="1764355436160" duration="45734000" />
+      <workItem from="1764355436160" duration="45918000" />
     </task>
     <servers />
   </component>
