@@ -1,345 +1,363 @@
 <template>
-  <!-- input-box -->
-  <div :style="style.input.box(item)">
-    <!-- 只读 -->
-    <div v-if="item.inputType === 'text'" :style="style.input.text(item)">
-      {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
-    </div>
-    <div v-if="item.inputType === 'text0'" :style="style.input.text0(item)">
-      {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
-    </div>
-    <div v-if="!item.inputType" :style="style.input.text(item)">
-      {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
-    </div>
-    <div v-if="item.inputType === 'expression'" :style="style.input.text(item)">
-      {{
-        item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue)
-          ? item.hdlExpression(scopeThis, dataBox.fieldsValue)
-          : '&nbsp;'
-      }}
-    </div>
-    <div v-if="item.inputType === 'expression0'" :style="style.input.text0(item)">
-      {{
-        item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue)
-          ? item.hdlExpression(scopeThis, dataBox.fieldsValue)
-          : '&nbsp;'
-      }}
-    </div>
-    <div v-if="item.inputType === 'line'" :style="style.line()"></div>
-
-    <!-- 可编辑 -->
-    <el-input
-      v-if="item.inputType === 'input'"
-      v-model="dataBox.fieldsValue[item.fieldName]"
-      :placeholder="hdlInputPlaceholder()"
-      :style="style.input.input(item)"
-      @input="hdlCannotInput($event)"
-      :show-password="hdlShowPassword()"
-    ></el-input>
-    <el-select
-      v-if="item.inputType === 'select'"
-      class="deep-input"
-      v-model="dataBox.fieldsValue[item.fieldName]"
-      :placeholder="hdlSelectPlaceholder()"
-      filterable
-      :style="style.input.input(item)"
-      @change="hdlSelectChange"
-    >
-      <el-option
-        v-for="(item0, index0) in hdlSelectGetItems()"
-        :label="item0[item.item_fieldLabel]"
-        :value="item0[item.item_fieldValue]"
-        :key="index0"
-      ></el-option>
-    </el-select>
-    <el-date-picker
-      v-if="item.inputType === 'date-picker'"
-      class="deep-input"
-      v-model="dataBox.fieldsValue[item.fieldName]"
-      :type="item.type ? item.type : 'datetime'"
-      :placeholder="hdlDatePickerPlaceholder()"
-      :format="hdlDatePickerFormat()"
-      :style="style.input.input(item)"
-      @change="hdlDateChange"
-    ></el-date-picker>
-    <el-input-number
-      v-if="item.inputType === 'input-number'"
-      v-model="dataBox.fieldsValue[item.fieldName]"
-      :size="style.input.input_number(item).facade.size"
-      :min="'min' in item ? item.min : 1"
-      :max="'max' in item ? item.max : 100"
-      :step="'step' in item ? item.step : 1"
-      :step-strictly="'step_strictly' in item ? item.step_strictly : true"
-    ></el-input-number>
-    <el-switch
-      v-if="item.inputType === 'switch'"
-      v-model="dataBox.fieldsValue[item.fieldName]"
-      :active-text="item.activeText"
-      :inactive-text="item.inactiveText"
-      :active-value="item.activeValue"
-      :inactive-value="item.inactiveValue"
-      :active-color="style.input.el_switch(item).facade.active_color"
-      :disabled="!!('disabled' in item && (item.disabled === true || item.disabled === 'true'))"
-      @change="hdlSwitchChange"
-    ></el-switch>
-    <el-radio-group
-      v-if="item.inputType === 'radio-group'"
-      v-model="dataBox.fieldsValue[item.fieldName]"
-      :disabled="!!item.disabled"
-      @change="hdlRadioGroupChange"
-    >
-      <template v-for="(item0, index0) in item.items" :key="index0">
-        <el-radio :label="item0[item.item_fieldValue]">
-          {{ item0[item.item_fieldLabel] }}
-        </el-radio>
-      </template>
-    </el-radio-group>
-    <div v-if="item.inputType === 'button-group' && item.box && item.box.length > 0">
-      <template v-for="(item0, index0) in item.box" :key="index0">
-        <el-button-group :style="style.input.button_group().group.style">
-          <template v-for="(item1, index1) in item0.box" :key="index1">
-            <el-tooltip
-              :disabled="!item1.tip"
-              :content="item1.tip && item1.tip.content ? item1.tip.content : ''"
-              :placement="item1.tip && item1.tip.placement ? item1.tip.placement : 'bottom'"
-              effect="light"
+    <!-- input-box -->
+    <div :style="style.box(item)">
+        <!-- 只读 -->
+        <div v-if="item.inputType === 'text'" :style="style.text(item, myProps)">
+            {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
+        </div>
+        <div v-if="item.inputType === 'text0'" :style="style.text0(item)">
+            {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
+        </div>
+        <div v-if="!item.inputType" :style="style.text(item, myProps)">
+            {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
+        </div>
+        <div v-if="item.inputType === 'expression'" :style="style.text(item, myProps)">
+            {{
+                item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue)
+                ? item.hdlExpression(scopeThis, dataBox.fieldsValue)
+                : '&nbsp;'
+            }}
+        </div>
+        <div v-if="item.inputType === 'expression0'" :style="style.text0(item)">
+            {{
+                item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue)
+                ? item.hdlExpression(scopeThis, dataBox.fieldsValue)
+                : '&nbsp;'
+            }}
+        </div>
+        <div v-if="item.inputType === 'line'" :style="style.line"></div>
+    
+        <!-- 修改数据 -->
+        <el-input
+            v-if="item.inputType === 'input'"
+            v-model="dataBox.fieldsValue[item.fieldName]"
+            :placeholder="hdlInputPlaceholder()"
+            :style="style.input(item, myProps)"
+            @input="hdlCannotInput($event)"
+            :show-password="hdlShowPassword()"
+        ></el-input>
+        <el-select
+            v-if="item.inputType === 'select'"
+            class="deep-input"
+            v-model="dataBox.fieldsValue[item.fieldName]"
+            :placeholder="hdlSelectPlaceholder()"
+            filterable
+            :style="style.input(item, myProps)"
+            @change="hdlSelectChange"
+        >
+            <el-option
+                v-for="(item0, index0) in hdlSelectGetItems()"
+                :label="item0[item.item_fieldLabel]"
+                :value="item0[item.item_fieldValue]"
+                :key="index0"
+            ></el-option>
+        </el-select>
+        <el-date-picker
+            v-if="item.inputType === 'date-picker'"
+            class="deep-input"
+            v-model="dataBox.fieldsValue[item.fieldName]"
+            :type="item.type ? item.type : 'datetime'"
+            :placeholder="hdlDatePickerPlaceholder()"
+            :format="hdlDatePickerFormat()"
+            :style="style.input(item, myProps)"
+            @change="hdlDateChange"
+        ></el-date-picker>
+        <el-input-number
+            v-if="item.inputType === 'input-number'"
+            v-model="dataBox.fieldsValue[item.fieldName]"
+            :size="style.input_number(item).facade.size"
+            :min="'min' in item ? item.min : 1"
+            :max="'max' in item ? item.max : 100"
+            :step="'step' in item ? item.step : 1"
+            :step-strictly="'step_strictly' in item ? item.step_strictly : true"
+        ></el-input-number>
+        <el-switch
+            v-if="item.inputType === 'switch'"
+            v-model="dataBox.fieldsValue[item.fieldName]"
+            :active-text="item.activeText"
+            :inactive-text="item.inactiveText"
+            :active-value="item.activeValue"
+            :inactive-value="item.inactiveValue"
+            :active-color="style.el_switch(item).facade.active_color"
+            :disabled="!!('disabled' in item && (item.disabled === true || item.disabled === 'true'))"
+            @change="hdlSwitchChange"
+        ></el-switch>
+        <el-radio-group
+            v-if="item.inputType === 'radio-group'"
+            v-model="dataBox.fieldsValue[item.fieldName]"
+            :disabled="!!item.disabled"
+            @change="hdlRadioGroupChange"
+        >
+            <template v-for="(item0, index0) in item.items" :key="index0">
+                <el-radio :label="item0[item.item_fieldValue]">
+                    {{ item0[item.item_fieldLabel] }}
+                </el-radio>
+            </template>
+        </el-radio-group>
+        <div v-if="item.inputType === 'button-group' && item.box && item.box.length > 0">
+            <template v-for="(item0, index0) in item.box" :key="index0">
+                <el-button-group :style="style.button_group().group.style">
+                    <template v-for="(item1, index1) in item0.box" :key="index1">
+                        <el-tooltip
+                            :disabled="!item1.tip"
+                            :content="item1.tip && item1.tip.content ? item1.tip.content : ''"
+                            :placement="item1.tip && item1.tip.placement ? item1.tip.placement : 'bottom'"
+                            effect="light"
+                        >
+                            <el-button
+                                :style="style.button_group(item, item0, item1).button.style"
+                                :icon="style.button_group(item, item0, item1).button.icon"
+                                :type="style.button_group(item, item0, item1).button.facade.type"
+                                :size="style.button_group(item, item0, item1).button.facade.size"
+                                :plain="style.button_group(item, item0, item1).button.facade.plain"
+                                :round="style.button_group(item, item0, item1).button.facade.round"
+                                :circle="style.button_group(item, item0, item1).button.facade.circle"
+                                @click="item1.hdlClick ? item1.hdlClick(scopeThis) : null"
+                                :key="index1"
+                            >
+                                <span v-if="item1.text">{{ item1.text }}</span>
+                            </el-button>
+                        </el-tooltip>
+                    </template>
+                </el-button-group>
+            </template>
+        </div>
+    
+        <!-- 图片&富文本&视频 -->
+        <!-- 图片 -->
+        <div v-if="item.inputType === 'image'">
+            <div>
+                <el-image
+                    :style="style.image(item, myProps)"
+                    :src="hdlImageSrc()"
+                    :preview-src-list="[hdlImageSrc()]"
+                    :preview-teleported="true"
+                    :hide-on-click-modal="true"
+                ></el-image>
+            </div>
+            <!-- 设置了图片删除功能，同时图片不为空 -->
+            <div v-if="!!item.imageDelete && !!dataBox.fieldsValue[item.fieldName]">
+                <el-button
+                    size="small"
+                    :icon="!dataBox.fieldsValue[item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
+                    @click="hdlImageDelete"
+                >{{ !!dataBox.fieldsValue[item.imageDelete] ? '图片已删除，恢复' : '删除' }}</el-button>
+            </div>
+        </div>
+        <!-- 多个图片 -->
+        <div v-if="item.inputType === 'images'">
+            <div
+                v-for="(itemImages, indexImages) in dataBox.fieldsValue[item.fieldName]"
+                :key="indexImages"
+                :style="style.images(item, myProps).itemBox"
             >
-              <el-button
-                :style="style.input.button_group(item, item0, item1).button.style"
-                :icon="style.input.button_group(item, item0, item1).button.icon"
-                :type="style.input.button_group(item, item0, item1).button.facade.type"
-                :size="style.input.button_group(item, item0, item1).button.facade.size"
-                :plain="style.input.button_group(item, item0, item1).button.facade.plain"
-                :round="style.input.button_group(item, item0, item1).button.facade.round"
-                :circle="style.input.button_group(item, item0, item1).button.facade.circle"
-                @click="item1.hdlClick ? item1.hdlClick(scopeThis) : null"
-                :key="index1"
-              >
-                <span v-if="item1.text">{{ item1.text }}</span>
-              </el-button>
-            </el-tooltip>
-          </template>
-        </el-button-group>
-      </template>
-    </div>
-
-    <!-- 图片&富文本&视频 -->
-    <!-- 图片 -->
-    <div v-if="item.inputType === 'image'">
-      <div>
-        <el-image
-          :style="style.input.image(item).imageStyle"
-          :src="hdlImageSrc()"
-          :preview-src-list="[hdlImageSrc()]"
-          :preview-teleported="true"
-          :hide-on-click-modal="true"
-        ></el-image>
-      </div>
-      <!-- 设置了图片删除功能，同时图片不为空 -->
-      <div v-if="!!item.imageDelete && !!dataBox.fieldsValue[item.fieldName]">
-        <el-button
-          size="small"
-          :icon="!dataBox.fieldsValue[item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
-          @click="hdlImageDelete"
-          >{{ !!dataBox.fieldsValue[item.imageDelete] ? '图片已删除，恢复' : '删除' }}</el-button
-        >
-      </div>
-    </div>
-    <!-- 多个图片 -->
-    <div v-if="item.inputType === 'images'">
-      <div
-        v-for="(itemImages, indexImages) in dataBox.fieldsValue[item.fieldName]"
-        :key="indexImages"
-        :style="style.input.images().imageBox"
-      >
-        <div>
-          <el-image
-            :style="style.input.images(item).imageStyle"
-            :src="hdlImagesSrc(itemImages, indexImages)"
-            :preview-src-list="hdlImagesShow()"
-          ></el-image>
+                <div>
+                    <el-image
+                        :style="style.images(item, myProps).itemThumb"
+                        :src="hdlImagesSrc(itemImages, indexImages)"
+                        :preview-src-list="hdlImagesShow()"
+                    ></el-image>
+                </div>
+                <div v-if="!!item.imageDelete">
+                    <el-button
+                        size="small"
+                        icon="el-icon-delete"
+                        @click="hdlImagesDelete(itemImages, indexImages)"
+                    >{{
+                        dataBox.fieldsValue[item.imageDelete].includes(itemImages) ? '恢复' : '删除'
+                    }}</el-button>
+                </div>
+            </div>
         </div>
-        <div v-if="!!item.imageDelete">
-          <el-button
-            size="small"
-            icon="el-icon-delete"
-            @click="hdlImagesDelete(itemImages, indexImages)"
-            >{{
-              dataBox.fieldsValue[item.imageDelete].includes(itemImages) ? '恢复' : '删除'
-            }}</el-button
-          >
+        <!-- 富文本 -->
+        <div v-if="item.inputType === 'richtext'" :style="style.richtext(item, myProps)">
+            <compRichtext
+                ref="text"
+                v-model="dataBox.fieldsValue[item.fieldName]"
+                :options="hdlRichtextOptions()"
+            />
         </div>
-      </div>
+        <!-- 富文本show -->
+        <div v-if="item.inputType === 'richtextShow'">
+            <div v-html="dataBox.fieldsValue[item.fieldName]"></div>
+        </div>
+        <!-- 视频 -->
+        <div v-if="item.inputType === 'video'">
+            <div>
+                <video
+                    :width="style.video(item, myProps).width"
+                    :height="style.video(item, myProps).height"
+                    controls
+                    :poster="hdlVideoPoster()"
+                >
+                    <source :src="hdlVideoSrc()" type="video/mp4" />
+                    <!-- MP4/H.264/AAC - 最广泛支持 -->
+                    <source :src="hdlVideoSrc()" type="video/webm" />
+                    <!-- WebM/VP9/Opus - 开源格式，支持良好 -->
+                    <source :src="hdlVideoSrc()" type="video/ogg" />
+                    <!-- Ogg/Theora/Vorbis - 较旧的开源格式 -->
+                </video>
+            </div>
+            <!-- 设置了视频删除功能，同时视频不为空 -->
+            <div v-if="!!item.videoDelete && !!dataBox.fieldsValue[item.fieldName]">
+                <el-button
+                    size="small"
+                    :icon="!dataBox.fieldsValue[item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
+                    @click="hdlVideoDelete"
+                >{{ !!dataBox.fieldsValue[item.videoDelete] ? '视频已删除，恢复' : '删除' }}</el-button>
+            </div>
+        </div>
+    
+        <!-- 上传及下载 -->
+        <!-- 下载 -->
+        <div v-if="item.inputType === 'download'">
+            <a
+                v-if="dataBox.fieldsValue[item.fieldName]"
+                :style="style.download.style"
+                :href="dataBox.srcPrefix + hdlDownloadSrc()"
+                :download="hdlDownloadFileName()"
+            >
+                <span>{{ hdlDownloadLabel() }}</span>
+            </a>
+            <span v-else :style="style.download.none">{{ hdlDownloadLabel() }}</span>
+        </div>
+        <!-- 上传多个文件 -->
+        <div v-if="item.inputType === 'upload'">
+          <ly0Upload
+            :myProps="uploadProps"
+            @getUploadResult="hdlGetUploadResult"
+          ></ly0Upload>
+        </div>
+        <!-- 拖拽上传 -->
+        <div v-if="item.inputType === 'upload-drag'">
+          <ly0Upload_drag
+            :myProps="uploadProps"
+            @getUploadResult="hdlGetUploadResult"
+          ></ly0Upload_drag>
+        </div>
+        <!-- 图片列表 -->
+        <div v-if="item.inputType === 'upload-picture'">
+          <ly0Upload_picture
+              :myProps="uploadProps_image"
+              @getUploadResult="hdlGetUploadResult"
+          ></ly0Upload_picture>
+        </div>
+        <!-- 图片墙 -->
+        <div v-if="item.inputType === 'upload-picture-card'">
+          <ly0Upload_pictureCard
+            :myProps="uploadProps_image"
+            @getUploadResult="hdlGetUploadResult"
+          ></ly0Upload_pictureCard>
+        </div>
+        <!-- 头像 -->
+        <div v-if="item.inputType === 'upload-avatar'">
+          <ly0Upload_avatar
+            :myProps="uploadProps_image"
+            @getUploadResult="hdlGetUploadResult"
+          ></ly0Upload_avatar>
+        </div>
+        <!-- 车牌识别 -->
+        <div v-if="item.inputType === 'upload-carplate'">
+          <ly0Upload_carplate
+            :myProps="uploadProps_carplate"
+            @getUploadResult="hdlGetUploadResultCarplate"
+          ></ly0Upload_carplate>
+        </div>
+    
+        <!-- 行政区划 -->
+        <div v-if="item.inputType === 'd3gbt2260'">
+          <compD3gbt2260
+            :myProps="{
+              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '',
+              readOnly: item.readOnly,
+            }"
+            @getValue="hdlD3gbt2260getValue"
+          ></compD3gbt2260>
+        </div>
+    
+        <!-- 商品缩略图 -->
+        <div v-if="item.inputType === 'd7thumb'">
+          <compD7thumb
+            :myProps="{
+              value: {
+                thumb: dataBox.fieldsValue[item.fieldName.thumb],
+                name: dataBox.fieldsValue[item.fieldName.name],
+              },
+              readOnly: item.readOnly,
+            }"
+            @getValue="hdlD7thumbGetValue"
+          ></compD7thumb>
+        </div>
+        <!-- 商品分类 -->
+        <div v-if="item.inputType === 'd7group'">
+          <compD7group
+            :myProps="{
+              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+              readOnly: item.readOnly,
+            }"
+            @getValue="hdlD7groupGetValue"
+          ></compD7group>
+        </div>
+        <!-- 商品规格 -->
+        <div v-if="item.inputType === 'd7size'">
+          <compD7size
+            :myProps="{
+              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+              readOnly: item.readOnly,
+            }"
+            @getValue="hdlD7sizeGetValue"
+          ></compD7size>
+        </div>
+        <!-- 商品标价 -->
+        <div v-if="item.inputType === 'd7price'">
+          <compD7price
+            :myProps="{
+              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+              readOnly: item.readOnly,
+            }"
+            @getValue="hdlD7priceGetValue"
+          ></compD7price>
+        </div>
+        <!-- 邮寄地址 -->
+        <div v-if="item.inputType === 'd7postal'">
+          <compD7postal
+            :myProps="{
+              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+              readOnly: item.readOnly,
+            }"
+            @getValue="hdlD7postalGetValue"
+          ></compD7postal>
+        </div>
     </div>
-    <!-- 富文本 -->
-    <div v-if="item.inputType === 'richtext'" :style="style.input.rich_text(item)">
-      <compRichtext
-        ref="text"
-        v-model="dataBox.fieldsValue[item.fieldName]"
-        :options="hdlRichtextOptions()"
-      />
-    </div>
-    <!-- 富文本show -->
-    <div v-if="item.inputType === 'richtextShow'">
-      <div v-html="dataBox.fieldsValue[item.fieldName]"></div>
-    </div>
-    <!-- 视频 -->
-    <div v-if="item.inputType === 'video'">
-      <div>
-        <video
-          :width="style.input.video(item).width"
-          :height="style.input.video(item).height"
-          controls
-          :poster="hdlVideoPoster()"
-        >
-          <source :src="hdlVideoSrc()" type="video/mp4" />
-          <!-- MP4/H.264/AAC - 最广泛支持 -->
-          <source :src="hdlVideoSrc()" type="video/webm" />
-          <!-- WebM/VP9/Opus - 开源格式，支持良好 -->
-          <source :src="hdlVideoSrc()" type="video/ogg" />
-          <!-- Ogg/Theora/Vorbis - 较旧的开源格式 -->
-        </video>
-      </div>
-      <!-- 设置了视频删除功能，同时视频不为空 -->
-      <div v-if="!!item.videoDelete && !!dataBox.fieldsValue[item.fieldName]">
-        <el-button
-          size="small"
-          :icon="!dataBox.fieldsValue[item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
-          @click="hdlVideoDelete"
-          >{{ !!dataBox.fieldsValue[item.videoDelete] ? '视频已删除，恢复' : '删除' }}</el-button
-        >
-      </div>
-    </div>
-
-    <!-- 上传及下载 -->
-    <!-- 下载 -->
-    <div v-if="item.inputType === 'download'">
-      <a
-        v-if="dataBox.fieldsValue[item.fieldName]"
-        :style="style.input.download().style"
-        :href="dataBox.srcPrefix + hdlDownloadSrc()"
-        :download="hdlDownloadFileName()"
-      >
-        <span>{{ hdlDownloadLabel() }}</span>
-      </a>
-      <span v-else :style="style.input.download().none">{{ hdlDownloadLabel() }}</span>
-    </div>
-    <!-- 上传多个文件 -->
-    <div v-if="item.inputType === 'upload'">
-      <ly0Upload
-        :myProps="uploadProps"
-        @getUploadResult="hdlGetUploadResult"
-      ></ly0Upload>
-    </div>
-    <!-- 拖拽上传 -->
-    <div v-if="item.inputType === 'upload-drag'">
-      <ly0Upload_drag
-        :myProps="uploadProps"
-        @getUploadResult="hdlGetUploadResult"
-      ></ly0Upload_drag>
-    </div>
-    <!-- 图片列表 -->
-    <div v-if="item.inputType === 'upload-picture'">
-      <ly0Upload_picture
-          :myProps="uploadProps_image"
-          @getUploadResult="hdlGetUploadResult"
-      ></ly0Upload_picture>
-    </div>
-    <!-- 图片墙 -->
-    <div v-if="item.inputType === 'upload-picture-card'">
-      <ly0Upload_pictureCard
-        :myProps="uploadProps_image"
-        @getUploadResult="hdlGetUploadResult"
-      ></ly0Upload_pictureCard>
-    </div>
-    <!-- 头像 -->
-    <div v-if="item.inputType === 'upload-avatar'">
-      <ly0Upload_avatar
-        :myProps="uploadProps_image"
-        @getUploadResult="hdlGetUploadResult"
-      ></ly0Upload_avatar>
-    </div>
-    <!-- 车牌识别 -->
-    <div v-if="item.inputType === 'upload-carplate'">
-      <ly0Upload_carplate
-        :myProps="uploadProps_carplate"
-        @getUploadResult="hdlGetUploadResultCarplate"
-      ></ly0Upload_carplate>
-    </div>
-
-    <!-- 行政区划 -->
-    <div v-if="item.inputType === 'd3gbt2260'">
-      <compD3gbt2260
-        :myProps="{
-          value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '',
-          readOnly: item.readOnly,
-        }"
-        @getValue="hdlD3gbt2260getValue"
-      ></compD3gbt2260>
-    </div>
-
-    <!-- 商品缩略图 -->
-    <div v-if="item.inputType === 'd7thumb'">
-      <compD7thumb
-        :myProps="{
-          value: {
-            thumb: dataBox.fieldsValue[item.fieldName.thumb],
-            name: dataBox.fieldsValue[item.fieldName.name],
-          },
-          readOnly: item.readOnly,
-        }"
-        @getValue="hdlD7thumbGetValue"
-      ></compD7thumb>
-    </div>
-    <!-- 商品分类 -->
-    <div v-if="item.inputType === 'd7group'">
-      <compD7group
-        :myProps="{
-          value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-          readOnly: item.readOnly,
-        }"
-        @getValue="hdlD7groupGetValue"
-      ></compD7group>
-    </div>
-    <!-- 商品规格 -->
-    <div v-if="item.inputType === 'd7size'">
-      <compD7size
-        :myProps="{
-          value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-          readOnly: item.readOnly,
-        }"
-        @getValue="hdlD7sizeGetValue"
-      ></compD7size>
-    </div>
-    <!-- 商品标价 -->
-    <div v-if="item.inputType === 'd7price'">
-      <compD7price
-        :myProps="{
-          value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-          readOnly: item.readOnly,
-        }"
-        @getValue="hdlD7priceGetValue"
-      ></compD7price>
-    </div>
-    <!-- 邮寄地址 -->
-    <div v-if="item.inputType === 'd7postal'">
-      <compD7postal
-        :myProps="{
-          value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-          readOnly: item.readOnly,
-        }"
-        @getValue="hdlD7postalGetValue"
-      ></compD7postal>
-    </div>
-  </div>
 </template>
 
-<script>
+<script setup>
+import {ref, computed} from "vue";
+import styleModule from './style.js'
+
 // 引入富文本组件及样式
 import { QuillEditor as compRichtext } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.core.css'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import '@vueup/vue-quill/dist/vue-quill.bubble.css'
+
+const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
+
+const style = {
+    box: styleModule.input.box,
+    text: styleModule.input.text,
+    text0: styleModule.input.text0,
+    line: computed(()=>styleModule.line()),
+    input: styleModule.input.input,
+    input_number: styleModule.input.input_number,
+    el_switch: styleModule.input.el_switch,
+    button_group: styleModule.input.button_group,
+    image: styleModule.input.image,
+    images: styleModule.input.images,
+    richtext: styleModule.input.richtext,
+    video: styleModule.input.video,
+    download: computed(()=>styleModule.input.download()),
+}
 
 // 引入行政区划组件
 import compD3gbt2260 from '../../ly0/d3/gbt2260/Index.vue'
@@ -354,11 +372,8 @@ import compD7price from '../../ly0/d7/price/Index.vue'
 // 引入邮寄地址组件
 import compD7postal from '../../ly0/d7/postal/Index.vue'
 
-import style from './style.js'
-import ly0default from './default' // 默认值
 
 export default {
-    props: ['scopeThis', 'formProps', 'dataBox', 'item'],
     components: {
         compRichtext,
         compD3gbt2260,

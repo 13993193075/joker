@@ -1,61 +1,93 @@
-import label from "./style-label.js"
-import input from "./style-input.js"
+// 样式函数
 
-// 表单区域可以分为多个列
-function root_box(){
-    return "display: flex; justify-content: space-around;"
-}
-
-// 没有field-label, field-value独占一行
-function no_field_label(fieldItem){
-    let result = 1
-    if(!fieldItem.label){
-        result = 2
-    }
-    return result
-}
+import label from "./style-label.js";
+import input from "./style-input.js";
 
 // 折叠面板
 function collapse(){
     return {
-        style: "margin-bottom: 10px;",
-        table: "text-align: center; width: 100%;"
+        style: {
+            'margin-bottom': '10px'
+        },
+        table: {
+            'text-align': 'center',
+            width: '100%'
+        }
     }
 }
 
 // 字段盒子
 function field_box(){
     return {
-        left: "padding: 10px;",
-        right: "padding: 10px;"
+        left: {
+            padding: "10px"
+        },
+        right: {
+            padding: "10px"
+        }
     }
 }
 
 // 行际分割线
 function line(){
-    return "height: 1px; background-color: #bdbdbd;"
+    return {
+        height: '1px',
+        'background-color': '#bdbdbd'
+    }
 }
+
+// 没有field-label, field-value独占一行（field-box）
+function no_field_label(item){
+    let result = 1
+    if(!item.label){
+        result = 2
+    }
+    return result
+}
+
+// 表单区域可以分为多个列
+const root_box = () => {
+    return {
+        display: 'flex',
+        'justify-content': 'space-around'
+    };
+};
 
 // 提交区域
 function submit_box(){
     return {
-        style: "text-align: left;",
+        style: {
+            'text-align': 'left'
+        },
         button: {
-            style: "margin-top: 10px;",
+            style: {
+                'margin-top': '10px'
+            },
             facade: {
-                type: "danger",
+                type: 'danger',
                 plain: true
             }
         }
     }
 }
 
-export default {
-    root_box,
-    no_field_label,
+export {
     collapse,
     field_box,
     line,
+    no_field_label,
+    root_box,
+    submit_box,
+
+    label,
+    input
+}
+export default {
+    collapse,
+    field_box,
+    line,
+    no_field_label,
+    root_box,
     submit_box,
 
     label,

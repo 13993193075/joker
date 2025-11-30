@@ -3,12 +3,40 @@
 export default {
     myProps: {
         popup: {
-            popup: false,
             visible: false,
             title: '',
             width: '800px',
             top: '15vh'
-        }
+        },
+        menu: {
+            mode: 'horizontal',
+            menu: []
+        },
+        inputWidth: '200px',
+        imageWidth: '400px',
+        imageHeight: '300px',
+        thumbWidth: '40px',
+        thumbHeight: '30px',
+        richtextEditorWidth: '500px', // 富文本编辑器宽度
+        videoWidth: '400px',
+        videoHeight: '300px',
+        cols: [
+            {
+                items: [
+                    {
+                        inputType: 'collapse',
+                        accordion: false, // 手风琴模式
+                        activeNames: '', // 当前活动的面板名称
+                        items: [
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    dataBox: {
+        fieldsValue: {},
+        hdlSubmit(scopeThis, fieldsValue){}
     },
 
 
