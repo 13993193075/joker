@@ -17,9 +17,23 @@ export default {
         imageHeight: '300px',
         thumbWidth: '40px',
         thumbHeight: '30px',
-        richtextEditorWidth: '500px', // 富文本编辑器宽度
         videoWidth: '400px',
         videoHeight: '300px',
+        placeholder: {
+            input: '请输入',
+            select: '请选择',
+            datetime: '请选择时间',
+            date: '请选择日期'
+        },
+        richtext: {
+            editorWidth: '500px', // 富文本编辑器宽度
+            size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
+        },
+        download: { // 行内下载
+            fileName: 'new-file', // 下载文件名
+            downloadLabel: '点击这里下载', // 下载标签
+            downloadLabelNoSrc: '没有可供下载的资源', // 下载标签
+        },
         cols: [
             {
                 items: [
@@ -37,23 +51,5 @@ export default {
     dataBox: {
         fieldsValue: {},
         hdlSubmit(scopeThis, fieldsValue){}
-    },
-
-
-
-
-    placeholder: {
-        input: "请输入",
-        select: "请选择",
-        datetime: "请选择时间",
-        date: "请选择日期"
-    },
-    richtext: {
-        size: 200 // 可上传的图片大小，单位为Kb, 1M = 1024Kb
-    },
-    download: { // 行内下载
-        fileName: "new-file", // 下载文件名
-        downloadLabel: "点击这里下载", // 下载标签
-        downloadLabelNoSrc: "没有可供下载的资源", // 下载标签
-    },
+    }
 }

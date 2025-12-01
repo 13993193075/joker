@@ -31,22 +31,22 @@
         <el-input
             v-if="item.inputType === 'input'"
             v-model="dataBox.fieldsValue[item.fieldName]"
-            :placeholder="hdlInputPlaceholder()"
+            :placeholder="placeholder.input"
             :style="style.input(item, myProps)"
-            @input="hdlCannotInput($event)"
-            :show-password="hdlShowPassword()"
+            @input="input.hdlCannotInput"
+            :show-password="input.showPassword"
         ></el-input>
         <el-select
             v-if="item.inputType === 'select'"
             class="deep-input"
             v-model="dataBox.fieldsValue[item.fieldName]"
-            :placeholder="hdlSelectPlaceholder()"
+            :placeholder="select.placeholder"
             filterable
             :style="style.input(item, myProps)"
-            @change="hdlSelectChange"
+            @change="select.hdlChange"
         >
             <el-option
-                v-for="(item0, index0) in hdlSelectGetItems()"
+                v-for="(item0, index0) in select.items"
                 :label="item0[item.item_fieldLabel]"
                 :value="item0[item.item_fieldValue]"
                 :key="index0"
@@ -57,10 +57,10 @@
             class="deep-input"
             v-model="dataBox.fieldsValue[item.fieldName]"
             :type="item.type ? item.type : 'datetime'"
-            :placeholder="hdlDatePickerPlaceholder()"
-            :format="hdlDatePickerFormat()"
+            :placeholder="datePicker.placeholder"
+            :format="datePicker.format"
             :style="style.input(item, myProps)"
-            @change="hdlDateChange"
+            @change="datePicker.hdlChange"
         ></el-date-picker>
         <el-input-number
             v-if="item.inputType === 'input-number'"
@@ -80,13 +80,13 @@
             :inactive-value="item.inactiveValue"
             :active-color="style.el_switch(item).facade.active_color"
             :disabled="!!('disabled' in item && (item.disabled === true || item.disabled === 'true'))"
-            @change="hdlSwitchChange"
+            @change="ly0switch.hdlChange"
         ></el-switch>
         <el-radio-group
             v-if="item.inputType === 'radio-group'"
             v-model="dataBox.fieldsValue[item.fieldName]"
             :disabled="!!item.disabled"
-            @change="hdlRadioGroupChange"
+            @change="radioGroup.hdlChange"
         >
             <template v-for="(item0, index0) in item.items" :key="index0">
                 <el-radio :label="item0[item.item_fieldValue]">
@@ -129,8 +129,8 @@
             <div>
                 <el-image
                     :style="style.image(item, myProps)"
-                    :src="hdlImageSrc()"
-                    :preview-src-list="[hdlImageSrc()]"
+                    :src="image.getSrc"
+                    :preview-src-list="[image.getSrc]"
                     :preview-teleported="true"
                     :hide-on-click-modal="true"
                 ></el-image>
@@ -140,8 +140,8 @@
                 <el-button
                     size="small"
                     :icon="!dataBox.fieldsValue[item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
-                    @click="hdlImageDelete"
-                >{{ !!dataBox.fieldsValue[item.imageDelete] ? '图片已删除，恢复' : '删除' }}</el-button>
+                    @click="image.delete"
+                >{{ dataBox.fieldsValue[item.imageDelete] ? '图片已删除，恢复' : '删除' }}</el-button>
             </div>
         </div>
         <!-- 多个图片 -->
@@ -154,15 +154,15 @@
                 <div>
                     <el-image
                         :style="style.images(item, myProps).itemThumb"
-                        :src="hdlImagesSrc(itemImages, indexImages)"
-                        :preview-src-list="hdlImagesShow()"
+                        :src="images.getSrc(itemImages, indexImages)"
+                        :preview-src-list="images.show"
                     ></el-image>
                 </div>
                 <div v-if="!!item.imageDelete">
                     <el-button
                         size="small"
                         icon="el-icon-delete"
-                        @click="hdlImagesDelete(itemImages, indexImages)"
+                        @click="images.delete(itemImages, indexImages)"
                     >{{
                         dataBox.fieldsValue[item.imageDelete].includes(itemImages) ? '恢复' : '删除'
                     }}</el-button>
@@ -174,7 +174,7 @@
             <compRichtext
                 ref="text"
                 v-model="dataBox.fieldsValue[item.fieldName]"
-                :options="hdlRichtextOptions()"
+                :options="richtext.options"
             />
         </div>
         <!-- 富文本show -->
@@ -188,13 +188,13 @@
                     :width="style.video(item, myProps).width"
                     :height="style.video(item, myProps).height"
                     controls
-                    :poster="hdlVideoPoster()"
+                    :poster="video.poster"
                 >
-                    <source :src="hdlVideoSrc()" type="video/mp4" />
+                    <source :src="video.src" type="video/mp4" />
                     <!-- MP4/H.264/AAC - 最广泛支持 -->
-                    <source :src="hdlVideoSrc()" type="video/webm" />
+                    <source :src="video.src" type="video/webm" />
                     <!-- WebM/VP9/Opus - 开源格式，支持良好 -->
-                    <source :src="hdlVideoSrc()" type="video/ogg" />
+                    <source :src="video.src" type="video/ogg" />
                     <!-- Ogg/Theora/Vorbis - 较旧的开源格式 -->
                 </video>
             </div>
@@ -203,7 +203,7 @@
                 <el-button
                     size="small"
                     :icon="!dataBox.fieldsValue[item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
-                    @click="hdlVideoDelete"
+                    @click="video.delete"
                 >{{ !!dataBox.fieldsValue[item.videoDelete] ? '视频已删除，恢复' : '删除' }}</el-button>
             </div>
         </div>
@@ -214,53 +214,53 @@
             <a
                 v-if="dataBox.fieldsValue[item.fieldName]"
                 :style="style.download.style"
-                :href="dataBox.srcPrefix + hdlDownloadSrc()"
-                :download="hdlDownloadFileName()"
+                :href="download.downloadSrc"
+                :download="download.fileName"
             >
-                <span>{{ hdlDownloadLabel() }}</span>
+                <span>{{ download.downloadLabel }}</span>
             </a>
-            <span v-else :style="style.download.none">{{ hdlDownloadLabel() }}</span>
+            <span v-else :style="style.download.none">{{ download.downloadLabel }}</span>
         </div>
         <!-- 上传多个文件 -->
         <div v-if="item.inputType === 'upload'">
-          <ly0Upload
-            :myProps="uploadProps"
-            @getUploadResult="hdlGetUploadResult"
-          ></ly0Upload>
+            <ly0Upload
+                :myProps="upload.props.val"
+                @getUploadResult="upload.getResult.hdl"
+            ></ly0Upload>
         </div>
         <!-- 拖拽上传 -->
         <div v-if="item.inputType === 'upload-drag'">
           <ly0Upload_drag
-            :myProps="uploadProps"
-            @getUploadResult="hdlGetUploadResult"
+            :myProps="upload.props.val"
+            @getUploadResult="upload.getResult.hdl"
           ></ly0Upload_drag>
         </div>
         <!-- 图片列表 -->
         <div v-if="item.inputType === 'upload-picture'">
           <ly0Upload_picture
-              :myProps="uploadProps_image"
-              @getUploadResult="hdlGetUploadResult"
+              :myProps="upload.props.val"
+              @getUploadResult="upload.getResult.hdl"
           ></ly0Upload_picture>
         </div>
         <!-- 图片墙 -->
         <div v-if="item.inputType === 'upload-picture-card'">
           <ly0Upload_pictureCard
-            :myProps="uploadProps_image"
-            @getUploadResult="hdlGetUploadResult"
+            :myProps="upload.props.val"
+            @getUploadResult="upload.getResult.hdl"
           ></ly0Upload_pictureCard>
         </div>
         <!-- 头像 -->
         <div v-if="item.inputType === 'upload-avatar'">
           <ly0Upload_avatar
-            :myProps="uploadProps_image"
-            @getUploadResult="hdlGetUploadResult"
+            :myProps="upload.props.val"
+            @getUploadResult="upload.getResult.hdl"
           ></ly0Upload_avatar>
         </div>
         <!-- 车牌识别 -->
         <div v-if="item.inputType === 'upload-carplate'">
           <ly0Upload_carplate
-            :myProps="uploadProps_carplate"
-            @getUploadResult="hdlGetUploadResultCarplate"
+            :myProps="upload.props.val_carplate"
+            @getUploadResult="upload.getResult.hdl_carplate"
           ></ly0Upload_carplate>
         </div>
     
@@ -332,7 +332,7 @@
 </template>
 
 <script setup>
-import {ref, computed} from "vue";
+import {ref, computed, reactive} from "vue";
 import styleModule from './style.js'
 
 // 引入富文本组件及样式
@@ -342,6 +342,257 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import '@vueup/vue-quill/dist/vue-quill.bubble.css'
 
 const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
+
+const input = {
+    placeholder: computed(() => () => {
+        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.input
+    }),
+    showPassword: computed(()=>()=>{
+        return !!this.item.showPassword
+    }),
+    hdlCannotInput: event => { // 解决偶发不能输入的问题
+        props.dataBox.fieldsValue[props.item.fieldName] = event.target.value
+    }
+}
+
+const select = {
+    placeholder: computed(() => () => {
+        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.select
+    }),
+    items: computed(()=>()=>{
+        if (props.item.items) {
+            return props.item.items
+        } else if (props.item.hdlGetItems) {
+            return props.item.hdlGetItems(props.scopeThis)
+        }
+    }),
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.scopeThis, value)
+        }
+    }
+}
+
+const datePicker = {
+    placeholder: computed(()=> () => {
+        if (props.item.placeholder) {
+            return props.item.placeholder
+        }
+        if (props.item.type === 'datetime') {
+            return props.myProps.placeholder.datetime
+        }
+        if (this.item.type === 'date') {
+            return props.myProps.placeholder.date
+        }
+        return props.myProps.placeholder.datetime
+    }),
+    format: computed(() => () => {
+        if (props.item.format) {
+            return props.item.format
+        }
+        if (props.item.type === 'datetime') {
+            return 'YYYY/MM/DD HH:mm'
+        }
+        if (props.item.type === 'date') {
+            return 'YYYY/MM/DD'
+        }
+        return 'YYYY/MM/DD HH:mm'
+    }),
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.scopeThis, value)
+        }
+    }
+}
+
+const ly0switch = {
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.scopeThis, value)
+        }
+    }
+}
+
+const radioGroup = {
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.scopeThis, value)
+        }
+    }
+}
+
+const image = {
+    getSrc: computed(() => () => {
+        if (
+            props.item.imageDelete &&
+            props.dataBox.fieldsValue[props.item.imageDelete] &&
+            (props.dataBox.fieldsValue[props.item.imageDelete] === true ||
+                props.dataBox.fieldsValue[props.item.imageDelete] === 'true') // 图片已删除
+        ) {
+            return ''
+        }
+        if (props.dataBox.fieldsValue[this.item.fieldName]) {
+            return props.dataBox.fieldsValue[this.item.fieldName]
+        }
+        return ''
+    }),
+    delete: ()=>{
+        props.dataBox.fieldsValue[props.item.imageDelete] =
+            !props.dataBox.fieldsValue[props.item.imageDelete]
+    }
+}
+
+const images = {
+    getSrc: (itemImages, indexImages) => {
+        if (
+            !props.item.imageDelete ||
+            !props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)
+        ) {
+            return itemImages
+        }
+        return ''
+    },
+    delete: (itemImages, indexImages) => {
+        if (!props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)) {
+            props.dataBox.fieldsValue[props.item.imageDelete].push(itemImages)
+            return
+        }
+        
+        props.dataBox.fieldsValue[props.item.imageDelete] = props.dataBox.fieldsValue[
+            props.item.imageDelete
+            ].filter(i => {
+            return i !== itemImages
+        })
+    },
+    show: computed(()=>()=>{
+        let result = []
+        if (!props.item.imageDelete) {
+            props.dataBox.fieldsValue[props.item.fieldName].forEach(i => {
+                result.push(i)
+            })
+        } else {
+            props.dataBox.fieldsValue[props.item.fieldName]
+                .filter(i => {
+                    return !this.dataBox.fieldsValue[this.item.imageDelete].includes(i)
+                })
+                .forEach(i => {
+                    result.push(i)
+                })
+        }
+        return result
+    })
+}
+
+const richtext = {
+    options: computed(()=>()=>{
+        return {
+            action: props.dataBox.upload, // 必填参数 图片上传地址
+            methods: 'post', // 必填参数 图片上传方式
+            // token: '' // 可选参数 如果需要token验证，假设你的token有存放在session-storage
+            name: 'upload_file', // 必填参数 文件的参数名
+            size: props.myProps.richtext.size, // 可选参数  可上传的图片大小，单位为Kb, 1M = 1024Kb
+            // accept: 'multipart/form-data, image/png, image/gif, image/jpeg, image/bmp, image/x-icon,image/jpg' // 可选参数 可上传的图片格式
+        }
+    })
+}
+
+const video = {
+    src: computed(()=>()=>{
+        if (
+            props.item.videoDelete &&
+            props.dataBox.fieldsValue[props.item.videoDelete] &&
+            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
+                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+        ) {
+            return ''
+        }
+        if (props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.dataBox.fieldsValue[props.item.fieldName]
+        }
+        return ''
+    }),
+    poster: computed(()=>()=>{
+        if (
+            props.item.videoDelete &&
+            props.dataBox.fieldsValue[props.item.videoDelete] &&
+            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
+                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+        ) {
+            return ''
+        }
+        if (props.dataBox.fieldsValue[props.item.poster]) {
+            return props.dataBox.fieldsValue[props.item.poster]
+        }
+        return ''
+    }),
+    delete: ()=>{
+        props.dataBox.fieldsValue[props.item.videoDelete] =
+            !props.dataBox.fieldsValue[props.item.videoDelete]
+    },
+}
+
+const download = {
+    fileName: computed(() => () => {
+        if (props.item.downloadFileName) {
+            return props.item.downloadFileName
+        }
+        return props.myProps.download.fileName
+    }),
+    downloadLabel: computed(() => () => {
+        if (!props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.myProps.download.downloadLabelNoSrc
+        }
+        if (props.item.hdlGetDownloadLabel) {
+            return props.item.hdlGetDownloadLabel(props.scopeThis, props.item)
+        }
+        return props.myProps.download.downloadLabel
+    }),
+    downloadSrc: computed(() => () => {
+        if (props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.dataBox.fieldsValue[props.item.fieldName]
+        }
+        return ''
+    })
+}
+
+const upload = {
+    props: {
+        val: computed(()=>{return {
+            uploadUrl: props.dataBox.upload
+        }}),
+        val_carplate: computed(()=>{return {
+            uploadUrl: props.dataBox.upload_carplate
+        }})
+    },
+    getResult: {
+        hdl: result => {
+            // 可以获取多个文件上传结果
+            console.log('文件上传结果：', result.fileList)
+            if ('limit' in props.item && props.item.limit > 1) {
+                // 接收多个文件
+                // eslint-disable-next-line
+                props.dataBox.fieldsValue[props.item.fieldName] = []
+                result.fileList.forEach((i) => {
+                    // eslint-disable-next-line
+                    props.dataBox.fieldsValue[props.item.fieldName].push(i.src)
+                })
+            } else {
+                // 只接收一个文件
+                // eslint-disable-next-line
+                props.dataBox.fieldsValue[props.item.fieldName] =
+                    result.fileList.length === 0 ? '' : result.fileList[0].src
+            }
+        },
+        hdl_carplate: result => {
+            // 获取车牌识别结果
+            // eslint-disable-next-line
+            this.dataBox.fieldsValue[this.item.fieldName] = result.src ? result.src : ''
+            // eslint-disable-next-line
+            this.dataBox.fieldsValue[this.item.carplate] =
+                result.result && result.result.txt ? result.result.txt : ''
+        }
+    }
+}
 
 const style = {
     box: styleModule.input.box,
@@ -359,6 +610,13 @@ const style = {
     download: computed(()=>styleModule.input.download()),
 }
 
+
+
+
+
+
+
+
 // 引入行政区划组件
 import compD3gbt2260 from '../../ly0/d3/gbt2260/Index.vue'
 // 引入商品缩略图组件
@@ -375,7 +633,6 @@ import compD7postal from '../../ly0/d7/postal/Index.vue'
 
 export default {
     components: {
-        compRichtext,
         compD3gbt2260,
         compD7thumb,
         compD7group,
@@ -384,33 +641,9 @@ export default {
         compD7postal,
     },
     data() {return {
-        style,
         ly0default,
     }},
-    computed: {
-        uploadProps() {
-            return {
-                uploadUrl: this.dataBox.upload
-            }
-        },
-        uploadProps_image() {
-            return {
-                uploadUrl: this.dataBox.upload_image
-            }
-        },
-        uploadProps_carplate() {
-            return {
-                uploadUrl: this.dataBox.upload_carplate
-            }
-        },
-    },
   methods: {
-    hdlCannotInput(value) {
-      // 解决偶发不能输入的问题
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = value
-      this.$forceUpdate()
-    },
     hdlD3gbt2260getValue(result) {
       // eslint-disable-next-line
       this.dataBox.fieldsValue[this.item.fieldName] = !!result.code6 ? result.code6 : ''
@@ -436,234 +669,6 @@ export default {
     hdlD7postalGetValue(result) {
       // eslint-disable-next-line
       this.dataBox.fieldsValue[this.item.fieldName] = !!result.value ? result.value : []
-    },
-    hdlDateChange(value) {
-      if (this.item.hdlChange) {
-        this.item.hdlChange(this.scopeThis, value)
-      }
-    },
-    hdlDatePickerFormat() {
-      if (this.item.format) {
-        return this.item.format
-      }
-      if (this.item.type === 'datetime') {
-        return 'YYYY/MM/DD HH:mm'
-      }
-      if (this.item.type === 'date') {
-        return 'YYYY/MM/DD'
-      }
-      return 'YYYY/MM/DD HH:mm'
-    },
-    hdlDatePickerPlaceholder() {
-      if (this.item.placeholder) {
-        return this.item.placeholder
-      }
-      if (this.item.type === 'datetime') {
-        return this.ly0default.placeholder.datetime
-      }
-      if (this.item.type === 'date') {
-        return this.ly0default.placeholder.date
-      }
-      return this.ly0default.placeholder.datetime
-    },
-    hdlDownloadFileName() {
-      if (this.item.downloadFileName) {
-        return this.item.downloadFileName
-      }
-      return this.ly0default.download.fileName
-    },
-    hdlDownloadLabel() {
-      if (!this.dataBox.fieldsValue[this.item.fieldName]) {
-        return this.ly0default.download.downloadLabelNoSrc
-      }
-      if (this.item.hdlGetDownloadLabel) {
-        return this.item.hdlGetDownloadLabel(this.scopeThis, this.item)
-      }
-      return this.ly0default.download.downloadLabel
-    },
-    hdlDownloadSrc() {
-      if (this.dataBox.fieldsValue[this.item.fieldName]) {
-        return this.dataBox.srcPrefix + this.dataBox.fieldsValue[this.item.fieldName]
-      }
-      return ''
-    },
-    hdlGetUploadResult(result) {
-      // 可以获取多个文件上传结果
-      console.log('文件上传结果：', result.fileList)
-      if ('limit' in this.item && this.item.limit > 1) {
-        // 接收多个文件
-        // eslint-disable-next-line
-        this.dataBox.fieldsValue[this.item.fieldName] = []
-        result.fileList.forEach((i) => {
-          // eslint-disable-next-line
-          this.dataBox.fieldsValue[this.item.fieldName].push(i.src)
-        })
-      } else {
-        // 只接收一个文件
-        // eslint-disable-next-line
-        this.dataBox.fieldsValue[this.item.fieldName] =
-          result.fileList.length === 0 ? '' : result.fileList[0].src
-      }
-    },
-    hdlGetUploadResultCarplate(result) {
-      // 获取车牌识别结果
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = result.src ? result.src : ''
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.carplate] =
-        result.result && result.result.txt ? result.result.txt : ''
-    },
-    hdlImageSrc() {
-      let result = ""
-      if (
-        !!this.item.imageDelete &&
-        !!this.dataBox.fieldsValue[this.item.imageDelete] &&
-        (this.dataBox.fieldsValue[this.item.imageDelete] === true ||
-          this.dataBox.fieldsValue[this.item.imageDelete] === 'true') // 图片已删除
-      ) {
-        result = ''
-      }
-      if (!!this.dataBox.fieldsValue[this.item.fieldName]) {
-        result = (
-          (!!this.item.noSrcPrefix ? '' : this.dataBox.srcPrefix) +
-          this.dataBox.fieldsValue[this.item.fieldName]
-        )
-      }
-
-      return result
-    },
-    hdlImageDelete() {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.imageDelete] =
-        !this.dataBox.fieldsValue[this.item.imageDelete]
-    },
-    hdlImagesSrc(
-      itemImages,
-      // eslint-disable-next-line
-      indexImages,
-    ) {
-      if (
-        !this.item.imageDelete ||
-        !this.dataBox.fieldsValue[this.item.imageDelete].includes(itemImages)
-      ) {
-        return (!!this.item.noSrcPrefix ? '' : this.dataBox.srcPrefix) + itemImages
-      }
-      return ''
-    },
-    hdlImagesDelete(
-      itemImages,
-      // eslint-disable-next-line
-      indexImages,
-    ) {
-      if (!this.dataBox.fieldsValue[this.item.imageDelete].includes(itemImages)) {
-        // eslint-disable-next-line
-        this.dataBox.fieldsValue[this.item.imageDelete].push(itemImages)
-        return
-      }
-
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.imageDelete] = this.dataBox.fieldsValue[
-        this.item.imageDelete
-      ].filter((i) => {
-        return i !== itemImages
-      })
-    },
-    hdlImagesShow() {
-      let result = []
-      if (!this.item.imageDelete) {
-        this.dataBox.fieldsValue[this.item.fieldName].forEach((i) => {
-          result.push((!!this.item.noSrcPrefix ? '' : this.dataBox.srcPrefix) + i)
-        })
-      } else {
-        this.dataBox.fieldsValue[this.item.fieldName]
-          .filter((i) => {
-            return !this.dataBox.fieldsValue[this.item.imageDelete].includes(i)
-          })
-          .forEach((i) => {
-            result.push((!!this.item.noSrcPrefix ? '' : this.dataBox.srcPrefix) + i)
-          })
-      }
-      return result
-    },
-    hdlInputPlaceholder() {
-      return this.item.placeholder ? this.item.placeholder : this.ly0default.placeholder.input
-    },
-    hdlRadioGroupChange(value) {
-      if (this.item.hdlChange) {
-        this.item.hdlChange(this.scopeThis, value)
-      }
-    },
-    hdlRichtextOptions() {
-      return {
-        action: this.dataBox.srcPrefix + this.dataBox.upload, // 必填参数 图片上传地址
-        methods: 'post', // 必填参数 图片上传方式
-        // token: '' // 可选参数 如果需要token验证，假设你的token有存放在session-storage
-        name: 'upload_file', // 必填参数 文件的参数名
-        size: this.ly0default.richtext.size, // 可选参数  可上传的图片大小，单位为Kb, 1M = 1024Kb
-        // accept: 'multipart/form-data, image/png, image/gif, image/jpeg, image/bmp, image/x-icon,image/jpg' // 可选参数 可上传的图片格式
-      }
-    },
-    hdlSelectChange(value) {
-      if (this.item.hdlChange) {
-        this.item.hdlChange(this.scopeThis, value)
-      }
-    },
-    hdlSelectGetItems() {
-      if (this.item.items) {
-        return this.item.items
-      } else if (this.item.hdlGetItems) {
-        return this.item.hdlGetItems(this.scopeThis)
-      }
-    },
-    hdlSelectPlaceholder() {
-      return this.item.placeholder ? this.item.placeholder : this.ly0default.placeholder.select
-    },
-    hdlShowPassword() {
-      return !!this.item.showPassword
-    },
-    hdlSwitchChange(value) {
-      if (this.item.hdlChange) {
-        this.item.hdlChange(this.scopeThis, value)
-      }
-    },
-    hdlVideoDelete() {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.videoDelete] =
-        !this.dataBox.fieldsValue[this.item.videoDelete]
-    },
-    hdlVideoPoster() {
-      if (
-        !!this.item.videoDelete &&
-        !!this.dataBox.fieldsValue[this.item.videoDelete] &&
-        (this.dataBox.fieldsValue[this.item.videoDelete] === true ||
-          this.dataBox.fieldsValue[this.item.videoDelete] === 'true') // 图片已删除
-      ) {
-        return ''
-      }
-      if (!!this.dataBox.fieldsValue[this.item.poster]) {
-        return (
-          (!!this.item.noSrcPrefix ? '' : this.dataBox.srcPrefix) +
-          this.dataBox.fieldsValue[this.item.poster]
-        )
-      }
-      return ''
-    },
-    hdlVideoSrc() {
-      if (
-        !!this.item.videoDelete &&
-        !!this.dataBox.fieldsValue[this.item.videoDelete] &&
-        (this.dataBox.fieldsValue[this.item.videoDelete] === true ||
-          this.dataBox.fieldsValue[this.item.videoDelete] === 'true') // 图片已删除
-      ) {
-        return ''
-      }
-      if (!!this.dataBox.fieldsValue[this.item.fieldName]) {
-        return (
-          (!!this.item.noSrcPrefix ? '' : this.dataBox.srcPrefix) +
-          this.dataBox.fieldsValue[this.item.fieldName]
-        )
-      }
-      return ''
     },
   },
 }

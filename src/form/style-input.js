@@ -124,7 +124,7 @@ function images(item, myProps){
 function richtext(item, myProps){
     return {
         // 富文本编辑器宽度
-        width: item.editorWidth ? item.editorWidth : myProps.richtextEditorWidth,
+        width: item.editorWidth ? item.editorWidth : myProps.richtext.editorWidth,
     }
 }
 
