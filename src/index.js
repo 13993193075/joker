@@ -3,10 +3,12 @@ import ly0d7group from './ly0d7group/index.vue'
 import ly0d7price from './ly0d7price/index.vue'
 import ly0d7size from './ly0d7size/index.vue'
 import Menu from './menu/index.vue'
+import request from './request/index.js'
 import upload from './upload/index.js'
 
 export {
-    FileSaver
+    FileSaver,
+    request
 }
 export default {
     install(app, options) {
@@ -23,5 +25,6 @@ export default {
         app.component('ly0Upload_pictureCard', upload.Upload_pictureCard);
     },
 
-    FileSaver
+    FileSaver,
+    request
 }

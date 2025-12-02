@@ -38,7 +38,7 @@
         }},
         computed: {
             myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
+                return Object.assign({}, ly0default.myProps, {uploadUrl: ly0default.carplate.uploadUrl}, this.myProps)
             }
         },
         methods: {

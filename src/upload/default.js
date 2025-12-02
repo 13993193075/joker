@@ -1,6 +1,8 @@
+import ly0request from '../request/ly0.js'
+
 export default {
     myProps: {
-        uploadUrl: '',
+        uploadUrl: ly0request.domain + ly0request.upload,
         tip: '', // 提示信息
         limit: 1, // 允许上传的文件个数
         size: 2048, // 允许上传的文件大小，单位：KB
@@ -11,6 +13,7 @@ export default {
         }
     },
     carplate: { // 车牌识别
+        uploadUrl: ly0request.domain + ly0request.upload_carplate,
         width: "400px",
         height: "300px"
     }

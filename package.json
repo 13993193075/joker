@@ -24,6 +24,7 @@
   "dependencies": {
     "@vueup/vue-quill": "^1.2.0",
     "@yoooloo42/bean": "^1.0.25",
+    "axios": "^1.13.2",
     "file-saver": "^2.0.5",
     "xlsx": "^0.18.5"
   },
