@@ -6,6 +6,8 @@ import vue from 'rollup-plugin-vue';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import external from 'rollup-plugin-peer-deps-external';
+import url from "@rollup/plugin-url";
+import json from "@rollup/plugin-json";
 
 // 判断是否为生产环境（通过运行命令时传入的环境变量判断）
 const isProduction = process.env.NODE_ENV === 'production';
@@ -52,6 +54,14 @@ export default {
             // 抽取 CSS 到单独的文件（推荐，或内联）
             extract: 'dist/bundle.css',
         }),
+
+        url({
+            include: ['**/*.png', '**/*.jpg', '**/*.svg'], // 明确指定需要处理的图片类型
+            limit: 10 * 1024, // 小于 10KB 的图片转为 base64
+            fileName: 'assets/[name].[hash].[ext]', // 输出文件名格式
+        }),
+
+        json(), // 在插件列表的靠前位置添加
 
         // 7. **代码压缩 (Terser):** 放在最后（通常只在生产环境）。
         isProduction && terser(),

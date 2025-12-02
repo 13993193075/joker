@@ -113,6 +113,7 @@
 
 <script setup>
 import {ref} from "vue";
+import ly0request from '../request/index.js'
 
 const props = defineProps(["myProps"]);
 const emit = defineEmits(['get-value'])
@@ -146,38 +147,28 @@ const hdl = {
     },
     submit() {
         value.value = JSON.parse(JSON.stringify(popup.value.value))
-        
-        
-        
-        
-        
-        
-        
         let arrPromise = []
-        this.value.forEach((i) => {
+        value.value.forEach(i => {
             arrPromise.push(
-                dataRequest.storpro({
+                ly0request.ly0.storpro({
                     noSession: true,
                     storproName: 'ly0d3.gbt2260code6.get',
                     data: { code6: i.gbt2260code },
                 }),
             )
         })
-        Promise.all(arrPromise).then((result) => {
+        Promise.all(arrPromise).then(result => {
             result.forEach((item, index) => {
-                this.value[index].gbt2260text =
+                value.value[index].gbt2260text =
                     item.itemCode6.text2 + '-' + item.itemCode6.text4 + '-' + item.itemCode6.text6
             })
-            this.$emit('getValue', {
-                value: this.value,
-                _id: !!this.myProps._id ? this.myProps._id : null,
+            emit("get-value", {
+                value: JSON.parse(JSON.stringify(popup.value.value)),
+                _id: props.myProps._id ?? null
             })
-            this.popup.visible = false
+            popup.value.visible = false
         })
     },
     
 }
-
-
-import dataRequest from '../../../../utils/data-request.js'
 </script>

@@ -230,103 +230,103 @@
         </div>
         <!-- 拖拽上传 -->
         <div v-if="item.inputType === 'upload-drag'">
-          <ly0Upload_drag
-            :myProps="upload.props.val"
-            @getUploadResult="upload.getResult.hdl"
-          ></ly0Upload_drag>
+            <ly0Upload_drag
+                :myProps="upload.props.val"
+                @getUploadResult="upload.getResult.hdl"
+            ></ly0Upload_drag>
         </div>
         <!-- 图片列表 -->
         <div v-if="item.inputType === 'upload-picture'">
-          <ly0Upload_picture
-              :myProps="upload.props.val"
-              @getUploadResult="upload.getResult.hdl"
-          ></ly0Upload_picture>
+            <ly0Upload_picture
+                :myProps="upload.props.val"
+                @getUploadResult="upload.getResult.hdl"
+            ></ly0Upload_picture>
         </div>
         <!-- 图片墙 -->
         <div v-if="item.inputType === 'upload-picture-card'">
-          <ly0Upload_pictureCard
-            :myProps="upload.props.val"
-            @getUploadResult="upload.getResult.hdl"
-          ></ly0Upload_pictureCard>
+            <ly0Upload_pictureCard
+                :myProps="upload.props.val"
+                @getUploadResult="upload.getResult.hdl"
+            ></ly0Upload_pictureCard>
         </div>
         <!-- 头像 -->
         <div v-if="item.inputType === 'upload-avatar'">
-          <ly0Upload_avatar
-            :myProps="upload.props.val"
-            @getUploadResult="upload.getResult.hdl"
-          ></ly0Upload_avatar>
+            <ly0Upload_avatar
+                :myProps="upload.props.val"
+                @getUploadResult="upload.getResult.hdl"
+            ></ly0Upload_avatar>
         </div>
         <!-- 车牌识别 -->
         <div v-if="item.inputType === 'upload-carplate'">
-          <ly0Upload_carplate
-            :myProps="upload.props.val_carplate"
-            @getUploadResult="upload.getResult.hdl_carplate"
-          ></ly0Upload_carplate>
+            <ly0Upload_carplate
+                :myProps="upload.props.val_carplate"
+                @getUploadResult="upload.getResult.hdl_carplate"
+            ></ly0Upload_carplate>
         </div>
     
         <!-- 行政区划 -->
         <div v-if="item.inputType === 'd3gbt2260'">
-          <compD3gbt2260
-            :myProps="{
-              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '',
-              readOnly: item.readOnly,
-            }"
-            @getValue="hdlD3gbt2260getValue"
-          ></compD3gbt2260>
+            <ly0gbt2260
+                :myProps="{
+                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '',
+                    readOnly: item.readOnly
+                }"
+                @getValue="hdlGetValue.gbt2260"
+            ></ly0gbt2260>
         </div>
     
-        <!-- 商品缩略图 -->
-        <div v-if="item.inputType === 'd7thumb'">
-          <compD7thumb
-            :myProps="{
-              value: {
-                thumb: dataBox.fieldsValue[item.fieldName.thumb],
-                name: dataBox.fieldsValue[item.fieldName.name],
-              },
-              readOnly: item.readOnly,
-            }"
-            @getValue="hdlD7thumbGetValue"
-          ></compD7thumb>
-        </div>
         <!-- 商品分类 -->
         <div v-if="item.inputType === 'd7group'">
-          <compD7group
-            :myProps="{
-              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-              readOnly: item.readOnly,
-            }"
-            @getValue="hdlD7groupGetValue"
-          ></compD7group>
-        </div>
-        <!-- 商品规格 -->
-        <div v-if="item.inputType === 'd7size'">
-          <compD7size
-            :myProps="{
-              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-              readOnly: item.readOnly,
-            }"
-            @getValue="hdlD7sizeGetValue"
-          ></compD7size>
-        </div>
-        <!-- 商品标价 -->
-        <div v-if="item.inputType === 'd7price'">
-          <compD7price
-            :myProps="{
-              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-              readOnly: item.readOnly,
-            }"
-            @getValue="hdlD7priceGetValue"
-          ></compD7price>
+            <ly0d7group
+                :myProps="{
+                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+                    readOnly: item.readOnly,
+                }"
+                @getValue="hdlGetValue.ly0d7group"
+            ></ly0d7group>
         </div>
         <!-- 邮寄地址 -->
         <div v-if="item.inputType === 'd7postal'">
-          <compD7postal
-            :myProps="{
-              value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-              readOnly: item.readOnly,
-            }"
-            @getValue="hdlD7postalGetValue"
-          ></compD7postal>
+            <ly0d7postal
+                :myProps="{
+                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+                    readOnly: item.readOnly,
+                }"
+                @getValue="hdlGetValue.ly0d7postal"
+            ></ly0d7postal>
+        </div>
+        <!-- 商品标价 -->
+        <div v-if="item.inputType === 'd7price'">
+            <ly0d7price
+                :myProps="{
+                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+                    readOnly: item.readOnly,
+                }"
+                @getValue="hdlGetValue.ly0d7price"
+            ></ly0d7price>
+        </div>
+        <!-- 商品规格 -->
+        <div v-if="item.inputType === 'd7size'">
+            <ly0d7size
+                :myProps="{
+                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
+                    readOnly: item.readOnly,
+                }"
+                @getValue="hdlGetValue.ly0d7size"
+            ></ly0d7size>
+        </div>
+        <!-- 商品缩略图 -->
+        <div v-if="item.inputType === 'd7thumb'">
+            <ly0d7thumb
+                :myProps="{
+                    value: {
+                        thumb: dataBox.fieldsValue[item.fieldName.thumb],
+                        name: dataBox.fieldsValue[item.fieldName.name],
+                    },
+                    readOnly: item.readOnly
+                }"
+                @getValue="hdlGetValue.ly0d7thumb"
+            ></ly0d7thumb>
         </div>
     </div>
 </template>
@@ -610,67 +610,26 @@ const style = {
     download: computed(()=>styleModule.input.download()),
 }
 
-
-
-
-
-
-
-
-// 引入行政区划组件
-import compD3gbt2260 from '../../ly0/d3/gbt2260/Index.vue'
-// 引入商品缩略图组件
-import compD7thumb from '../../ly0/d7/thumb/Index.vue'
-// 引入商品分类组件
-import compD7group from '../../ly0/d7/group/Index.vue'
-// 引入商品规格组件
-import compD7size from '../../ly0/d7/size/Index.vue'
-// 引入商品标价组件
-import compD7price from '../../ly0/d7/price/Index.vue'
-// 引入邮寄地址组件
-import compD7postal from '../../ly0/d7/postal/Index.vue'
-
-
-export default {
-    components: {
-        compD3gbt2260,
-        compD7thumb,
-        compD7group,
-        compD7size,
-        compD7price,
-        compD7postal,
+const hdlGetValue = {
+    gbt2260(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.code6 ? result.code6 : ''
     },
-    data() {return {
-        ly0default,
-    }},
-  methods: {
-    hdlD3gbt2260getValue(result) {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = !!result.code6 ? result.code6 : ''
+    ly0d7group(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
     },
-    hdlD7thumbGetValue(result) {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName.thumb] = result.value.thumb
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName.name] = result.value.name
+    ly0d7postal(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
     },
-    hdlD7groupGetValue(result) {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = !!result.value ? result.value : []
+    ly0d7price(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
     },
-    hdlD7sizeGetValue(result) {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = !!result.value ? result.value : []
+    ly0d7size(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
     },
-    hdlD7priceGetValue(result) {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = !!result.value ? result.value : []
+    ly0d7thumb(result) {
+        props.dataBox.fieldsValue[props.item.fieldName.thumb] = result.value.thumb
+        props.dataBox.fieldsValue[props.item.fieldName.name] = result.value.name
     },
-    hdlD7postalGetValue(result) {
-      // eslint-disable-next-line
-      this.dataBox.fieldsValue[this.item.fieldName] = !!result.value ? result.value : []
-    },
-  },
 }
 </script>
 

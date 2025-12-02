@@ -1,6 +1,6 @@
 {
   "name": "@yoooloo42/joker",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -43,8 +43,10 @@
     "@babel/preset-env": "^7.28.5",
     "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-url": "^8.0.2",
     "cross-env": "^10.1.0",
     "rollup": "^4.53.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",

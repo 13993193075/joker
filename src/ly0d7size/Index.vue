@@ -121,7 +121,7 @@ const hdl = {
         value.value = JSON.parse(JSON.stringify(popup.value.value))
         emit("get-value", {
             value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id || null
+            _id: props.myProps._id ?? null
         })
         popup.value.visible = false
     },

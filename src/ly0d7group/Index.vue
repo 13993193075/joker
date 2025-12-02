@@ -11,7 +11,7 @@
                     <td>
                         <template v-for="(item, index) in value">
                             <template v-if="!!item">
-                                <div class="value-item">{{ item.value }}</div>
+                                <div class="value-item">{{ item }}</div>
                             </template>
                         </template>
                     </td>
@@ -33,7 +33,7 @@
                         <td>
                             <template v-for="(item, index) in popup.value" :key="index">
                                 <div class="popup-value-item">
-                                    <el-input class="input" v-model="item.value"></el-input>
+                                    <el-input class="input" v-model="popup.value[index]"></el-input>
                                     <el-button
                                         class="delete"
                                         type="danger"
@@ -106,7 +106,7 @@ const hdl = {
         value.value = JSON.parse(JSON.stringify(popup.value.value))
         emit("get-value", {
             value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id || null
+            _id: props.myProps._id ?? null
         })
         popup.value.visible = false
     },
