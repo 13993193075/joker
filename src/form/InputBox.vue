@@ -31,7 +31,7 @@
         <el-input
             v-if="item.inputType === 'input'"
             v-model="dataBox.fieldsValue[item.fieldName]"
-            :placeholder="placeholder.input"
+            :placeholder="input.placeholder"
             :style="style.input(item, myProps)"
             @input="input.hdlCannotInput"
             :show-password="input.showPassword"
@@ -594,7 +594,7 @@ const upload = {
     }
 }
 
-const style = {
+const style = reactive({
     box: styleModule.input.box,
     text: styleModule.input.text,
     text0: styleModule.input.text0,
@@ -608,7 +608,7 @@ const style = {
     richtext: styleModule.input.richtext,
     video: styleModule.input.video,
     download: computed(()=>styleModule.input.download()),
-}
+})
 
 const hdlGetValue = {
     gbt2260(result) {

@@ -98,19 +98,19 @@
 <script setup>
 import compLabelBox from './LabelBox.vue'
 import compInputBox from './InputBox.vue'
-import {ref, computed} from "vue";
+import {ref, computed, reactive} from "vue";
 import styleModule from './style.js'
 
 const props = defineProps(["scopeThis", "myProps", "dataBox"]);
 
-const style = {
+const style = reactive({
     collapse: computed(() => styleModule.collapse()),
     field_box: computed(() => styleModule.field_box()),
     line: computed(() => styleModule.line()),
     no_field_label: styleModule.no_field_label,
     root_box: computed(() => styleModule.root_box()),
     submit_box: computed(() => styleModule.submit_box())
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

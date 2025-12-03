@@ -1,5 +1,10 @@
 import * as XLSX from 'xlsx';
-import FileSaver from 'file-saver';
+
+// 导入 file-saver 库的全部导出作为一个对象
+import * as FileSaverNamespace from 'file-saver';
+// 如果 Rollup 无法自动识别默认导出，您需要手动获取
+// file-saver 库通常是将其功能挂载到模块的 default 属性上，或者直接是模块本身
+const FileSaver = FileSaverNamespace.default || FileSaverNamespace;
 
 /**
  * 将 JSON 数组数据导出为 Excel 文件
@@ -8,6 +13,7 @@ import FileSaver from 'file-saver';
  * @param {Array<string>} keys - 对应表头的数据字段名（英文键名）
  * @param {string} filename - 导出的文件名
  */
+
 function jsonToExcel({
   json,
   header,
@@ -34,7 +40,7 @@ function jsonToExcel({
 
   // 5. 保存文件
   try {
-    FileSaver.saveAs(
+      FileSaver.saveAs(
       new Blob([wbout], { type: 'application/octet-stream' }),
       `${filename}.xlsx`
     );
