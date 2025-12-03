@@ -21960,14 +21960,14 @@ const {
   mergeConfig
 } = axios;
 
-const domain = 'http://127.0.0.1:443';
+const domainPara = 'http://127.0.0.1:443';
 const upload$1 = '/ly0/upload-req/image';
 const upload_carplate = '/ly0/upload-req/carplate';
 
 // 后端请求
 async function request$1(_ref) {
   let {
-    domain = domain,
+    domain = domainPara,
     url,
     // 路由
     data // 请求数据
@@ -21989,7 +21989,7 @@ async function request$1(_ref) {
 // ly0后端请求
 async function ly0request(_ref2) {
   let {
-    domain = domain,
+    domain = domainPara,
     url,
     // 路由
     data,
@@ -22002,13 +22002,12 @@ async function ly0request(_ref2) {
       url,
       data
     });
-    const data = response.data;
 
     // session 异常
-    if (data.sessionStatusCode && data.sessionStatusCode !== 0) {
-      console.log('session异常', data.sessionStatusMessage);
+    if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
+      console.log('session异常', response.data.sessionStatusMessage);
       if (scopeThis) {
-        scopeThis.$message(data.sessionStatusMessage);
+        // scopeThis.$message(response.data.sessionStatusMessage)
       }
       let ly0session = ly0sessionLoad();
       ly0sessionSave({
@@ -22022,7 +22021,7 @@ async function ly0request(_ref2) {
         message: 'session 异常'
       };
     }
-    return data;
+    return response.data;
   } catch (err) {
     console.log('错误：', err);
     return err;
@@ -22032,7 +22031,7 @@ async function ly0request(_ref2) {
 // 存储过程
 async function storpro(_ref3) {
   let {
-    domain = domain,
+    domain = domainPara,
     storproName,
     // 存储过程名称
     data,
@@ -22124,7 +22123,7 @@ function ly0sessionLoseWithUsertbl(scopeThis, usertbl) {
   return lose;
 }
 var ly0request$1 = {
-  domain,
+  domain: domainPara,
   upload: upload$1,
   upload_carplate,
   request: request$1,
@@ -39341,23 +39340,23 @@ var script$f = {
 
 const props = __props;
 
-const input = {
-    placeholder: vue.computed(() => () => {
+const input = vue.reactive({
+    placeholder: vue.computed(() => {
         return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.input
     }),
-    showPassword: vue.computed(()=>()=>{
-        return !!this.item.showPassword
+    showPassword: vue.computed(()=>{
+        return !!props.item.showPassword
     }),
     hdlCannotInput: event => { // 解决偶发不能输入的问题
         props.dataBox.fieldsValue[props.item.fieldName] = event.target.value;
     }
-};
+});
 
-const select = {
-    placeholder: vue.computed(() => () => {
+const select = vue.reactive({
+    placeholder: vue.computed(() => {
         return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.select
     }),
-    items: vue.computed(()=>()=>{
+    items: vue.computed(()=>{
         if (props.item.items) {
             return props.item.items
         } else if (props.item.hdlGetItems) {
@@ -39369,22 +39368,22 @@ const select = {
             props.item.hdlChange(props.scopeThis, value);
         }
     }
-};
+});
 
-const datePicker = {
-    placeholder: vue.computed(()=> () => {
+const datePicker = vue.reactive({
+    placeholder: vue.computed(()=> {
         if (props.item.placeholder) {
             return props.item.placeholder
         }
         if (props.item.type === 'datetime') {
             return props.myProps.placeholder.datetime
         }
-        if (this.item.type === 'date') {
+        if (props.item.type === 'date') {
             return props.myProps.placeholder.date
         }
         return props.myProps.placeholder.datetime
     }),
-    format: vue.computed(() => () => {
+    format: vue.computed(() => {
         if (props.item.format) {
             return props.item.format
         }
@@ -39401,26 +39400,26 @@ const datePicker = {
             props.item.hdlChange(props.scopeThis, value);
         }
     }
-};
+});
 
-const ly0switch = {
+const ly0switch = vue.reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
             props.item.hdlChange(props.scopeThis, value);
         }
     }
-};
+});
 
-const radioGroup = {
+const radioGroup = vue.reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
             props.item.hdlChange(props.scopeThis, value);
         }
     }
-};
+});
 
-const image = {
-    getSrc: vue.computed(() => () => {
+const image = vue.reactive({
+    getSrc: vue.computed(() => {
         if (
             props.item.imageDelete &&
             props.dataBox.fieldsValue[props.item.imageDelete] &&
@@ -39429,8 +39428,8 @@ const image = {
         ) {
             return ''
         }
-        if (props.dataBox.fieldsValue[this.item.fieldName]) {
-            return props.dataBox.fieldsValue[this.item.fieldName]
+        if (props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.dataBox.fieldsValue[props.item.fieldName]
         }
         return ''
     }),
@@ -39438,9 +39437,9 @@ const image = {
         props.dataBox.fieldsValue[props.item.imageDelete] =
             !props.dataBox.fieldsValue[props.item.imageDelete];
     }
-};
+});
 
-const images = {
+const images = vue.reactive({
     getSrc: (itemImages, indexImages) => {
         if (
             !props.item.imageDelete ||
@@ -39462,7 +39461,7 @@ const images = {
             return i !== itemImages
         });
     },
-    show: vue.computed(()=>()=>{
+    show: vue.computed(()=>{
         let result = [];
         if (!props.item.imageDelete) {
             props.dataBox.fieldsValue[props.item.fieldName].forEach(i => {
@@ -39471,7 +39470,7 @@ const images = {
         } else {
             props.dataBox.fieldsValue[props.item.fieldName]
                 .filter(i => {
-                    return !this.dataBox.fieldsValue[this.item.imageDelete].includes(i)
+                    return !props.dataBox.fieldsValue[props.item.imageDelete].includes(i)
                 })
                 .forEach(i => {
                     result.push(i);
@@ -39479,10 +39478,10 @@ const images = {
         }
         return result
     })
-};
+});
 
-const richtext = {
-    options: vue.computed(()=>()=>{
+const richtext = vue.reactive({
+    options: vue.computed(()=>{
         return {
             action: props.dataBox.upload, // 必填参数 图片上传地址
             methods: 'post', // 必填参数 图片上传方式
@@ -39492,10 +39491,10 @@ const richtext = {
             // accept: 'multipart/form-data, image/png, image/gif, image/jpeg, image/bmp, image/x-icon,image/jpg' // 可选参数 可上传的图片格式
         }
     })
-};
+});
 
-const video = {
-    src: vue.computed(()=>()=>{
+const video = vue.reactive({
+    src: vue.computed(()=>{
         if (
             props.item.videoDelete &&
             props.dataBox.fieldsValue[props.item.videoDelete] &&
@@ -39509,7 +39508,7 @@ const video = {
         }
         return ''
     }),
-    poster: vue.computed(()=>()=>{
+    poster: vue.computed(()=>{
         if (
             props.item.videoDelete &&
             props.dataBox.fieldsValue[props.item.videoDelete] &&
@@ -39527,16 +39526,16 @@ const video = {
         props.dataBox.fieldsValue[props.item.videoDelete] =
             !props.dataBox.fieldsValue[props.item.videoDelete];
     },
-};
+});
 
-const download = {
-    fileName: vue.computed(() => () => {
+const download = vue.reactive({
+    fileName: vue.computed(() => {
         if (props.item.downloadFileName) {
             return props.item.downloadFileName
         }
         return props.myProps.download.fileName
     }),
-    downloadLabel: vue.computed(() => () => {
+    downloadLabel: vue.computed(() => {
         if (!props.dataBox.fieldsValue[props.item.fieldName]) {
             return props.myProps.download.downloadLabelNoSrc
         }
@@ -39545,15 +39544,15 @@ const download = {
         }
         return props.myProps.download.downloadLabel
     }),
-    downloadSrc: vue.computed(() => () => {
+    downloadSrc: vue.computed(() => {
         if (props.dataBox.fieldsValue[props.item.fieldName]) {
             return props.dataBox.fieldsValue[props.item.fieldName]
         }
         return ''
     })
-};
+});
 
-const upload = {
+const upload = vue.reactive({
     props: {
         val: vue.computed(()=>{return {
             uploadUrl: props.dataBox.upload
@@ -39584,13 +39583,13 @@ const upload = {
         hdl_carplate: result => {
             // 获取车牌识别结果
             // eslint-disable-next-line
-            this.dataBox.fieldsValue[this.item.fieldName] = result.src ? result.src : '';
+            props.dataBox.fieldsValue[props.item.fieldName] = result.src ? result.src : '';
             // eslint-disable-next-line
-            this.dataBox.fieldsValue[this.item.carplate] =
+            props.dataBox.fieldsValue[props.item.carplate] =
                 result.result && result.result.txt ? result.result.txt : '';
         }
     }
-};
+});
 
 const style = vue.reactive({
     box: styleModule.input.box,

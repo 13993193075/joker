@@ -1,11 +1,11 @@
 import axios from 'axios'
-const domain = 'http://127.0.0.1:443'
+const domainPara = 'http://127.0.0.1:443'
 const upload = '/ly0/upload-req/image'
 const upload_carplate = '/ly0/upload-req/carplate'
 
 // 后端请求
 async function request({
-    domain = domain,
+    domain = domainPara,
     url, // 路由
     data // 请求数据
 }) {
@@ -26,20 +26,19 @@ async function request({
 
 // ly0后端请求
 async function ly0request({
-    domain = domain,
+    domain = domainPara,
     url, // 路由
     data, // 请求数据
     scopeThis, // 当前的组件实例
 }){
     try {
         const response = await request({domain, url, data})
-        const data = response.data
 
         // session 异常
-        if (data.sessionStatusCode && data.sessionStatusCode !== 0) {
-            console.log('session异常', data.sessionStatusMessage)
+        if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
+            console.log('session异常', response.data.sessionStatusMessage)
             if(scopeThis){
-                scopeThis.$message(data.sessionStatusMessage)
+                // scopeThis.$message(response.data.sessionStatusMessage)
             }
 
             let ly0session = ly0sessionLoad()
@@ -55,7 +54,7 @@ async function ly0request({
             return { code: 1, message: 'session 异常' }
         }
 
-        return data
+        return response.data
     } catch (err) {
         console.log('错误：', err)
         return err
@@ -64,7 +63,7 @@ async function ly0request({
 
 // 存储过程
 async function storpro({
-    domain = domain,
+    domain = domainPara,
     storproName, // 存储过程名称
     data,
     noSession = false, // 不进行session验证
@@ -165,7 +164,7 @@ function ly0sessionLoseWithUsertbl(scopeThis, usertbl) {
 }
 
 export default {
-    domain,
+    domain: domainPara,
     upload,
     upload_carplate,
     request,
