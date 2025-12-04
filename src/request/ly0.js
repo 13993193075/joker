@@ -7,14 +7,14 @@ const upload_carplate = '/ly0/upload-req/carplate'
 
 // 后端请求
 async function request({
-    domain = domainPara,
+    domain,
     url, // 路由
     data // 请求数据
 }) {
     let t0 = new Date() // 计时
     try {
         const response = await axios({
-            url: domain + url,
+            url: (domain ? domain : '') + (url ? url : ''),
             method: 'post',
             dataType: 'json',
             data: data ?? null
@@ -28,7 +28,7 @@ async function request({
 
 // ly0后端请求
 async function ly0request({
-    domain = domainPara,
+    domain,
     url, // 路由
     data, // 请求数据
 }){
@@ -61,7 +61,7 @@ async function ly0request({
 
 // 存储过程
 async function storpro({
-    domain = domainPara,
+    domain,
     storproName, // 存储过程名称
     data,
     noSession = false, // 不进行session验证

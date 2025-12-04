@@ -35,8 +35,12 @@ export default {
 
         // 3. **资源 URL 处理 (URL):** 处理图片和字体，将其转换为 base64 或文件引用
         url({
-            include: ['**/*.png', '**/*.jpg', '**/*.svg'], // 明确指定需要处理的图片类型
-            limit: 10 * 1024, // 小于 10KB 的图片转为 base64
+            include: ['**/*.png', '**/*.jpg', '**/*.svg', '**/*.gif', '**/*.woff', '**/*.woff2', '**/*.ttf'], // 明确指定需要处理的图片类型
+            // limit: 10 * 1024, // 小于 10KB 的图片转为 base64
+            // 目标文件夹：将这些资源复制到哪里（例如：dist/assets）
+            destDir: 'dist/assets',
+            // 在代码中引用时的公共路径
+            publicPath: '/assets/', // 确保这与您的项目部署路径匹配
             fileName: 'assets/[name].[hash].[ext]', // 输出文件名格式
         }),
 
@@ -122,6 +126,9 @@ export default {
             // 明确指定使用 Sass
             // 警告通常是由于 PostCSS 内部的某个 loader 依赖于旧的 Sass API
             preprocessor: 'sass',
+            modules: false,
+            // Rollup 的 postcss 插件通常能与 url 插件配合工作，
+            // 它会发现 CSS 中的 url() 并交给 url 插件处理
         }),
 
         // --- 阶段三：优化与输出 ---

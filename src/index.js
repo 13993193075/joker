@@ -3,6 +3,7 @@ import request from './request/index.js'
 
 import Form from './form/index.vue'
 import Menu from './menu/index.vue'
+import Richtext from './richtext/index.vue'
 import upload from './upload/index.js'
 import gbt2260 from './gbt2260/index.vue'
 import ly0d7group from './ly0d7group/index.vue'
@@ -20,6 +21,7 @@ export default {
         // 全局注册组件
         app.component('ly0Form', Form);
         app.component('ly0Menu', Menu);
+        app.component('ly0Richtext', Richtext);
         app.component('ly0Upload', upload.Upload);
         app.component('ly0Upload_avatar', upload.Upload_avatar);
         app.component('ly0Upload_carplate', upload.Upload_carplate);

@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router';
-import { computed, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, defineComponent, h, onMounted, onBeforeUnmount, ref, watch, nextTick as nextTick$1, reactive, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, unref } from 'vue';
+import { computed, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, reactive, ref, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, defineComponent, h, onMounted, onBeforeUnmount, watch, nextTick as nextTick$1, unref } from 'vue';
 
 function _mergeNamespaces(n, m) {
 	m.forEach(function (e) {
@@ -21963,16 +21963,16 @@ const upload$1 = '/ly0/upload-req/image';
 const upload_carplate = '/ly0/upload-req/carplate';
 
 // 后端请求
-async function request$1(_ref) {
+async function request$2(_ref) {
   let {
-    domain = domainPara,
+    domain,
     url,
     // 路由
     data // 请求数据
   } = _ref;
   try {
     const response = await axios({
-      url: domain + url,
+      url: (domain ? domain : '') + (url ? url : ''),
       method: 'post',
       dataType: 'json',
       data: data !== null && data !== void 0 ? data : null
@@ -21987,13 +21987,13 @@ async function request$1(_ref) {
 // ly0后端请求
 async function ly0request$1(_ref2) {
   let {
-    domain = domainPara,
+    domain,
     url,
     // 路由
     data // 请求数据
   } = _ref2;
   try {
-    const response = await request$1({
+    const response = await request$2({
       domain,
       url,
       data
@@ -22024,7 +22024,7 @@ async function ly0request$1(_ref2) {
 // 存储过程
 async function storpro(_ref3) {
   let {
-    domain = domainPara,
+    domain,
     storproName,
     // 存储过程名称
     data,
@@ -22116,7 +22116,7 @@ var ly0request = {
   domain: domainPara,
   upload: upload$1,
   upload_carplate,
-  request: request$1,
+  request: request$2,
   ly0request: ly0request$1,
   storpro,
   ly0sessionSave,
@@ -22126,7 +22126,7 @@ var ly0request = {
   ly0sessionLoseWithUsertbl
 };
 
-var request = {
+var request$1 = {
   ly0: ly0request
 };
 
@@ -22412,7 +22412,7 @@ var styleModule = {
   input
 };
 
-var script$g = {
+var script$h = {
   __name: 'LabelBox',
   props: ["myProps", "dataBox", "item"],
   setup(__props) {
@@ -22451,7 +22451,1394 @@ return (_ctx, _cache) => {
 
 };
 
-script$g.__file = "src/form/LabelBox.vue";
+script$h.__file = "src/form/LabelBox.vue";
+
+const _hoisted_1$e = { key: 12 };
+const _hoisted_2$d = { key: 0 };
+const _hoisted_3$8 = { key: 13 };
+const _hoisted_4$7 = { key: 0 };
+const _hoisted_5$6 = { key: 14 };
+const _hoisted_6$6 = { key: 0 };
+const _hoisted_7$6 = { key: 16 };
+const _hoisted_8$5 = ["innerHTML"];
+const _hoisted_9$4 = { key: 17 };
+const _hoisted_10$2 = ["width", "height", "poster"];
+const _hoisted_11$1 = ["src"];
+const _hoisted_12 = ["src"];
+const _hoisted_13 = ["src"];
+const _hoisted_14 = { key: 0 };
+const _hoisted_15 = { key: 18 };
+const _hoisted_16 = ["href", "download"];
+const _hoisted_17 = { key: 19 };
+const _hoisted_18 = { key: 20 };
+const _hoisted_19 = { key: 21 };
+const _hoisted_20 = { key: 22 };
+const _hoisted_21 = { key: 23 };
+const _hoisted_22 = { key: 24 };
+const _hoisted_23 = { key: 25 };
+const _hoisted_24 = { key: 26 };
+const _hoisted_25 = { key: 27 };
+const _hoisted_26 = { key: 28 };
+const _hoisted_27 = { key: 29 };
+const _hoisted_28 = { key: 30 };
+
+
+var script$g = {
+  __name: 'InputBox',
+  props: ["myProps", "dataBox", "item"],
+  setup(__props) {
+
+const props = __props;
+
+const input = reactive({
+    placeholder: computed(() => {
+        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.input
+    }),
+    showPassword: computed(()=>{
+        return !!props.item.showPassword
+    }),
+    hdlCannotInput: event => { // 解决偶发不能输入的问题
+        props.dataBox.fieldsValue[props.item.fieldName] = event.target.value;
+    }
+});
+
+const select = reactive({
+    placeholder: computed(() => {
+        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.select
+    }),
+    items: computed(()=>{
+        if (props.item.items) {
+            return props.item.items
+        } else if (props.item.hdlGetItems) {
+            return props.item.hdlGetItems(props.dataBox.fieldsValue, props.item)
+        }
+    }),
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+        }
+    }
+});
+
+const datePicker = reactive({
+    placeholder: computed(()=> {
+        if (props.item.placeholder) {
+            return props.item.placeholder
+        }
+        if (props.item.type === 'datetime') {
+            return props.myProps.placeholder.datetime
+        }
+        if (props.item.type === 'date') {
+            return props.myProps.placeholder.date
+        }
+        return props.myProps.placeholder.datetime
+    }),
+    format: computed(() => {
+        if (props.item.format) {
+            return props.item.format
+        }
+        if (props.item.type === 'datetime') {
+            return 'YYYY/MM/DD HH:mm'
+        }
+        if (props.item.type === 'date') {
+            return 'YYYY/MM/DD'
+        }
+        return 'YYYY/MM/DD HH:mm'
+    }),
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+        }
+    }
+});
+
+const ly0switch = reactive({
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+        }
+    }
+});
+
+const radioGroup = reactive({
+    hdlChange: value => {
+        if (props.item.hdlChange) {
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+        }
+    }
+});
+
+const image = reactive({
+    getSrc: computed(() => {
+        if (
+            props.item.imageDelete &&
+            props.dataBox.fieldsValue[props.item.imageDelete] &&
+            (props.dataBox.fieldsValue[props.item.imageDelete] === true ||
+                props.dataBox.fieldsValue[props.item.imageDelete] === 'true') // 图片已删除
+        ) {
+            return ''
+        }
+        if (props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.dataBox.fieldsValue[props.item.fieldName]
+        }
+        return ''
+    }),
+    delete: ()=>{
+        props.dataBox.fieldsValue[props.item.imageDelete] =
+            !props.dataBox.fieldsValue[props.item.imageDelete];
+    }
+});
+
+const images = reactive({
+    getSrc: (itemImages, indexImages) => {
+        if (
+            !props.item.imageDelete ||
+            !props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)
+        ) {
+            return itemImages
+        }
+        return ''
+    },
+    delete: (itemImages, indexImages) => {
+        if (!props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)) {
+            props.dataBox.fieldsValue[props.item.imageDelete].push(itemImages);
+            return
+        }
+        
+        props.dataBox.fieldsValue[props.item.imageDelete] = props.dataBox.fieldsValue[
+            props.item.imageDelete
+            ].filter(i => {
+            return i !== itemImages
+        });
+    },
+    show: computed(()=>{
+        let result = [];
+        if (!props.item.imageDelete) {
+            props.dataBox.fieldsValue[props.item.fieldName].forEach(i => {
+                result.push(i);
+            });
+        } else {
+            props.dataBox.fieldsValue[props.item.fieldName]
+                .filter(i => {
+                    return !props.dataBox.fieldsValue[props.item.imageDelete].includes(i)
+                })
+                .forEach(i => {
+                    result.push(i);
+                });
+        }
+        return result
+    })
+});
+
+const richtextProps = ref({
+    uploadUrl: props.dataBox.upload
+});
+
+const video = reactive({
+    src: computed(()=>{
+        if (
+            props.item.videoDelete &&
+            props.dataBox.fieldsValue[props.item.videoDelete] &&
+            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
+                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+        ) {
+            return ''
+        }
+        if (props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.dataBox.fieldsValue[props.item.fieldName]
+        }
+        return ''
+    }),
+    poster: computed(()=>{
+        if (
+            props.item.videoDelete &&
+            props.dataBox.fieldsValue[props.item.videoDelete] &&
+            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
+                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+        ) {
+            return ''
+        }
+        if (props.dataBox.fieldsValue[props.item.poster]) {
+            return props.dataBox.fieldsValue[props.item.poster]
+        }
+        return ''
+    }),
+    delete: ()=>{
+        props.dataBox.fieldsValue[props.item.videoDelete] =
+            !props.dataBox.fieldsValue[props.item.videoDelete];
+    },
+});
+
+const download = reactive({
+    fileName: computed(() => {
+        if (props.item.downloadFileName) {
+            return props.item.downloadFileName
+        }
+        return props.myProps.download.fileName
+    }),
+    downloadLabel: computed(() => {
+        if (!props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.myProps.download.downloadLabelNoSrc
+        }
+        if (props.item.hdlGetDownloadLabel) {
+            return props.item.hdlGetDownloadLabel(props.dataBox.fieldsValue, props.item)
+        }
+        return props.myProps.download.downloadLabel
+    }),
+    downloadSrc: computed(() => {
+        if (props.dataBox.fieldsValue[props.item.fieldName]) {
+            return props.dataBox.fieldsValue[props.item.fieldName]
+        }
+        return ''
+    })
+});
+
+const upload = reactive({
+    props: {
+        val: computed(()=>{return {
+            uploadUrl: props.dataBox.upload
+        }}),
+        val_carplate: computed(()=>{return {
+            uploadUrl: props.dataBox.upload_carplate
+        }})
+    },
+    getResult: {
+        hdl: result => {
+            // 可以获取多个文件上传结果
+            console.log('文件上传结果：', result.fileList);
+            if ('limit' in props.item && props.item.limit > 1) {
+                // 接收多个文件
+                // eslint-disable-next-line
+                props.dataBox.fieldsValue[props.item.fieldName] = [];
+                result.fileList.forEach((i) => {
+                    // eslint-disable-next-line
+                    props.dataBox.fieldsValue[props.item.fieldName].push(i.src);
+                });
+            } else {
+                // 只接收一个文件
+                // eslint-disable-next-line
+                props.dataBox.fieldsValue[props.item.fieldName] =
+                    result.fileList.length === 0 ? '' : result.fileList[0].src;
+            }
+        },
+        hdl_carplate: result => {
+            // 获取车牌识别结果
+            // eslint-disable-next-line
+            props.dataBox.fieldsValue[props.item.fieldName] = result.src ? result.src : '';
+            // eslint-disable-next-line
+            props.dataBox.fieldsValue[props.item.carplate] =
+                result.result && result.result.txt ? result.result.txt : '';
+        }
+    }
+});
+
+const style = reactive({
+    box: styleModule.input.box,
+    text: styleModule.input.text,
+    text0: styleModule.input.text0,
+    line: computed(()=>styleModule.line()),
+    input: styleModule.input.input,
+    input_number: styleModule.input.input_number,
+    el_switch: styleModule.input.el_switch,
+    button_group: styleModule.input.button_group,
+    image: styleModule.input.image,
+    images: styleModule.input.images,
+    richtext: styleModule.input.richtext,
+    video: styleModule.input.video,
+    download: computed(()=>styleModule.input.download()),
+});
+
+const hdlGetValue = {
+    gbt2260(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.code6 ? result.code6 : '';
+    },
+    ly0d7group(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
+    },
+    ly0d7postal(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
+    },
+    ly0d7price(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
+    },
+    ly0d7size(result) {
+        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
+    },
+    ly0d7thumb(result) {
+        props.dataBox.fieldsValue[props.item.fieldName.thumb] = result.value.thumb;
+        props.dataBox.fieldsValue[props.item.fieldName.name] = result.value.name;
+    },
+};
+
+return (_ctx, _cache) => {
+  const _component_el_input = resolveComponent("el-input");
+  const _component_el_option = resolveComponent("el-option");
+  const _component_el_select = resolveComponent("el-select");
+  const _component_el_date_picker = resolveComponent("el-date-picker");
+  const _component_el_input_number = resolveComponent("el-input-number");
+  const _component_el_switch = resolveComponent("el-switch");
+  const _component_el_radio = resolveComponent("el-radio");
+  const _component_el_radio_group = resolveComponent("el-radio-group");
+  const _component_el_button = resolveComponent("el-button");
+  const _component_el_tooltip = resolveComponent("el-tooltip");
+  const _component_el_button_group = resolveComponent("el-button-group");
+  const _component_el_image = resolveComponent("el-image");
+  const _component_ly0Richtext = resolveComponent("ly0Richtext");
+  const _component_ly0Upload = resolveComponent("ly0Upload");
+  const _component_ly0Upload_drag = resolveComponent("ly0Upload_drag");
+  const _component_ly0Upload_picture = resolveComponent("ly0Upload_picture");
+  const _component_ly0Upload_pictureCard = resolveComponent("ly0Upload_pictureCard");
+  const _component_ly0Upload_avatar = resolveComponent("ly0Upload_avatar");
+  const _component_ly0Upload_carplate = resolveComponent("ly0Upload_carplate");
+  const _component_ly0gbt2260 = resolveComponent("ly0gbt2260");
+  const _component_ly0d7group = resolveComponent("ly0d7group");
+  const _component_ly0d7postal = resolveComponent("ly0d7postal");
+  const _component_ly0d7price = resolveComponent("ly0d7price");
+  const _component_ly0d7size = resolveComponent("ly0d7size");
+  const _component_ly0d7thumb = resolveComponent("ly0d7thumb");
+
+  return (openBlock(), createElementBlock(Fragment, null, [
+    createCommentVNode(" input-box "),
+    createElementVNode("div", {
+      style: normalizeStyle(style.box(__props.item))
+    }, [
+      createCommentVNode(" 只读 "),
+      (__props.item.inputType === 'text')
+        ? (openBlock(), createElementBlock("div", {
+            key: 0,
+            style: normalizeStyle(style.text(__props.item, __props.myProps))
+          }, toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'text0')
+        ? (openBlock(), createElementBlock("div", {
+            key: 1,
+            style: normalizeStyle(style.text0(__props.item))
+          }, toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+        : createCommentVNode("v-if", true),
+      (!__props.item.inputType)
+        ? (openBlock(), createElementBlock("div", {
+            key: 2,
+            style: normalizeStyle(style.text(__props.item, __props.myProps))
+          }, toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'expression')
+        ? (openBlock(), createElementBlock("div", {
+            key: 3,
+            style: normalizeStyle(style.text(__props.item, __props.myProps))
+          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+                : ' '), 5 /* TEXT, STYLE */))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'expression0')
+        ? (openBlock(), createElementBlock("div", {
+            key: 4,
+            style: normalizeStyle(style.text0(__props.item))
+          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+                : ' '), 5 /* TEXT, STYLE */))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'line')
+        ? (openBlock(), createElementBlock("div", {
+            key: 5,
+            style: normalizeStyle(style.line)
+          }, null, 4 /* STYLE */))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 修改数据 "),
+      (__props.item.inputType === 'input')
+        ? (openBlock(), createBlock(_component_el_input, {
+            key: 6,
+            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            placeholder: input.placeholder,
+            style: normalizeStyle(style.input(__props.item, __props.myProps)),
+            onInput: input.hdlCannotInput,
+            "show-password": input.showPassword
+          }, null, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onInput", "show-password"]))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'select')
+        ? (openBlock(), createBlock(_component_el_select, {
+            key: 7,
+            class: "deep-input",
+            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            placeholder: select.placeholder,
+            filterable: "",
+            style: normalizeStyle(style.input(__props.item, __props.myProps)),
+            onChange: select.hdlChange
+          }, {
+            default: withCtx(() => [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(select.items, (item0, index0) => {
+                return (openBlock(), createBlock(_component_el_option, {
+                  label: item0[__props.item.item_fieldLabel],
+                  value: item0[__props.item.item_fieldValue],
+                  key: index0
+                }, null, 8 /* PROPS */, ["label", "value"]))
+              }), 128 /* KEYED_FRAGMENT */))
+            ]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onChange"]))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'date-picker')
+        ? (openBlock(), createBlock(_component_el_date_picker, {
+            key: 8,
+            class: "deep-input",
+            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            type: __props.item.type ? __props.item.type : 'datetime',
+            placeholder: datePicker.placeholder,
+            format: datePicker.format,
+            style: normalizeStyle(style.input(__props.item, __props.myProps)),
+            onChange: datePicker.hdlChange
+          }, null, 8 /* PROPS */, ["modelValue", "type", "placeholder", "format", "style", "onChange"]))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'input-number')
+        ? (openBlock(), createBlock(_component_el_input_number, {
+            key: 9,
+            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            size: style.input_number(__props.item).facade.size,
+            min: 'min' in __props.item ? __props.item.min : 1,
+            max: 'max' in __props.item ? __props.item.max : 100,
+            step: 'step' in __props.item ? __props.item.step : 1,
+            "step-strictly": 'step_strictly' in __props.item ? __props.item.step_strictly : true
+          }, null, 8 /* PROPS */, ["modelValue", "size", "min", "max", "step", "step-strictly"]))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'switch')
+        ? (openBlock(), createBlock(_component_el_switch, {
+            key: 10,
+            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            "active-text": __props.item.activeText,
+            "inactive-text": __props.item.inactiveText,
+            "active-value": __props.item.activeValue,
+            "inactive-value": __props.item.inactiveValue,
+            "active-color": style.el_switch(__props.item).facade.active_color,
+            disabled: !!('disabled' in __props.item && (__props.item.disabled === true || __props.item.disabled === 'true')),
+            onChange: ly0switch.hdlChange
+          }, null, 8 /* PROPS */, ["modelValue", "active-text", "inactive-text", "active-value", "inactive-value", "active-color", "disabled", "onChange"]))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'radio-group')
+        ? (openBlock(), createBlock(_component_el_radio_group, {
+            key: 11,
+            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            disabled: !!__props.item.disabled,
+            onChange: radioGroup.hdlChange
+          }, {
+            default: withCtx(() => [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(__props.item.items, (item0, index0) => {
+                return (openBlock(), createBlock(_component_el_radio, {
+                  key: index0,
+                  label: item0[__props.item.item_fieldValue]
+                }, {
+                  default: withCtx(() => [
+                    createTextVNode(toDisplayString(item0[__props.item.item_fieldLabel]), 1 /* TEXT */)
+                  ]),
+                  _: 2 /* DYNAMIC */
+                }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["label"]))
+              }), 128 /* KEYED_FRAGMENT */))
+            ]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
+        : createCommentVNode("v-if", true),
+      (__props.item.inputType === 'button-group' && __props.item.box && __props.item.box.length > 0)
+        ? (openBlock(), createElementBlock("div", _hoisted_1$e, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(__props.item.box, (item0, index0) => {
+              return (openBlock(), createBlock(_component_el_button_group, {
+                key: index0,
+                style: normalizeStyle(style.button_group().group.style)
+              }, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(item0.box, (item1, index1) => {
+                    return (openBlock(), createBlock(_component_el_tooltip, {
+                      key: index1,
+                      disabled: !item1.tip,
+                      content: item1.tip && item1.tip.content ? item1.tip.content : '',
+                      placement: item1.tip && item1.tip.placement ? item1.tip.placement : 'bottom',
+                      effect: "light"
+                    }, {
+                      default: withCtx(() => [
+                        (openBlock(), createBlock(_component_el_button, {
+                          style: normalizeStyle(style.button_group(__props.item, item0, item1).button.style),
+                          icon: style.button_group(__props.item, item0, item1).button.icon,
+                          type: style.button_group(__props.item, item0, item1).button.facade.type,
+                          size: style.button_group(__props.item, item0, item1).button.facade.size,
+                          plain: style.button_group(__props.item, item0, item1).button.facade.plain,
+                          round: style.button_group(__props.item, item0, item1).button.facade.round,
+                          circle: style.button_group(__props.item, item0, item1).button.facade.circle,
+                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.dataBox.fieldsValue, __props.item) : null),
+                          key: index1
+                        }, {
+                          default: withCtx(() => [
+                            (item1.text)
+                              ? (openBlock(), createElementBlock("span", _hoisted_2$d, toDisplayString(item1.text), 1 /* TEXT */))
+                              : createCommentVNode("v-if", true)
+                          ]),
+                          _: 2 /* DYNAMIC */
+                        }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["style", "icon", "type", "size", "plain", "round", "circle", "onClick"]))
+                      ]),
+                      _: 2 /* DYNAMIC */
+                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["disabled", "content", "placement"]))
+                  }), 128 /* KEYED_FRAGMENT */))
+                ]),
+                _: 2 /* DYNAMIC */
+              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["style"]))
+            }), 128 /* KEYED_FRAGMENT */))
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 图片&富文本&视频 "),
+      createCommentVNode(" 图片 "),
+      (__props.item.inputType === 'image')
+        ? (openBlock(), createElementBlock("div", _hoisted_3$8, [
+            createElementVNode("div", null, [
+              createVNode(_component_el_image, {
+                style: normalizeStyle(style.image(__props.item, __props.myProps)),
+                src: image.getSrc,
+                "preview-src-list": [image.getSrc],
+                "preview-teleported": true,
+                "hide-on-click-modal": true
+              }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
+            ]),
+            createCommentVNode(" 设置了图片删除功能，同时图片不为空 "),
+            (!!__props.item.imageDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
+              ? (openBlock(), createElementBlock("div", _hoisted_4$7, [
+                  createVNode(_component_el_button, {
+                    size: "small",
+                    icon: !__props.dataBox.fieldsValue[__props.item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
+                    onClick: image.delete
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(__props.dataBox.fieldsValue[__props.item.imageDelete] ? '图片已删除，恢复' : '删除'), 1 /* TEXT */)
+                    ]),
+                    _: 1 /* STABLE */
+                  }, 8 /* PROPS */, ["icon", "onClick"])
+                ]))
+              : createCommentVNode("v-if", true)
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 多个图片 "),
+      (__props.item.inputType === 'images')
+        ? (openBlock(), createElementBlock("div", _hoisted_5$6, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(__props.dataBox.fieldsValue[__props.item.fieldName], (itemImages, indexImages) => {
+              return (openBlock(), createElementBlock("div", {
+                key: indexImages,
+                style: normalizeStyle(style.images(__props.item, __props.myProps).itemBox)
+              }, [
+                createElementVNode("div", null, [
+                  createVNode(_component_el_image, {
+                    style: normalizeStyle(style.images(__props.item, __props.myProps).itemThumb),
+                    src: images.getSrc(itemImages, indexImages),
+                    "preview-src-list": images.show
+                  }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
+                ]),
+                (!!__props.item.imageDelete)
+                  ? (openBlock(), createElementBlock("div", _hoisted_6$6, [
+                      createVNode(_component_el_button, {
+                        size: "small",
+                        icon: "el-icon-delete",
+                        onClick: $event => (images.delete(itemImages, indexImages))
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString(__props.dataBox.fieldsValue[__props.item.imageDelete].includes(itemImages) ? '恢复' : '删除'), 1 /* TEXT */)
+                        ]),
+                        _: 2 /* DYNAMIC */
+                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])
+                    ]))
+                  : createCommentVNode("v-if", true)
+              ], 4 /* STYLE */))
+            }), 128 /* KEYED_FRAGMENT */))
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 富文本 "),
+      (__props.item.inputType === 'richtext')
+        ? (openBlock(), createElementBlock("div", {
+            key: 15,
+            style: normalizeStyle(style.richtext(__props.item, __props.myProps))
+          }, [
+            createVNode(_component_ly0Richtext, {
+              modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+              myProps: richtextProps.value
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
+          ], 4 /* STYLE */))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 富文本show "),
+      (__props.item.inputType === 'richtextShow')
+        ? (openBlock(), createElementBlock("div", _hoisted_7$6, [
+            createElementVNode("div", {
+              innerHTML: __props.dataBox.fieldsValue[__props.item.fieldName]
+            }, null, 8 /* PROPS */, _hoisted_8$5)
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 视频 "),
+      (__props.item.inputType === 'video')
+        ? (openBlock(), createElementBlock("div", _hoisted_9$4, [
+            createElementVNode("div", null, [
+              createElementVNode("video", {
+                width: style.video(__props.item, __props.myProps).width,
+                height: style.video(__props.item, __props.myProps).height,
+                controls: "",
+                poster: video.poster
+              }, [
+                createElementVNode("source", {
+                  src: video.src,
+                  type: "video/mp4"
+                }, null, 8 /* PROPS */, _hoisted_11$1),
+                createCommentVNode(" MP4/H.264/AAC - 最广泛支持 "),
+                createElementVNode("source", {
+                  src: video.src,
+                  type: "video/webm"
+                }, null, 8 /* PROPS */, _hoisted_12),
+                createCommentVNode(" WebM/VP9/Opus - 开源格式，支持良好 "),
+                createElementVNode("source", {
+                  src: video.src,
+                  type: "video/ogg"
+                }, null, 8 /* PROPS */, _hoisted_13),
+                createCommentVNode(" Ogg/Theora/Vorbis - 较旧的开源格式 ")
+              ], 8 /* PROPS */, _hoisted_10$2)
+            ]),
+            createCommentVNode(" 设置了视频删除功能，同时视频不为空 "),
+            (!!__props.item.videoDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
+              ? (openBlock(), createElementBlock("div", _hoisted_14, [
+                  createVNode(_component_el_button, {
+                    size: "small",
+                    icon: !__props.dataBox.fieldsValue[__props.item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
+                    onClick: video.delete
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(!!__props.dataBox.fieldsValue[__props.item.videoDelete] ? '视频已删除，恢复' : '删除'), 1 /* TEXT */)
+                    ]),
+                    _: 1 /* STABLE */
+                  }, 8 /* PROPS */, ["icon", "onClick"])
+                ]))
+              : createCommentVNode("v-if", true)
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 上传及下载 "),
+      createCommentVNode(" 下载 "),
+      (__props.item.inputType === 'download')
+        ? (openBlock(), createElementBlock("div", _hoisted_15, [
+            (__props.dataBox.fieldsValue[__props.item.fieldName])
+              ? (openBlock(), createElementBlock("a", {
+                  key: 0,
+                  style: normalizeStyle(style.download.style),
+                  href: download.downloadSrc,
+                  download: download.fileName
+                }, [
+                  createElementVNode("span", null, toDisplayString(download.downloadLabel), 1 /* TEXT */)
+                ], 12 /* STYLE, PROPS */, _hoisted_16))
+              : (openBlock(), createElementBlock("span", {
+                  key: 1,
+                  style: normalizeStyle(style.download.none)
+                }, toDisplayString(download.downloadLabel), 5 /* TEXT, STYLE */))
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 上传多个文件 "),
+      (__props.item.inputType === 'upload')
+        ? (openBlock(), createElementBlock("div", _hoisted_17, [
+            createVNode(_component_ly0Upload, {
+              myProps: upload.props.val,
+              onGetUploadResult: upload.getResult.hdl
+            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 拖拽上传 "),
+      (__props.item.inputType === 'upload-drag')
+        ? (openBlock(), createElementBlock("div", _hoisted_18, [
+            createVNode(_component_ly0Upload_drag, {
+              myProps: upload.props.val,
+              onGetUploadResult: upload.getResult.hdl
+            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 图片列表 "),
+      (__props.item.inputType === 'upload-picture')
+        ? (openBlock(), createElementBlock("div", _hoisted_19, [
+            createVNode(_component_ly0Upload_picture, {
+              myProps: upload.props.val,
+              onGetUploadResult: upload.getResult.hdl
+            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 图片墙 "),
+      (__props.item.inputType === 'upload-picture-card')
+        ? (openBlock(), createElementBlock("div", _hoisted_20, [
+            createVNode(_component_ly0Upload_pictureCard, {
+              myProps: upload.props.val,
+              onGetUploadResult: upload.getResult.hdl
+            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 头像 "),
+      (__props.item.inputType === 'upload-avatar')
+        ? (openBlock(), createElementBlock("div", _hoisted_21, [
+            createVNode(_component_ly0Upload_avatar, {
+              myProps: upload.props.val,
+              onGetUploadResult: upload.getResult.hdl
+            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 车牌识别 "),
+      (__props.item.inputType === 'upload-carplate')
+        ? (openBlock(), createElementBlock("div", _hoisted_22, [
+            createVNode(_component_ly0Upload_carplate, {
+              myProps: upload.props.val_carplate,
+              onGetUploadResult: upload.getResult.hdl_carplate
+            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 行政区划 "),
+      (__props.item.inputType === 'd3gbt2260')
+        ? (openBlock(), createElementBlock("div", _hoisted_23, [
+            createVNode(_component_ly0gbt2260, {
+              myProps: {
+                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : '',
+                    readOnly: __props.item.readOnly
+                },
+              onGetValue: hdlGetValue.gbt2260
+            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 商品分类 "),
+      (__props.item.inputType === 'd7group')
+        ? (openBlock(), createElementBlock("div", _hoisted_24, [
+            createVNode(_component_ly0d7group, {
+              myProps: {
+                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
+                    readOnly: __props.item.readOnly,
+                },
+              onGetValue: hdlGetValue.ly0d7group
+            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 邮寄地址 "),
+      (__props.item.inputType === 'd7postal')
+        ? (openBlock(), createElementBlock("div", _hoisted_25, [
+            createVNode(_component_ly0d7postal, {
+              myProps: {
+                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
+                    readOnly: __props.item.readOnly,
+                },
+              onGetValue: hdlGetValue.ly0d7postal
+            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 商品标价 "),
+      (__props.item.inputType === 'd7price')
+        ? (openBlock(), createElementBlock("div", _hoisted_26, [
+            createVNode(_component_ly0d7price, {
+              myProps: {
+                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
+                    readOnly: __props.item.readOnly,
+                },
+              onGetValue: hdlGetValue.ly0d7price
+            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 商品规格 "),
+      (__props.item.inputType === 'd7size')
+        ? (openBlock(), createElementBlock("div", _hoisted_27, [
+            createVNode(_component_ly0d7size, {
+              myProps: {
+                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
+                    readOnly: __props.item.readOnly,
+                },
+              onGetValue: hdlGetValue.ly0d7size
+            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+          ]))
+        : createCommentVNode("v-if", true),
+      createCommentVNode(" 商品缩略图 "),
+      (__props.item.inputType === 'd7thumb')
+        ? (openBlock(), createElementBlock("div", _hoisted_28, [
+            createVNode(_component_ly0d7thumb, {
+              myProps: {
+                    value: {
+                        thumb: __props.dataBox.fieldsValue[__props.item.fieldName.thumb],
+                        name: __props.dataBox.fieldsValue[__props.item.fieldName.name],
+                    },
+                    readOnly: __props.item.readOnly
+                },
+              onGetValue: hdlGetValue.ly0d7thumb
+            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+          ]))
+        : createCommentVNode("v-if", true)
+    ], 4 /* STYLE */)
+  ], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */))
+}
+}
+
+};
+
+script$g.__scopeId = "data-v-a94fa4ba";
+script$g.__file = "src/form/InputBox.vue";
+
+const _hoisted_1$d = { key: 0 };
+const _hoisted_2$c = ["colspan"];
+const _hoisted_3$7 = { key: 0 };
+const _hoisted_4$6 = ["colspan"];
+
+
+var script$f = {
+  __name: 'Form',
+  props: ["myProps", "dataBox"],
+  setup(__props) {
+
+const style = reactive({
+    collapse: computed(() => styleModule.collapse()),
+    field_box: computed(() => styleModule.field_box()),
+    line: computed(() => styleModule.line()),
+    no_field_label: styleModule.no_field_label,
+    root_box: computed(() => styleModule.root_box()),
+    submit_box: computed(() => styleModule.submit_box())
+});
+
+return (_ctx, _cache) => {
+  const _component_ly0Menu = resolveComponent("ly0Menu");
+  const _component_el_collapse_item = resolveComponent("el-collapse-item");
+  const _component_el_collapse = resolveComponent("el-collapse");
+  const _component_el_button = resolveComponent("el-button");
+
+  return (openBlock(), createElementBlock(Fragment, null, [
+    createCommentVNode(" 置顶菜单 "),
+    (__props.myProps.menu && __props.myProps.menu.menu && __props.myProps.menu.menu.length > 0)
+      ? (openBlock(), createBlock(_component_ly0Menu, {
+          key: 0,
+          myProps: __props.myProps.menu
+        }, null, 8 /* PROPS */, ["myProps"]))
+      : createCommentVNode("v-if", true),
+    createCommentVNode(" 表单区域可以分为多个列 "),
+    createElementVNode("div", {
+      style: normalizeStyle(style.root_box)
+    }, [
+      (openBlock(true), createElementBlock(Fragment, null, renderList(__props.myProps.cols, (item, index) => {
+        return (openBlock(), createElementBlock("div", { key: index }, [
+          createElementVNode("table", null, [
+            createElementVNode("tbody", null, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, (item0, index0) => {
+                return (openBlock(), createElementBlock(Fragment, { key: index0 }, [
+                  (item0.hdlVisible ? item0.hdlVisible(__props.dataBox.fieldsValue) : true)
+                    ? (openBlock(), createElementBlock("tr", _hoisted_1$d, [
+                        (!!item0.label)
+                          ? (openBlock(), createElementBlock("td", {
+                              key: 0,
+                              style: normalizeStyle(style.field_box.left)
+                            }, [
+                              createVNode(script$h, {
+                                myProps: __props.myProps,
+                                dataBox: __props.dataBox,
+                                item: item0
+                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
+                            ], 4 /* STYLE */))
+                          : createCommentVNode("v-if", true),
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.field_box.right),
+                          colspan: style.no_field_label(item0)
+                        }, [
+                          (item0.inputType === 'collapse')
+                            ? (openBlock(), createBlock(_component_el_collapse, {
+                                key: 0,
+                                accordion: 
+                                        'accordion' in item0 &&
+                                        (item0.accordion === true || item0.accordion === 'true')
+                                    ,
+                                modelValue: item0.activeNames,
+                                "onUpdate:modelValue": $event => ((item0.activeNames) = $event),
+                                style: normalizeStyle(style.collapse.style)
+                              }, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createElementBlock(Fragment, null, renderList(item0.items, (item1, index1) => {
+                                    return (openBlock(), createElementBlock(Fragment, { key: index1 }, [
+                                      (item1.hdlVisible ? item1.hdlVisible(__props.dataBox.fieldsValue) : true)
+                                        ? (openBlock(), createBlock(_component_el_collapse_item, {
+                                            key: 0,
+                                            title: item1.title,
+                                            name: item1.name ? item1.name : index1
+                                          }, {
+                                            default: withCtx(() => [
+                                              createElementVNode("table", {
+                                                style: normalizeStyle(style.collapse.table)
+                                              }, [
+                                                (openBlock(true), createElementBlock(Fragment, null, renderList(item1.items, (item2, index2) => {
+                                                  return (openBlock(), createElementBlock(Fragment, { key: index2 }, [
+                                                    (
+                                                            item2.hdlVisible
+                                                            ? item2.hdlVisible(__props.dataBox.fieldsValue)
+                                                            : true
+                                                        )
+                                                      ? (openBlock(), createElementBlock("tr", _hoisted_3$7, [
+                                                          (item2.label)
+                                                            ? (openBlock(), createElementBlock("td", {
+                                                                key: 0,
+                                                                style: normalizeStyle(style.field_box.left)
+                                                              }, [
+                                                                createVNode(script$h, {
+                                                                  myProps: __props.myProps,
+                                                                  dataBox: __props.dataBox,
+                                                                  item: item2
+                                                                }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
+                                                              ], 4 /* STYLE */))
+                                                            : createCommentVNode("v-if", true),
+                                                          createElementVNode("td", {
+                                                            style: normalizeStyle(style.field_box.right),
+                                                            colspan: style.no_field_label(item2)
+                                                          }, [
+                                                            createVNode(script$g, {
+                                                              myProps: __props.myProps,
+                                                              dataBox: __props.dataBox,
+                                                              item: item2
+                                                            }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
+                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$6)
+                                                        ]))
+                                                      : createCommentVNode("v-if", true)
+                                                  ], 64 /* STABLE_FRAGMENT */))
+                                                }), 128 /* KEYED_FRAGMENT */))
+                                              ], 4 /* STYLE */)
+                                            ]),
+                                            _: 2 /* DYNAMIC */
+                                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["title", "name"]))
+                                        : createCommentVNode("v-if", true)
+                                    ], 64 /* STABLE_FRAGMENT */))
+                                  }), 128 /* KEYED_FRAGMENT */))
+                                ]),
+                                _: 2 /* DYNAMIC */
+                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
+                            : (openBlock(), createBlock(script$g, {
+                                key: 1,
+                                myProps: __props.myProps,
+                                dataBox: __props.dataBox,
+                                item: item0
+                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"]))
+                        ], 12 /* STYLE, PROPS */, _hoisted_2$c)
+                      ]))
+                    : createCommentVNode("v-if", true)
+                ], 64 /* STABLE_FRAGMENT */))
+              }), 128 /* KEYED_FRAGMENT */))
+            ])
+          ])
+        ]))
+      }), 128 /* KEYED_FRAGMENT */))
+    ], 4 /* STYLE */),
+    createCommentVNode(" 提交 "),
+    (__props.dataBox.hdlSubmit)
+      ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+          createElementVNode("div", {
+            style: normalizeStyle(style.line)
+          }, null, 4 /* STYLE */),
+          createElementVNode("div", {
+            style: normalizeStyle(style.submit_box.style)
+          }, [
+            createVNode(_component_el_button, {
+              type: style.submit_box.button.facade.type,
+              plain: style.submit_box.button.facade.plain,
+              style: normalizeStyle(style.submit_box.button.style),
+              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.dataBox.fieldsValue)))
+            }, {
+              default: withCtx(() => [...(_cache[1] || (_cache[1] = [
+                createTextVNode("提交", -1 /* CACHED */)
+              ]))]),
+              _: 1 /* STABLE */
+            }, 8 /* PROPS */, ["type", "plain", "style"])
+          ], 4 /* STYLE */)
+        ], 64 /* STABLE_FRAGMENT */))
+      : createCommentVNode("v-if", true)
+  ], 64 /* STABLE_FRAGMENT */))
+}
+}
+
+};
+
+script$f.__file = "src/form/Form.vue";
+
+// 默认值
+
+var ly0default$2 = {
+  myProps: {
+    popup: {
+      visible: false,
+      title: '',
+      width: '800px',
+      top: '15vh'
+    },
+    menu: {
+      mode: 'horizontal',
+      menu: []
+    },
+    inputWidth: '200px',
+    imageWidth: '400px',
+    imageHeight: '300px',
+    thumbWidth: '40px',
+    thumbHeight: '30px',
+    videoWidth: '400px',
+    videoHeight: '300px',
+    placeholder: {
+      input: '请输入',
+      select: '请选择',
+      datetime: '请选择时间',
+      date: '请选择日期'
+    },
+    richtext: {
+      editorWidth: '500px',
+      // 富文本编辑器宽度
+      size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
+    },
+    download: {
+      // 行内下载
+      fileName: 'new-file',
+      // 下载文件名
+      downloadLabel: '点击这里下载',
+      // 下载标签
+      downloadLabelNoSrc: '没有可供下载的资源' // 下载标签
+    },
+    cols: [{
+      items: [{
+        inputType: 'collapse',
+        accordion: false,
+        // 手风琴模式
+        activeNames: '',
+        // 当前活动的面板名称
+        items: []
+      }]
+    }]
+  }};
+
+var script$e = {
+  __name: 'index',
+  props: ["myProps", "dataBox"],
+  setup(__props) {
+
+const props = __props;
+const myProps0 = ref(Object.assign({}, ly0default$2.myProps, props.myProps));
+
+return (_ctx, _cache) => {
+  const _component_el_dialog = resolveComponent("el-dialog");
+
+  return (myProps0.value.popup.visible)
+    ? (openBlock(), createBlock(_component_el_dialog, {
+        key: 0,
+        modelValue: myProps0.value.popup.visible,
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((myProps0.value.popup.visible) = $event)),
+        "custom-class": "code-template-dialog",
+        "close-on-press-escape": true,
+        "append-to-body": "",
+        title: myProps0.value.popup.title,
+        width: myProps0.value.popup.width,
+        top: myProps0.value.popup.top,
+        "destroy-on-close": true
+      }, {
+        default: withCtx(() => [
+          (myProps0.value)
+            ? (openBlock(), createBlock(script$f, {
+                key: 0,
+                myProps: myProps0.value,
+                dataBox: __props.dataBox
+              }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
+            : createCommentVNode("v-if", true)
+        ]),
+        _: 1 /* STABLE */
+      }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
+    : (myProps0.value)
+      ? (openBlock(), createBlock(script$f, {
+          key: 1,
+          myProps: myProps0.value,
+          dataBox: __props.dataBox
+        }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
+      : createCommentVNode("v-if", true)
+}
+}
+
+};
+
+script$e.__file = "src/form/index.vue";
+
+var ly0default$1 = {
+  myProps: {
+    mode: 'horizontal',
+    defaultActive: '',
+    backgroundColor: '#545c64',
+    textColor: '#fff',
+    activeTextColor: '#ffd04b',
+    horizontalHeight: '50px',
+    styleBase: 'border: none;',
+    style: '',
+    menu: []
+  }
+};
+
+var script$d = {
+    props: ['myProps'],
+    computed: {
+        myProps0(){
+            return Object.assign({}, ly0default$1.myProps, this.myProps)
+        }
+    },
+    methods: {
+        handleSelect(
+            key,
+            // keyPath
+        ) {
+            this.handleRun(key, this.myProps.menu, '');
+        },
+        handleOpen() {},
+            // key,
+            // keyPath
+        handleClose() {},
+            // key,
+            // keyPath
+            // 执行菜单句柄
+        handleRun(
+            index, // 目标索引
+            menu, // 当前菜单
+            indexFather, // 父节点索引
+        ) {
+            let result = false;
+            // 遍历菜单节点
+            for (let i = 0; i < menu.length; i++) {
+                // 内部索引继承
+                let index0 = indexFather ? indexFather + '-' + i : '' + i;
+                // 节点存在自定义索引
+                if (!!menu[i].index && index === menu[i].index) {
+                    if (menu[i].handle) {
+                        menu[i].handle(index);
+                    }
+                    result = true;
+                    break
+                }
+                // 节点不存在自定义索引
+                if (index === index0) {
+                    if (menu[i].handle) {
+                        menu[i].handle(index);
+                    }
+                    result = true;
+                    break
+                }
+                // 存在子节点，递归调用
+                if (!!menu[i].menu && menu[i].menu.length > 0) {
+                    result = this.handleRun(index, menu[i].menu, index0);
+                    if (!!result) {
+                        break
+                    }
+                }
+            }
+            return result
+        },
+    },
+};
+
+function render$6(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_el_menu_item = resolveComponent("el-menu-item");
+  const _component_el_sub_menu = resolveComponent("el-sub-menu");
+  const _component_el_menu = resolveComponent("el-menu");
+
+  return (openBlock(), createBlock(_component_el_menu, {
+    mode: $options.myProps0.mode,
+    "default-active": $options.myProps0.defaultActive,
+    onOpen: $options.handleOpen,
+    onClose: $options.handleClose,
+    onSelect: $options.handleSelect,
+    "background-color": $options.myProps0.backgroundColor,
+    "text-color": $options.myProps0.textColor,
+    "active-text-color": $options.myProps0.activeTextColor,
+    "menu-trigger": "hover",
+    style: normalizeStyle('--el-menu-horizontal-height: ' + $options.myProps0.horizontalHeight + '; ' +
+            $options.myProps0.styleBase + ' ' +
+            $options.myProps0.style)
+  }, {
+    default: withCtx(() => [
+      createCommentVNode(" 第1层 "),
+      (openBlock(true), createElementBlock(Fragment, null, renderList($props.myProps.menu, (item, index) => {
+        return (openBlock(), createElementBlock(Fragment, {
+          key: item.index ? item.index : String(index)
+        }, [
+          (!item.menu || item.menu.length === 0)
+            ? (openBlock(), createBlock(_component_el_menu_item, {
+                key: 0,
+                index: item.index ? item.index : String(index),
+                disabled: 
+                    'disabled' in item
+                    ? item.disabled
+                    : 'hdlDisabled' in item
+                        ? item.hdlDisabled(item, index)
+                        : false
+                
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString(item.title), 1 /* TEXT */)
+                ]),
+                _: 2 /* DYNAMIC */
+              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+            : (openBlock(), createBlock(_component_el_sub_menu, {
+                key: 1,
+                index: item.index ? item.index : String(index)
+              }, {
+                title: withCtx(() => [
+                  createTextVNode(toDisplayString(item.title), 1 /* TEXT */)
+                ]),
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(item.menu, (item0, index0) => {
+                    return (openBlock(), createElementBlock(Fragment, {
+                      key: item0.index ? item0.index : String(index) + '-' + String(index0)
+                    }, [
+                      (!item0.menu || item0.menu.length === 0)
+                        ? (openBlock(), createBlock(_component_el_menu_item, {
+                            key: 0,
+                            index: item0.index ? item0.index : String(index) + '-' + String(index0),
+                            disabled: 
+                            'disabled' in item0
+                            ? item0.disabled
+                            : 'hdlDisabled' in item0
+                                ? item0.hdlDisabled(item0, index0)
+                                : false
+                        
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(item0.title), 1 /* TEXT */)
+                            ]),
+                            _: 2 /* DYNAMIC */
+                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                        : (openBlock(), createBlock(_component_el_sub_menu, {
+                            key: 1,
+                            index: item0.index ? item0.index : String(index) + '-' + String(index0)
+                          }, {
+                            title: withCtx(() => [
+                              createTextVNode(toDisplayString(item0.title), 1 /* TEXT */)
+                            ]),
+                            default: withCtx(() => [
+                              (openBlock(true), createElementBlock(Fragment, null, renderList(item0.menu, (item1, index1) => {
+                                return (openBlock(), createElementBlock(Fragment, {
+                                  key: 
+                                item1.index
+                                ? item1.index
+                                : String(index) + '-' + String(index0) + '-' + String(index1)
+                            
+                                }, [
+                                  (!item1.menu || item1.menu.length === 0)
+                                    ? (openBlock(), createBlock(_component_el_menu_item, {
+                                        key: 0,
+                                        index: 
+                                    item1.index
+                                    ? item1.index
+                                    : String(index) + '-' + String(index0) + '-' + String(index1)
+                                ,
+                                        disabled: 
+                                    'disabled' in item1
+                                    ? item1.disabled
+                                    : 'hdlDisabled' in item1
+                                        ? item1.hdlDisabled(item1, index1)
+                                        : false
+                                
+                                      }, {
+                                        default: withCtx(() => [
+                                          createTextVNode(toDisplayString(item1.title), 1 /* TEXT */)
+                                        ]),
+                                        _: 2 /* DYNAMIC */
+                                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                    : (openBlock(), createBlock(_component_el_sub_menu, {
+                                        key: 1,
+                                        index: 
+                                    item1.index
+                                    ? item1.index
+                                    : String(index) + '-' + String(index0) + '-' + String(index1)
+                                
+                                      }, {
+                                        title: withCtx(() => [
+                                          createTextVNode(toDisplayString(item1.title), 1 /* TEXT */)
+                                        ]),
+                                        default: withCtx(() => [
+                                          (openBlock(true), createElementBlock(Fragment, null, renderList(item1.menu, (item2, index2) => {
+                                            return (openBlock(), createElementBlock(Fragment, {
+                                              key: 
+                                        item2.index
+                                        ? item2.index
+                                        : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
+                                    
+                                            }, [
+                                              (!item2.menu || item2.menu.length === 0)
+                                                ? (openBlock(), createBlock(_component_el_menu_item, {
+                                                    key: 0,
+                                                    index: 
+                                            item2.index
+                                            ? item2.index
+                                            : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
+                                        ,
+                                                    disabled: 
+                                            'disabled' in item2
+                                            ? item2.disabled
+                                            : 'hdlDisabled' in item2
+                                                ? item2.hdlDisabled(item2, index2)
+                                                : false
+                                        
+                                                  }, {
+                                                    default: withCtx(() => [
+                                                      createTextVNode(toDisplayString(item2.title), 1 /* TEXT */)
+                                                    ]),
+                                                    _: 2 /* DYNAMIC */
+                                                  }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                                : createCommentVNode("v-if", true),
+                                              createVNode(_component_el_sub_menu, {
+                                                else: "",
+                                                index: 
+                                            item2.index
+                                            ? item2.index
+                                            : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
+                                        
+                                              }, {
+                                                title: withCtx(() => [
+                                                  createTextVNode(toDisplayString(item2.title), 1 /* TEXT */)
+                                                ]),
+                                                default: withCtx(() => [
+                                                  (openBlock(true), createElementBlock(Fragment, null, renderList(item2.menu, (item3, index3) => {
+                                                    return (openBlock(), createBlock(_component_el_menu_item, {
+                                                      key: 
+                                                item3.index
+                                                ? item3.index
+                                                : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
+                                            ,
+                                                      index: 
+                                                    item3.index
+                                                    ? item3.index
+                                                    : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
+                                                ,
+                                                      disabled: 
+                                                    'disabled' in item3
+                                                    ? item3.disabled
+                                                    : 'hdlDisabled' in item3
+                                                        ? item3.hdlDisabled(item3, index3)
+                                                        : false
+                                                
+                                                    }, {
+                                                      default: withCtx(() => [
+                                                        createTextVNode(toDisplayString(item3.title), 1 /* TEXT */)
+                                                      ]),
+                                                      _: 2 /* DYNAMIC */
+                                                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                                  }), 128 /* KEYED_FRAGMENT */))
+                                                ]),
+                                                _: 2 /* DYNAMIC */
+                                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"])
+                                            ], 64 /* STABLE_FRAGMENT */))
+                                          }), 128 /* KEYED_FRAGMENT */))
+                                        ]),
+                                        _: 2 /* DYNAMIC */
+                                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
+                                ], 64 /* STABLE_FRAGMENT */))
+                              }), 128 /* KEYED_FRAGMENT */))
+                            ]),
+                            _: 2 /* DYNAMIC */
+                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
+                    ], 64 /* STABLE_FRAGMENT */))
+                  }), 128 /* KEYED_FRAGMENT */))
+                ]),
+                _: 2 /* DYNAMIC */
+              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
+        ], 64 /* STABLE_FRAGMENT */))
+      }), 128 /* KEYED_FRAGMENT */))
+    ]),
+    _: 1 /* STABLE */
+  }, 8 /* PROPS */, ["mode", "default-active", "onOpen", "onClose", "onSelect", "background-color", "text-color", "active-text-color", "style"]))
+}
+
+script$d.render = render$6;
+script$d.__file = "src/menu/index.vue";
 
 var quill$1 = {exports: {}};
 
@@ -39293,1401 +40680,150 @@ const QuillEditor = defineComponent({
     },
 });
 
-const _hoisted_1$d = { key: 12 };
-const _hoisted_2$d = { key: 0 };
-const _hoisted_3$8 = { key: 13 };
-const _hoisted_4$7 = { key: 0 };
-const _hoisted_5$6 = { key: 14 };
-const _hoisted_6$6 = { key: 0 };
-const _hoisted_7$6 = { key: 16 };
-const _hoisted_8$5 = ["innerHTML"];
-const _hoisted_9$4 = { key: 17 };
-const _hoisted_10$2 = ["width", "height", "poster"];
-const _hoisted_11$1 = ["src"];
-const _hoisted_12 = ["src"];
-const _hoisted_13 = ["src"];
-const _hoisted_14 = { key: 0 };
-const _hoisted_15 = { key: 18 };
-const _hoisted_16 = ["href", "download"];
-const _hoisted_17 = { key: 19 };
-const _hoisted_18 = { key: 20 };
-const _hoisted_19 = { key: 21 };
-const _hoisted_20 = { key: 22 };
-const _hoisted_21 = { key: 23 };
-const _hoisted_22 = { key: 24 };
-const _hoisted_23 = { key: 25 };
-const _hoisted_24 = { key: 26 };
-const _hoisted_25 = { key: 27 };
-const _hoisted_26 = { key: 28 };
-const _hoisted_27 = { key: 29 };
-const _hoisted_28 = { key: 30 };
+const _hoisted_1$c = { class: "rich-text-editor-container" };
+/* 以下quill富文本组件的样式库需要在宿主项目的main.js中引入
+import '@vueup/vue-quill/dist/vue-quill.core.css'
+import '@vueup/vue-quill/dist/vue-quill.snow.css' // snow主题
+import '@vueup/vue-quill/dist/vue-quill.bubble.css'
+*/
 
 
-var script$f = {
-  __name: 'InputBox',
-  props: ["myProps", "dataBox", "item"],
-  setup(__props) {
+var script$c = {
+  __name: 'index',
+  props: ["myProps"],
+  emits: ['update:modelValue'],
+  setup(__props, { emit: __emit }) {
 
 const props = __props;
+const emit = __emit;
 
-const input = reactive({
-    placeholder: computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.input
-    }),
-    showPassword: computed(()=>{
-        return !!props.item.showPassword
-    }),
-    hdlCannotInput: event => { // 解决偶发不能输入的问题
-        props.dataBox.fieldsValue[props.item.fieldName] = event.target.value;
-    }
-});
+// 富文本的值
+const modelValue = ref('');
+// 文件上传地址
+const uploadUrl = ref(props.myProps.uploadUrl ? props.myProps.uploadUrl : request.ly0.upload);
+// 指定上传文件的参数名称(Field Name)
+const uploadFieldName = ref(props.myProps.uploadFieldName ? props.myProps.uploadFieldName : "upload_file");
+// 限制文件上传的最大大小，默认5MB
+const maxSize = ref(props.myProps.maxSize ? props.myProps.maxSize : 1024 * 5);
+const theme = ref(props.myProps.theme ? props.myProps.theme : "snow"); // 默认snow主题
+reactive(props.myProps.customOptions ? props.myProps.customOptions : ()=>{});
 
-const select = reactive({
-    placeholder: computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.select
-    }),
-    items: computed(()=>{
-        if (props.item.items) {
-            return props.item.items
-        } else if (props.item.hdlGetItems) {
-            return props.item.hdlGetItems(props.dataBox.fieldsValue, props.item)
-        }
-    }),
-    hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
-        }
-    }
-});
+const quillEditor = ref(null);
 
-const datePicker = reactive({
-    placeholder: computed(()=> {
-        if (props.item.placeholder) {
-            return props.item.placeholder
-        }
-        if (props.item.type === 'datetime') {
-            return props.myProps.placeholder.datetime
-        }
-        if (props.item.type === 'date') {
-            return props.myProps.placeholder.date
-        }
-        return props.myProps.placeholder.datetime
-    }),
-    format: computed(() => {
-        if (props.item.format) {
-            return props.item.format
-        }
-        if (props.item.type === 'datetime') {
-            return 'YYYY/MM/DD HH:mm'
-        }
-        if (props.item.type === 'date') {
-            return 'YYYY/MM/DD'
-        }
-        return 'YYYY/MM/DD HH:mm'
-    }),
-    hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
-        }
-    }
-});
-
-const ly0switch = reactive({
-    hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
-        }
-    }
-});
-
-const radioGroup = reactive({
-    hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
-        }
-    }
-});
-
-const image = reactive({
-    getSrc: computed(() => {
-        if (
-            props.item.imageDelete &&
-            props.dataBox.fieldsValue[props.item.imageDelete] &&
-            (props.dataBox.fieldsValue[props.item.imageDelete] === true ||
-                props.dataBox.fieldsValue[props.item.imageDelete] === 'true') // 图片已删除
-        ) {
-            return ''
-        }
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
-        }
-        return ''
-    }),
-    delete: ()=>{
-        props.dataBox.fieldsValue[props.item.imageDelete] =
-            !props.dataBox.fieldsValue[props.item.imageDelete];
-    }
-});
-
-const images = reactive({
-    getSrc: (itemImages, indexImages) => {
-        if (
-            !props.item.imageDelete ||
-            !props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)
-        ) {
-            return itemImages
-        }
-        return ''
-    },
-    delete: (itemImages, indexImages) => {
-        if (!props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)) {
-            props.dataBox.fieldsValue[props.item.imageDelete].push(itemImages);
+// 自定义图片上传处理函数
+const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon, image/jpg');
+    input.click();
+    
+    input.onchange = async () => {
+        const file = input.files[0];
+        if (!file) return
+        
+        // 检查文件大小
+        if (file.size / 1024 > maxSize) {
+            alert(`图片大小不能超过 ${maxSize} KB`);
             return
         }
         
-        props.dataBox.fieldsValue[props.item.imageDelete] = props.dataBox.fieldsValue[
-            props.item.imageDelete
-            ].filter(i => {
-            return i !== itemImages
-        });
-    },
-    show: computed(()=>{
-        let result = [];
-        if (!props.item.imageDelete) {
-            props.dataBox.fieldsValue[props.item.fieldName].forEach(i => {
-                result.push(i);
+        // 获取 Quill 实例
+        const quill = quillEditor.value.getQuill();
+        // 记录当前光标位置
+        const length = quill.getSelection().index;
+        
+        // 插入一个占位符，例如加载中的图片或文字
+        quill.insertEmbed(length, 'image', 'uploading...');
+        
+        const formData = new FormData();
+        formData.append(uploadFieldName, file);
+        
+        try {
+            // ⚠️ 模拟/替换为你真实的上传逻辑 (例如使用 axios 或 fetch)
+            // 注意：这里需要你处理好响应，确保返回图片 URL
+            
+            // 假设使用 fetch
+            const response = await request$1.ly0.request({
+                uploadUrl: uploadUrl ? uploadUrl : request$1.ly0.domain + request$1.ly0.upload,
+                data: formData
             });
-        } else {
-            props.dataBox.fieldsValue[props.item.fieldName]
-                .filter(i => {
-                    return !props.dataBox.fieldsValue[props.item.imageDelete].includes(i)
-                })
-                .forEach(i => {
-                    result.push(i);
-                });
+            
+            const result = await response.json();
+            // 假设上传成功后，服务器返回的数据结构是 { url: '图片URL' }
+            let imageUrl = '';
+            if(result.code === 0){
+                imageUrl = result.data.src;
+            }
+            
+            // 📢 插入图片
+            // 1. 删除占位符
+            quill.deleteText(length, 'uploading...'.length);
+            // 2. 插入真实的图片链接
+            quill.insertEmbed(length, 'image', imageUrl);
+            // 3. 移动光标到图片后
+            quill.setSelection(length + 1);
+        } catch (error) {
+            console.error('图片上传失败:', error);
+            // 上传失败，删除占位符
+            quill.deleteText(length, 'uploading...'.length);
+            alert('图片上传失败');
         }
-        return result
-    })
-});
+    };
+};
 
-const richtext = reactive({
-    options: computed(()=>{
-        return {
-            action: props.dataBox.upload, // 必填参数 图片上传地址
-            methods: 'post', // 必填参数 图片上传方式
-            // token: '' // 可选参数 如果需要token验证，假设你的token有存放在session-storage
-            name: 'upload_file', // 必填参数 文件的参数名
-            size: props.myProps.richtext.size, // 可选参数  可上传的图片大小，单位为Kb, 1M = 1024Kb
-            // accept: 'multipart/form-data, image/png, image/gif, image/jpeg, image/bmp, image/x-icon,image/jpg' // 可选参数 可上传的图片格式
-        }
-    })
-});
-
-const video = reactive({
-    src: computed(()=>{
-        if (
-            props.item.videoDelete &&
-            props.dataBox.fieldsValue[props.item.videoDelete] &&
-            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
-                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
-        ) {
-            return ''
-        }
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
-        }
-        return ''
-    }),
-    poster: computed(()=>{
-        if (
-            props.item.videoDelete &&
-            props.dataBox.fieldsValue[props.item.videoDelete] &&
-            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
-                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
-        ) {
-            return ''
-        }
-        if (props.dataBox.fieldsValue[props.item.poster]) {
-            return props.dataBox.fieldsValue[props.item.poster]
-        }
-        return ''
-    }),
-    delete: ()=>{
-        props.dataBox.fieldsValue[props.item.videoDelete] =
-            !props.dataBox.fieldsValue[props.item.videoDelete];
-    },
-});
-
-const download = reactive({
-    fileName: computed(() => {
-        if (props.item.downloadFileName) {
-            return props.item.downloadFileName
-        }
-        return props.myProps.download.fileName
-    }),
-    downloadLabel: computed(() => {
-        if (!props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.myProps.download.downloadLabelNoSrc
-        }
-        if (props.item.hdlGetDownloadLabel) {
-            return props.item.hdlGetDownloadLabel(props.dataBox.fieldsValue, props.item)
-        }
-        return props.myProps.download.downloadLabel
-    }),
-    downloadSrc: computed(() => {
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
-        }
-        return ''
-    })
-});
-
-const upload = reactive({
-    props: {
-        val: computed(()=>{return {
-            uploadUrl: props.dataBox.upload
-        }}),
-        val_carplate: computed(()=>{return {
-            uploadUrl: props.dataBox.upload_carplate
-        }})
-    },
-    getResult: {
-        hdl: result => {
-            // 可以获取多个文件上传结果
-            console.log('文件上传结果：', result.fileList);
-            if ('limit' in props.item && props.item.limit > 1) {
-                // 接收多个文件
-                // eslint-disable-next-line
-                props.dataBox.fieldsValue[props.item.fieldName] = [];
-                result.fileList.forEach((i) => {
-                    // eslint-disable-next-line
-                    props.dataBox.fieldsValue[props.item.fieldName].push(i.src);
-                });
-            } else {
-                // 只接收一个文件
-                // eslint-disable-next-line
-                props.dataBox.fieldsValue[props.item.fieldName] =
-                    result.fileList.length === 0 ? '' : result.fileList[0].src;
+// 富文本编辑器的配置
+const editorOptions = computed(() => {
+    return {
+        placeholder: '请输入内容...',
+        modules: {
+            toolbar: {
+                // 📢 自定义 Toolbar 并绑定 imageHandler
+                container: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'script': 'sub' }, { 'script': 'super' }],
+                    [{ 'indent': '-1' }, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                    ['link', 'image', 'video'], // 'image' 会触发 handler
+                    ['clean']
+                ],
+                handlers: {
+                    'image': imageHandler // 绑定自定义的图片处理函数
+                }
             }
         },
-        hdl_carplate: result => {
-            // 获取车牌识别结果
-            // eslint-disable-next-line
-            props.dataBox.fieldsValue[props.item.fieldName] = result.src ? result.src : '';
-            // eslint-disable-next-line
-            props.dataBox.fieldsValue[props.item.carplate] =
-                result.result && result.result.txt ? result.result.txt : '';
-        }
+        ...props.customOptions // 允许用户覆盖默认选项
     }
 });
 
-const style = reactive({
-    box: styleModule.input.box,
-    text: styleModule.input.text,
-    text0: styleModule.input.text0,
-    line: computed(()=>styleModule.line()),
-    input: styleModule.input.input,
-    input_number: styleModule.input.input_number,
-    el_switch: styleModule.input.el_switch,
-    button_group: styleModule.input.button_group,
-    image: styleModule.input.image,
-    images: styleModule.input.images,
-    richtext: styleModule.input.richtext,
-    video: styleModule.input.video,
-    download: computed(()=>styleModule.input.download()),
-});
-
-const hdlGetValue = {
-    gbt2260(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.code6 ? result.code6 : '';
-    },
-    ly0d7group(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7postal(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7price(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7size(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7thumb(result) {
-        props.dataBox.fieldsValue[props.item.fieldName.thumb] = result.value.thumb;
-        props.dataBox.fieldsValue[props.item.fieldName.name] = result.value.name;
-    },
+// 处理富文本内容更新，同步到 v-model
+const handleContentUpdate = (content) => {
+    emit('update:modelValue', content);
 };
 
 return (_ctx, _cache) => {
-  const _component_el_input = resolveComponent("el-input");
-  const _component_el_option = resolveComponent("el-option");
-  const _component_el_select = resolveComponent("el-select");
-  const _component_el_date_picker = resolveComponent("el-date-picker");
-  const _component_el_input_number = resolveComponent("el-input-number");
-  const _component_el_switch = resolveComponent("el-switch");
-  const _component_el_radio = resolveComponent("el-radio");
-  const _component_el_radio_group = resolveComponent("el-radio-group");
-  const _component_el_button = resolveComponent("el-button");
-  const _component_el_tooltip = resolveComponent("el-tooltip");
-  const _component_el_button_group = resolveComponent("el-button-group");
-  const _component_el_image = resolveComponent("el-image");
-  const _component_ly0Upload = resolveComponent("ly0Upload");
-  const _component_ly0Upload_drag = resolveComponent("ly0Upload_drag");
-  const _component_ly0Upload_picture = resolveComponent("ly0Upload_picture");
-  const _component_ly0Upload_pictureCard = resolveComponent("ly0Upload_pictureCard");
-  const _component_ly0Upload_avatar = resolveComponent("ly0Upload_avatar");
-  const _component_ly0Upload_carplate = resolveComponent("ly0Upload_carplate");
-  const _component_ly0gbt2260 = resolveComponent("ly0gbt2260");
-  const _component_ly0d7group = resolveComponent("ly0d7group");
-  const _component_ly0d7postal = resolveComponent("ly0d7postal");
-  const _component_ly0d7price = resolveComponent("ly0d7price");
-  const _component_ly0d7size = resolveComponent("ly0d7size");
-  const _component_ly0d7thumb = resolveComponent("ly0d7thumb");
-
-  return (openBlock(), createElementBlock(Fragment, null, [
-    createCommentVNode(" input-box "),
-    createElementVNode("div", {
-      style: normalizeStyle(style.box(__props.item))
-    }, [
-      createCommentVNode(" 只读 "),
-      (__props.item.inputType === 'text')
-        ? (openBlock(), createElementBlock("div", {
-            key: 0,
-            style: normalizeStyle(style.text(__props.item, __props.myProps))
-          }, toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'text0')
-        ? (openBlock(), createElementBlock("div", {
-            key: 1,
-            style: normalizeStyle(style.text0(__props.item))
-          }, toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
-        : createCommentVNode("v-if", true),
-      (!__props.item.inputType)
-        ? (openBlock(), createElementBlock("div", {
-            key: 2,
-            style: normalizeStyle(style.text(__props.item, __props.myProps))
-          }, toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'expression')
-        ? (openBlock(), createElementBlock("div", {
-            key: 3,
-            style: normalizeStyle(style.text(__props.item, __props.myProps))
-          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
-                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
-                : ' '), 5 /* TEXT, STYLE */))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'expression0')
-        ? (openBlock(), createElementBlock("div", {
-            key: 4,
-            style: normalizeStyle(style.text0(__props.item))
-          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
-                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
-                : ' '), 5 /* TEXT, STYLE */))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'line')
-        ? (openBlock(), createElementBlock("div", {
-            key: 5,
-            style: normalizeStyle(style.line)
-          }, null, 4 /* STYLE */))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 修改数据 "),
-      (__props.item.inputType === 'input')
-        ? (openBlock(), createBlock(_component_el_input, {
-            key: 6,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-            placeholder: input.placeholder,
-            style: normalizeStyle(style.input(__props.item, __props.myProps)),
-            onInput: input.hdlCannotInput,
-            "show-password": input.showPassword
-          }, null, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onInput", "show-password"]))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'select')
-        ? (openBlock(), createBlock(_component_el_select, {
-            key: 7,
-            class: "deep-input",
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-            placeholder: select.placeholder,
-            filterable: "",
-            style: normalizeStyle(style.input(__props.item, __props.myProps)),
-            onChange: select.hdlChange
-          }, {
-            default: withCtx(() => [
-              (openBlock(true), createElementBlock(Fragment, null, renderList(select.items, (item0, index0) => {
-                return (openBlock(), createBlock(_component_el_option, {
-                  label: item0[__props.item.item_fieldLabel],
-                  value: item0[__props.item.item_fieldValue],
-                  key: index0
-                }, null, 8 /* PROPS */, ["label", "value"]))
-              }), 128 /* KEYED_FRAGMENT */))
-            ]),
-            _: 1 /* STABLE */
-          }, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onChange"]))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'date-picker')
-        ? (openBlock(), createBlock(_component_el_date_picker, {
-            key: 8,
-            class: "deep-input",
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-            type: __props.item.type ? __props.item.type : 'datetime',
-            placeholder: datePicker.placeholder,
-            format: datePicker.format,
-            style: normalizeStyle(style.input(__props.item, __props.myProps)),
-            onChange: datePicker.hdlChange
-          }, null, 8 /* PROPS */, ["modelValue", "type", "placeholder", "format", "style", "onChange"]))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'input-number')
-        ? (openBlock(), createBlock(_component_el_input_number, {
-            key: 9,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-            size: style.input_number(__props.item).facade.size,
-            min: 'min' in __props.item ? __props.item.min : 1,
-            max: 'max' in __props.item ? __props.item.max : 100,
-            step: 'step' in __props.item ? __props.item.step : 1,
-            "step-strictly": 'step_strictly' in __props.item ? __props.item.step_strictly : true
-          }, null, 8 /* PROPS */, ["modelValue", "size", "min", "max", "step", "step-strictly"]))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'switch')
-        ? (openBlock(), createBlock(_component_el_switch, {
-            key: 10,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-            "active-text": __props.item.activeText,
-            "inactive-text": __props.item.inactiveText,
-            "active-value": __props.item.activeValue,
-            "inactive-value": __props.item.inactiveValue,
-            "active-color": style.el_switch(__props.item).facade.active_color,
-            disabled: !!('disabled' in __props.item && (__props.item.disabled === true || __props.item.disabled === 'true')),
-            onChange: ly0switch.hdlChange
-          }, null, 8 /* PROPS */, ["modelValue", "active-text", "inactive-text", "active-value", "inactive-value", "active-color", "disabled", "onChange"]))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'radio-group')
-        ? (openBlock(), createBlock(_component_el_radio_group, {
-            key: 11,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-            disabled: !!__props.item.disabled,
-            onChange: radioGroup.hdlChange
-          }, {
-            default: withCtx(() => [
-              (openBlock(true), createElementBlock(Fragment, null, renderList(__props.item.items, (item0, index0) => {
-                return (openBlock(), createBlock(_component_el_radio, {
-                  key: index0,
-                  label: item0[__props.item.item_fieldValue]
-                }, {
-                  default: withCtx(() => [
-                    createTextVNode(toDisplayString(item0[__props.item.item_fieldLabel]), 1 /* TEXT */)
-                  ]),
-                  _: 2 /* DYNAMIC */
-                }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["label"]))
-              }), 128 /* KEYED_FRAGMENT */))
-            ]),
-            _: 1 /* STABLE */
-          }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
-        : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'button-group' && __props.item.box && __props.item.box.length > 0)
-        ? (openBlock(), createElementBlock("div", _hoisted_1$d, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(__props.item.box, (item0, index0) => {
-              return (openBlock(), createBlock(_component_el_button_group, {
-                key: index0,
-                style: normalizeStyle(style.button_group().group.style)
-              }, {
-                default: withCtx(() => [
-                  (openBlock(true), createElementBlock(Fragment, null, renderList(item0.box, (item1, index1) => {
-                    return (openBlock(), createBlock(_component_el_tooltip, {
-                      key: index1,
-                      disabled: !item1.tip,
-                      content: item1.tip && item1.tip.content ? item1.tip.content : '',
-                      placement: item1.tip && item1.tip.placement ? item1.tip.placement : 'bottom',
-                      effect: "light"
-                    }, {
-                      default: withCtx(() => [
-                        (openBlock(), createBlock(_component_el_button, {
-                          style: normalizeStyle(style.button_group(__props.item, item0, item1).button.style),
-                          icon: style.button_group(__props.item, item0, item1).button.icon,
-                          type: style.button_group(__props.item, item0, item1).button.facade.type,
-                          size: style.button_group(__props.item, item0, item1).button.facade.size,
-                          plain: style.button_group(__props.item, item0, item1).button.facade.plain,
-                          round: style.button_group(__props.item, item0, item1).button.facade.round,
-                          circle: style.button_group(__props.item, item0, item1).button.facade.circle,
-                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.dataBox.fieldsValue, __props.item) : null),
-                          key: index1
-                        }, {
-                          default: withCtx(() => [
-                            (item1.text)
-                              ? (openBlock(), createElementBlock("span", _hoisted_2$d, toDisplayString(item1.text), 1 /* TEXT */))
-                              : createCommentVNode("v-if", true)
-                          ]),
-                          _: 2 /* DYNAMIC */
-                        }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["style", "icon", "type", "size", "plain", "round", "circle", "onClick"]))
-                      ]),
-                      _: 2 /* DYNAMIC */
-                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["disabled", "content", "placement"]))
-                  }), 128 /* KEYED_FRAGMENT */))
-                ]),
-                _: 2 /* DYNAMIC */
-              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["style"]))
-            }), 128 /* KEYED_FRAGMENT */))
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 图片&富文本&视频 "),
-      createCommentVNode(" 图片 "),
-      (__props.item.inputType === 'image')
-        ? (openBlock(), createElementBlock("div", _hoisted_3$8, [
-            createElementVNode("div", null, [
-              createVNode(_component_el_image, {
-                style: normalizeStyle(style.image(__props.item, __props.myProps)),
-                src: image.getSrc,
-                "preview-src-list": [image.getSrc],
-                "preview-teleported": true,
-                "hide-on-click-modal": true
-              }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
-            ]),
-            createCommentVNode(" 设置了图片删除功能，同时图片不为空 "),
-            (!!__props.item.imageDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
-              ? (openBlock(), createElementBlock("div", _hoisted_4$7, [
-                  createVNode(_component_el_button, {
-                    size: "small",
-                    icon: !__props.dataBox.fieldsValue[__props.item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
-                    onClick: image.delete
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(__props.dataBox.fieldsValue[__props.item.imageDelete] ? '图片已删除，恢复' : '删除'), 1 /* TEXT */)
-                    ]),
-                    _: 1 /* STABLE */
-                  }, 8 /* PROPS */, ["icon", "onClick"])
-                ]))
-              : createCommentVNode("v-if", true)
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 多个图片 "),
-      (__props.item.inputType === 'images')
-        ? (openBlock(), createElementBlock("div", _hoisted_5$6, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(__props.dataBox.fieldsValue[__props.item.fieldName], (itemImages, indexImages) => {
-              return (openBlock(), createElementBlock("div", {
-                key: indexImages,
-                style: normalizeStyle(style.images(__props.item, __props.myProps).itemBox)
-              }, [
-                createElementVNode("div", null, [
-                  createVNode(_component_el_image, {
-                    style: normalizeStyle(style.images(__props.item, __props.myProps).itemThumb),
-                    src: images.getSrc(itemImages, indexImages),
-                    "preview-src-list": images.show
-                  }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
-                ]),
-                (!!__props.item.imageDelete)
-                  ? (openBlock(), createElementBlock("div", _hoisted_6$6, [
-                      createVNode(_component_el_button, {
-                        size: "small",
-                        icon: "el-icon-delete",
-                        onClick: $event => (images.delete(itemImages, indexImages))
-                      }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString(__props.dataBox.fieldsValue[__props.item.imageDelete].includes(itemImages) ? '恢复' : '删除'), 1 /* TEXT */)
-                        ]),
-                        _: 2 /* DYNAMIC */
-                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])
-                    ]))
-                  : createCommentVNode("v-if", true)
-              ], 4 /* STYLE */))
-            }), 128 /* KEYED_FRAGMENT */))
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 富文本 "),
-      (__props.item.inputType === 'richtext')
-        ? (openBlock(), createElementBlock("div", {
-            key: 15,
-            style: normalizeStyle(style.richtext(__props.item, __props.myProps))
-          }, [
-            createVNode(unref(QuillEditor), {
-              ref: "text",
-              modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
-              options: richtext.options
-            }, null, 8 /* PROPS */, ["modelValue", "options"])
-          ], 4 /* STYLE */))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 富文本show "),
-      (__props.item.inputType === 'richtextShow')
-        ? (openBlock(), createElementBlock("div", _hoisted_7$6, [
-            createElementVNode("div", {
-              innerHTML: __props.dataBox.fieldsValue[__props.item.fieldName]
-            }, null, 8 /* PROPS */, _hoisted_8$5)
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 视频 "),
-      (__props.item.inputType === 'video')
-        ? (openBlock(), createElementBlock("div", _hoisted_9$4, [
-            createElementVNode("div", null, [
-              createElementVNode("video", {
-                width: style.video(__props.item, __props.myProps).width,
-                height: style.video(__props.item, __props.myProps).height,
-                controls: "",
-                poster: video.poster
-              }, [
-                createElementVNode("source", {
-                  src: video.src,
-                  type: "video/mp4"
-                }, null, 8 /* PROPS */, _hoisted_11$1),
-                createCommentVNode(" MP4/H.264/AAC - 最广泛支持 "),
-                createElementVNode("source", {
-                  src: video.src,
-                  type: "video/webm"
-                }, null, 8 /* PROPS */, _hoisted_12),
-                createCommentVNode(" WebM/VP9/Opus - 开源格式，支持良好 "),
-                createElementVNode("source", {
-                  src: video.src,
-                  type: "video/ogg"
-                }, null, 8 /* PROPS */, _hoisted_13),
-                createCommentVNode(" Ogg/Theora/Vorbis - 较旧的开源格式 ")
-              ], 8 /* PROPS */, _hoisted_10$2)
-            ]),
-            createCommentVNode(" 设置了视频删除功能，同时视频不为空 "),
-            (!!__props.item.videoDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
-              ? (openBlock(), createElementBlock("div", _hoisted_14, [
-                  createVNode(_component_el_button, {
-                    size: "small",
-                    icon: !__props.dataBox.fieldsValue[__props.item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
-                    onClick: video.delete
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(!!__props.dataBox.fieldsValue[__props.item.videoDelete] ? '视频已删除，恢复' : '删除'), 1 /* TEXT */)
-                    ]),
-                    _: 1 /* STABLE */
-                  }, 8 /* PROPS */, ["icon", "onClick"])
-                ]))
-              : createCommentVNode("v-if", true)
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 上传及下载 "),
-      createCommentVNode(" 下载 "),
-      (__props.item.inputType === 'download')
-        ? (openBlock(), createElementBlock("div", _hoisted_15, [
-            (__props.dataBox.fieldsValue[__props.item.fieldName])
-              ? (openBlock(), createElementBlock("a", {
-                  key: 0,
-                  style: normalizeStyle(style.download.style),
-                  href: download.downloadSrc,
-                  download: download.fileName
-                }, [
-                  createElementVNode("span", null, toDisplayString(download.downloadLabel), 1 /* TEXT */)
-                ], 12 /* STYLE, PROPS */, _hoisted_16))
-              : (openBlock(), createElementBlock("span", {
-                  key: 1,
-                  style: normalizeStyle(style.download.none)
-                }, toDisplayString(download.downloadLabel), 5 /* TEXT, STYLE */))
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 上传多个文件 "),
-      (__props.item.inputType === 'upload')
-        ? (openBlock(), createElementBlock("div", _hoisted_17, [
-            createVNode(_component_ly0Upload, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 拖拽上传 "),
-      (__props.item.inputType === 'upload-drag')
-        ? (openBlock(), createElementBlock("div", _hoisted_18, [
-            createVNode(_component_ly0Upload_drag, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 图片列表 "),
-      (__props.item.inputType === 'upload-picture')
-        ? (openBlock(), createElementBlock("div", _hoisted_19, [
-            createVNode(_component_ly0Upload_picture, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 图片墙 "),
-      (__props.item.inputType === 'upload-picture-card')
-        ? (openBlock(), createElementBlock("div", _hoisted_20, [
-            createVNode(_component_ly0Upload_pictureCard, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 头像 "),
-      (__props.item.inputType === 'upload-avatar')
-        ? (openBlock(), createElementBlock("div", _hoisted_21, [
-            createVNode(_component_ly0Upload_avatar, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 车牌识别 "),
-      (__props.item.inputType === 'upload-carplate')
-        ? (openBlock(), createElementBlock("div", _hoisted_22, [
-            createVNode(_component_ly0Upload_carplate, {
-              myProps: upload.props.val_carplate,
-              onGetUploadResult: upload.getResult.hdl_carplate
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 行政区划 "),
-      (__props.item.inputType === 'd3gbt2260')
-        ? (openBlock(), createElementBlock("div", _hoisted_23, [
-            createVNode(_component_ly0gbt2260, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : '',
-                    readOnly: __props.item.readOnly
-                },
-              onGetValue: hdlGetValue.gbt2260
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 商品分类 "),
-      (__props.item.inputType === 'd7group')
-        ? (openBlock(), createElementBlock("div", _hoisted_24, [
-            createVNode(_component_ly0d7group, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7group
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 邮寄地址 "),
-      (__props.item.inputType === 'd7postal')
-        ? (openBlock(), createElementBlock("div", _hoisted_25, [
-            createVNode(_component_ly0d7postal, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7postal
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 商品标价 "),
-      (__props.item.inputType === 'd7price')
-        ? (openBlock(), createElementBlock("div", _hoisted_26, [
-            createVNode(_component_ly0d7price, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7price
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 商品规格 "),
-      (__props.item.inputType === 'd7size')
-        ? (openBlock(), createElementBlock("div", _hoisted_27, [
-            createVNode(_component_ly0d7size, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7size
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
-          ]))
-        : createCommentVNode("v-if", true),
-      createCommentVNode(" 商品缩略图 "),
-      (__props.item.inputType === 'd7thumb')
-        ? (openBlock(), createElementBlock("div", _hoisted_28, [
-            createVNode(_component_ly0d7thumb, {
-              myProps: {
-                    value: {
-                        thumb: __props.dataBox.fieldsValue[__props.item.fieldName.thumb],
-                        name: __props.dataBox.fieldsValue[__props.item.fieldName.name],
-                    },
-                    readOnly: __props.item.readOnly
-                },
-              onGetValue: hdlGetValue.ly0d7thumb
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
-          ]))
-        : createCommentVNode("v-if", true)
-    ], 4 /* STYLE */)
-  ], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */))
+  return (openBlock(), createElementBlock("div", _hoisted_1$c, [
+    createVNode(unref(QuillEditor), {
+      ref_key: "quillEditor",
+      ref: quillEditor,
+      content: modelValue.value,
+      options: editorOptions.value,
+      theme: theme.value,
+      contentType: "html",
+      "onUpdate:content": handleContentUpdate
+    }, null, 8 /* PROPS */, ["content", "options", "theme"])
+  ]))
 }
 }
 
 };
 
-script$f.__scopeId = "data-v-a94fa4ba";
-script$f.__file = "src/form/InputBox.vue";
-
-const _hoisted_1$c = { key: 0 };
-const _hoisted_2$c = ["colspan"];
-const _hoisted_3$7 = { key: 0 };
-const _hoisted_4$6 = ["colspan"];
-
-
-var script$e = {
-  __name: 'Form',
-  props: ["myProps", "dataBox"],
-  setup(__props) {
-
-const style = reactive({
-    collapse: computed(() => styleModule.collapse()),
-    field_box: computed(() => styleModule.field_box()),
-    line: computed(() => styleModule.line()),
-    no_field_label: styleModule.no_field_label,
-    root_box: computed(() => styleModule.root_box()),
-    submit_box: computed(() => styleModule.submit_box())
-});
-
-return (_ctx, _cache) => {
-  const _component_ly0Menu = resolveComponent("ly0Menu");
-  const _component_el_collapse_item = resolveComponent("el-collapse-item");
-  const _component_el_collapse = resolveComponent("el-collapse");
-  const _component_el_button = resolveComponent("el-button");
-
-  return (openBlock(), createElementBlock(Fragment, null, [
-    createCommentVNode(" 置顶菜单 "),
-    (__props.myProps.menu && __props.myProps.menu.menu && __props.myProps.menu.menu.length > 0)
-      ? (openBlock(), createBlock(_component_ly0Menu, {
-          key: 0,
-          myProps: __props.myProps.menu
-        }, null, 8 /* PROPS */, ["myProps"]))
-      : createCommentVNode("v-if", true),
-    createCommentVNode(" 表单区域可以分为多个列 "),
-    createElementVNode("div", {
-      style: normalizeStyle(style.root_box)
-    }, [
-      (openBlock(true), createElementBlock(Fragment, null, renderList(__props.myProps.cols, (item, index) => {
-        return (openBlock(), createElementBlock("div", { key: index }, [
-          createElementVNode("table", null, [
-            createElementVNode("tbody", null, [
-              (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, (item0, index0) => {
-                return (openBlock(), createElementBlock(Fragment, { key: index0 }, [
-                  (item0.hdlVisible ? item0.hdlVisible(__props.dataBox.fieldsValue) : true)
-                    ? (openBlock(), createElementBlock("tr", _hoisted_1$c, [
-                        (!!item0.label)
-                          ? (openBlock(), createElementBlock("td", {
-                              key: 0,
-                              style: normalizeStyle(style.field_box.left)
-                            }, [
-                              createVNode(script$g, {
-                                myProps: __props.myProps,
-                                dataBox: __props.dataBox,
-                                item: item0
-                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
-                            ], 4 /* STYLE */))
-                          : createCommentVNode("v-if", true),
-                        createElementVNode("td", {
-                          style: normalizeStyle(style.field_box.right),
-                          colspan: style.no_field_label(item0)
-                        }, [
-                          (item0.inputType === 'collapse')
-                            ? (openBlock(), createBlock(_component_el_collapse, {
-                                key: 0,
-                                accordion: 
-                                        'accordion' in item0 &&
-                                        (item0.accordion === true || item0.accordion === 'true')
-                                    ,
-                                modelValue: item0.activeNames,
-                                "onUpdate:modelValue": $event => ((item0.activeNames) = $event),
-                                style: normalizeStyle(style.collapse.style)
-                              }, {
-                                default: withCtx(() => [
-                                  (openBlock(true), createElementBlock(Fragment, null, renderList(item0.items, (item1, index1) => {
-                                    return (openBlock(), createElementBlock(Fragment, { key: index1 }, [
-                                      (item1.hdlVisible ? item1.hdlVisible(__props.dataBox.fieldsValue) : true)
-                                        ? (openBlock(), createBlock(_component_el_collapse_item, {
-                                            key: 0,
-                                            title: item1.title,
-                                            name: item1.name ? item1.name : index1
-                                          }, {
-                                            default: withCtx(() => [
-                                              createElementVNode("table", {
-                                                style: normalizeStyle(style.collapse.table)
-                                              }, [
-                                                (openBlock(true), createElementBlock(Fragment, null, renderList(item1.items, (item2, index2) => {
-                                                  return (openBlock(), createElementBlock(Fragment, { key: index2 }, [
-                                                    (
-                                                            item2.hdlVisible
-                                                            ? item2.hdlVisible(__props.dataBox.fieldsValue)
-                                                            : true
-                                                        )
-                                                      ? (openBlock(), createElementBlock("tr", _hoisted_3$7, [
-                                                          (item2.label)
-                                                            ? (openBlock(), createElementBlock("td", {
-                                                                key: 0,
-                                                                style: normalizeStyle(style.field_box.left)
-                                                              }, [
-                                                                createVNode(script$g, {
-                                                                  myProps: __props.myProps,
-                                                                  dataBox: __props.dataBox,
-                                                                  item: item2
-                                                                }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
-                                                              ], 4 /* STYLE */))
-                                                            : createCommentVNode("v-if", true),
-                                                          createElementVNode("td", {
-                                                            style: normalizeStyle(style.field_box.right),
-                                                            colspan: style.no_field_label(item2)
-                                                          }, [
-                                                            createVNode(script$f, {
-                                                              myProps: __props.myProps,
-                                                              dataBox: __props.dataBox,
-                                                              item: item2
-                                                            }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
-                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$6)
-                                                        ]))
-                                                      : createCommentVNode("v-if", true)
-                                                  ], 64 /* STABLE_FRAGMENT */))
-                                                }), 128 /* KEYED_FRAGMENT */))
-                                              ], 4 /* STYLE */)
-                                            ]),
-                                            _: 2 /* DYNAMIC */
-                                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["title", "name"]))
-                                        : createCommentVNode("v-if", true)
-                                    ], 64 /* STABLE_FRAGMENT */))
-                                  }), 128 /* KEYED_FRAGMENT */))
-                                ]),
-                                _: 2 /* DYNAMIC */
-                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
-                            : (openBlock(), createBlock(script$f, {
-                                key: 1,
-                                myProps: __props.myProps,
-                                dataBox: __props.dataBox,
-                                item: item0
-                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"]))
-                        ], 12 /* STYLE, PROPS */, _hoisted_2$c)
-                      ]))
-                    : createCommentVNode("v-if", true)
-                ], 64 /* STABLE_FRAGMENT */))
-              }), 128 /* KEYED_FRAGMENT */))
-            ])
-          ])
-        ]))
-      }), 128 /* KEYED_FRAGMENT */))
-    ], 4 /* STYLE */),
-    createCommentVNode(" 提交 "),
-    (__props.dataBox.hdlSubmit)
-      ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-          createElementVNode("div", {
-            style: normalizeStyle(style.line)
-          }, null, 4 /* STYLE */),
-          createElementVNode("div", {
-            style: normalizeStyle(style.submit_box.style)
-          }, [
-            createVNode(_component_el_button, {
-              type: style.submit_box.button.facade.type,
-              plain: style.submit_box.button.facade.plain,
-              style: normalizeStyle(style.submit_box.button.style),
-              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.dataBox.fieldsValue)))
-            }, {
-              default: withCtx(() => [...(_cache[1] || (_cache[1] = [
-                createTextVNode("提交", -1 /* CACHED */)
-              ]))]),
-              _: 1 /* STABLE */
-            }, 8 /* PROPS */, ["type", "plain", "style"])
-          ], 4 /* STYLE */)
-        ], 64 /* STABLE_FRAGMENT */))
-      : createCommentVNode("v-if", true)
-  ], 64 /* STABLE_FRAGMENT */))
-}
-}
-
-};
-
-script$e.__file = "src/form/Form.vue";
-
-// 默认值
-
-var ly0default$2 = {
-  myProps: {
-    popup: {
-      visible: false,
-      title: '',
-      width: '800px',
-      top: '15vh'
-    },
-    menu: {
-      mode: 'horizontal',
-      menu: []
-    },
-    inputWidth: '200px',
-    imageWidth: '400px',
-    imageHeight: '300px',
-    thumbWidth: '40px',
-    thumbHeight: '30px',
-    videoWidth: '400px',
-    videoHeight: '300px',
-    placeholder: {
-      input: '请输入',
-      select: '请选择',
-      datetime: '请选择时间',
-      date: '请选择日期'
-    },
-    richtext: {
-      editorWidth: '500px',
-      // 富文本编辑器宽度
-      size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
-    },
-    download: {
-      // 行内下载
-      fileName: 'new-file',
-      // 下载文件名
-      downloadLabel: '点击这里下载',
-      // 下载标签
-      downloadLabelNoSrc: '没有可供下载的资源' // 下载标签
-    },
-    cols: [{
-      items: [{
-        inputType: 'collapse',
-        accordion: false,
-        // 手风琴模式
-        activeNames: '',
-        // 当前活动的面板名称
-        items: []
-      }]
-    }]
-  }};
-
-var script$d = {
-  __name: 'index',
-  props: ["myProps", "dataBox"],
-  setup(__props) {
-
-const props = __props;
-const myProps0 = ref(Object.assign({}, ly0default$2.myProps, props.myProps));
-
-return (_ctx, _cache) => {
-  const _component_el_dialog = resolveComponent("el-dialog");
-
-  return (myProps0.value.popup.visible)
-    ? (openBlock(), createBlock(_component_el_dialog, {
-        key: 0,
-        modelValue: myProps0.value.popup.visible,
-        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((myProps0.value.popup.visible) = $event)),
-        "custom-class": "code-template-dialog",
-        "close-on-press-escape": true,
-        "append-to-body": "",
-        title: myProps0.value.popup.title,
-        width: myProps0.value.popup.width,
-        top: myProps0.value.popup.top,
-        "destroy-on-close": true
-      }, {
-        default: withCtx(() => [
-          (myProps0.value)
-            ? (openBlock(), createBlock(script$e, {
-                key: 0,
-                myProps: myProps0.value,
-                dataBox: __props.dataBox
-              }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
-            : createCommentVNode("v-if", true)
-        ]),
-        _: 1 /* STABLE */
-      }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (myProps0.value)
-      ? (openBlock(), createBlock(script$e, {
-          key: 1,
-          myProps: myProps0.value,
-          dataBox: __props.dataBox
-        }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
-      : createCommentVNode("v-if", true)
-}
-}
-
-};
-
-script$d.__file = "src/form/index.vue";
-
-var ly0default$1 = {
-  myProps: {
-    mode: 'horizontal',
-    defaultActive: '',
-    backgroundColor: '#545c64',
-    textColor: '#fff',
-    activeTextColor: '#ffd04b',
-    horizontalHeight: '50px',
-    styleBase: 'border: none;',
-    style: '',
-    menu: []
-  }
-};
-
-var script$c = {
-    props: ['myProps'],
-    computed: {
-        myProps0(){
-            return Object.assign({}, ly0default$1.myProps, this.myProps)
-        }
-    },
-    methods: {
-        handleSelect(
-            key,
-            // keyPath
-        ) {
-            this.handleRun(key, this.myProps.menu, '');
-        },
-        handleOpen() {},
-            // key,
-            // keyPath
-        handleClose() {},
-            // key,
-            // keyPath
-            // 执行菜单句柄
-        handleRun(
-            index, // 目标索引
-            menu, // 当前菜单
-            indexFather, // 父节点索引
-        ) {
-            let result = false;
-            // 遍历菜单节点
-            for (let i = 0; i < menu.length; i++) {
-                // 内部索引继承
-                let index0 = indexFather ? indexFather + '-' + i : '' + i;
-                // 节点存在自定义索引
-                if (!!menu[i].index && index === menu[i].index) {
-                    if (menu[i].handle) {
-                        menu[i].handle(index);
-                    }
-                    result = true;
-                    break
-                }
-                // 节点不存在自定义索引
-                if (index === index0) {
-                    if (menu[i].handle) {
-                        menu[i].handle(index);
-                    }
-                    result = true;
-                    break
-                }
-                // 存在子节点，递归调用
-                if (!!menu[i].menu && menu[i].menu.length > 0) {
-                    result = this.handleRun(index, menu[i].menu, index0);
-                    if (!!result) {
-                        break
-                    }
-                }
-            }
-            return result
-        },
-    },
-};
-
-function render$6(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_el_menu_item = resolveComponent("el-menu-item");
-  const _component_el_sub_menu = resolveComponent("el-sub-menu");
-  const _component_el_menu = resolveComponent("el-menu");
-
-  return (openBlock(), createBlock(_component_el_menu, {
-    mode: $options.myProps0.mode,
-    "default-active": $options.myProps0.defaultActive,
-    onOpen: $options.handleOpen,
-    onClose: $options.handleClose,
-    onSelect: $options.handleSelect,
-    "background-color": $options.myProps0.backgroundColor,
-    "text-color": $options.myProps0.textColor,
-    "active-text-color": $options.myProps0.activeTextColor,
-    "menu-trigger": "hover",
-    style: normalizeStyle('--el-menu-horizontal-height: ' + $options.myProps0.horizontalHeight + '; ' +
-            $options.myProps0.styleBase + ' ' +
-            $options.myProps0.style)
-  }, {
-    default: withCtx(() => [
-      createCommentVNode(" 第1层 "),
-      (openBlock(true), createElementBlock(Fragment, null, renderList($props.myProps.menu, (item, index) => {
-        return (openBlock(), createElementBlock(Fragment, {
-          key: item.index ? item.index : String(index)
-        }, [
-          (!item.menu || item.menu.length === 0)
-            ? (openBlock(), createBlock(_component_el_menu_item, {
-                key: 0,
-                index: item.index ? item.index : String(index),
-                disabled: 
-                    'disabled' in item
-                    ? item.disabled
-                    : 'hdlDisabled' in item
-                        ? item.hdlDisabled(item, index)
-                        : false
-                
-              }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString(item.title), 1 /* TEXT */)
-                ]),
-                _: 2 /* DYNAMIC */
-              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-            : (openBlock(), createBlock(_component_el_sub_menu, {
-                key: 1,
-                index: item.index ? item.index : String(index)
-              }, {
-                title: withCtx(() => [
-                  createTextVNode(toDisplayString(item.title), 1 /* TEXT */)
-                ]),
-                default: withCtx(() => [
-                  (openBlock(true), createElementBlock(Fragment, null, renderList(item.menu, (item0, index0) => {
-                    return (openBlock(), createElementBlock(Fragment, {
-                      key: item0.index ? item0.index : String(index) + '-' + String(index0)
-                    }, [
-                      (!item0.menu || item0.menu.length === 0)
-                        ? (openBlock(), createBlock(_component_el_menu_item, {
-                            key: 0,
-                            index: item0.index ? item0.index : String(index) + '-' + String(index0),
-                            disabled: 
-                            'disabled' in item0
-                            ? item0.disabled
-                            : 'hdlDisabled' in item0
-                                ? item0.hdlDisabled(item0, index0)
-                                : false
-                        
-                          }, {
-                            default: withCtx(() => [
-                              createTextVNode(toDisplayString(item0.title), 1 /* TEXT */)
-                            ]),
-                            _: 2 /* DYNAMIC */
-                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-                        : (openBlock(), createBlock(_component_el_sub_menu, {
-                            key: 1,
-                            index: item0.index ? item0.index : String(index) + '-' + String(index0)
-                          }, {
-                            title: withCtx(() => [
-                              createTextVNode(toDisplayString(item0.title), 1 /* TEXT */)
-                            ]),
-                            default: withCtx(() => [
-                              (openBlock(true), createElementBlock(Fragment, null, renderList(item0.menu, (item1, index1) => {
-                                return (openBlock(), createElementBlock(Fragment, {
-                                  key: 
-                                item1.index
-                                ? item1.index
-                                : String(index) + '-' + String(index0) + '-' + String(index1)
-                            
-                                }, [
-                                  (!item1.menu || item1.menu.length === 0)
-                                    ? (openBlock(), createBlock(_component_el_menu_item, {
-                                        key: 0,
-                                        index: 
-                                    item1.index
-                                    ? item1.index
-                                    : String(index) + '-' + String(index0) + '-' + String(index1)
-                                ,
-                                        disabled: 
-                                    'disabled' in item1
-                                    ? item1.disabled
-                                    : 'hdlDisabled' in item1
-                                        ? item1.hdlDisabled(item1, index1)
-                                        : false
-                                
-                                      }, {
-                                        default: withCtx(() => [
-                                          createTextVNode(toDisplayString(item1.title), 1 /* TEXT */)
-                                        ]),
-                                        _: 2 /* DYNAMIC */
-                                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-                                    : (openBlock(), createBlock(_component_el_sub_menu, {
-                                        key: 1,
-                                        index: 
-                                    item1.index
-                                    ? item1.index
-                                    : String(index) + '-' + String(index0) + '-' + String(index1)
-                                
-                                      }, {
-                                        title: withCtx(() => [
-                                          createTextVNode(toDisplayString(item1.title), 1 /* TEXT */)
-                                        ]),
-                                        default: withCtx(() => [
-                                          (openBlock(true), createElementBlock(Fragment, null, renderList(item1.menu, (item2, index2) => {
-                                            return (openBlock(), createElementBlock(Fragment, {
-                                              key: 
-                                        item2.index
-                                        ? item2.index
-                                        : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
-                                    
-                                            }, [
-                                              (!item2.menu || item2.menu.length === 0)
-                                                ? (openBlock(), createBlock(_component_el_menu_item, {
-                                                    key: 0,
-                                                    index: 
-                                            item2.index
-                                            ? item2.index
-                                            : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
-                                        ,
-                                                    disabled: 
-                                            'disabled' in item2
-                                            ? item2.disabled
-                                            : 'hdlDisabled' in item2
-                                                ? item2.hdlDisabled(item2, index2)
-                                                : false
-                                        
-                                                  }, {
-                                                    default: withCtx(() => [
-                                                      createTextVNode(toDisplayString(item2.title), 1 /* TEXT */)
-                                                    ]),
-                                                    _: 2 /* DYNAMIC */
-                                                  }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-                                                : createCommentVNode("v-if", true),
-                                              createVNode(_component_el_sub_menu, {
-                                                else: "",
-                                                index: 
-                                            item2.index
-                                            ? item2.index
-                                            : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
-                                        
-                                              }, {
-                                                title: withCtx(() => [
-                                                  createTextVNode(toDisplayString(item2.title), 1 /* TEXT */)
-                                                ]),
-                                                default: withCtx(() => [
-                                                  (openBlock(true), createElementBlock(Fragment, null, renderList(item2.menu, (item3, index3) => {
-                                                    return (openBlock(), createBlock(_component_el_menu_item, {
-                                                      key: 
-                                                item3.index
-                                                ? item3.index
-                                                : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
-                                            ,
-                                                      index: 
-                                                    item3.index
-                                                    ? item3.index
-                                                    : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
-                                                ,
-                                                      disabled: 
-                                                    'disabled' in item3
-                                                    ? item3.disabled
-                                                    : 'hdlDisabled' in item3
-                                                        ? item3.hdlDisabled(item3, index3)
-                                                        : false
-                                                
-                                                    }, {
-                                                      default: withCtx(() => [
-                                                        createTextVNode(toDisplayString(item3.title), 1 /* TEXT */)
-                                                      ]),
-                                                      _: 2 /* DYNAMIC */
-                                                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-                                                  }), 128 /* KEYED_FRAGMENT */))
-                                                ]),
-                                                _: 2 /* DYNAMIC */
-                                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"])
-                                            ], 64 /* STABLE_FRAGMENT */))
-                                          }), 128 /* KEYED_FRAGMENT */))
-                                        ]),
-                                        _: 2 /* DYNAMIC */
-                                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
-                                ], 64 /* STABLE_FRAGMENT */))
-                              }), 128 /* KEYED_FRAGMENT */))
-                            ]),
-                            _: 2 /* DYNAMIC */
-                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
-                    ], 64 /* STABLE_FRAGMENT */))
-                  }), 128 /* KEYED_FRAGMENT */))
-                ]),
-                _: 2 /* DYNAMIC */
-              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
-        ], 64 /* STABLE_FRAGMENT */))
-      }), 128 /* KEYED_FRAGMENT */))
-    ]),
-    _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["mode", "default-active", "onOpen", "onClose", "onSelect", "background-color", "text-color", "active-text-color", "style"]))
-}
-
-script$c.render = render$6;
-script$c.__file = "src/menu/index.vue";
+script$c.__scopeId = "data-v-02babd36";
+script$c.__file = "src/richtext/index.vue";
 
 var ly0default = {
   myProps: {
@@ -41690,7 +41826,7 @@ const popup = ref({
 });
 
 onMounted(()=>{
-    request.ly0.storpro({
+    request$1.ly0.storpro({
         noSession: true,
         storproName: 'ly0d3.gbt2260code2.init',
     }).then(result=>{
@@ -41700,7 +41836,7 @@ onMounted(()=>{
 
 watch(() => props.myProps.value,
 (valNew, valOld) => {
-        request.ly0.storpro({
+        request$1.ly0.storpro({
             noSession: true,
             storproName: 'ly0d3.gbt2260code6.get',
             data: {
@@ -41732,7 +41868,7 @@ const hdlPopup = () => {
 
 const hdlChangeCode2 = value => {
     return new Promise((resolve, reject) => {
-        request.ly0.storpro({
+        request$1.ly0.storpro({
             noSession: true,
             storproName: 'ly0d3.gbt2260code4.code2',
             data: {code2: value},
@@ -41748,7 +41884,7 @@ const hdlChangeCode2 = value => {
 
 const hdlChangeCode4 = value => {
     return new Promise((resolve, reject) => {
-        request.storpro({
+        request$1.storpro({
             noSession: true,
             storproName: 'ly0d3.gbt2260code6.code4',
             data: {code4: value},
@@ -42214,7 +42350,7 @@ const hdl = {
         let arrPromise = [];
         value.value.forEach(i => {
             arrPromise.push(
-                request.ly0.storpro({
+                request$1.ly0.storpro({
                     noSession: true,
                     storproName: 'ly0d3.gbt2260code6.get',
                     data: { code6: i.gbt2260code },
@@ -43110,8 +43246,9 @@ script.__file = "src/ly0d7thumb/index.vue";
 var index = {
   install(app, options) {
     // 全局注册组件
-    app.component('ly0Form', script$d);
-    app.component('ly0Menu', script$c);
+    app.component('ly0Form', script$e);
+    app.component('ly0Menu', script$d);
+    app.component('ly0Richtext', script$c);
     app.component('ly0Upload', upload.Upload);
     app.component('ly0Upload_avatar', upload.Upload_avatar);
     app.component('ly0Upload_carplate', upload.Upload_carplate);
@@ -43126,8 +43263,8 @@ var index = {
     app.component('ly0d7thumb', script);
   },
   FileSaver,
-  request
+  request: request$1
 };
 
-export { FileSaver, index as default, request };
+export { FileSaver, index as default, request$1 as request };
 //# sourceMappingURL=index.esm.js.map

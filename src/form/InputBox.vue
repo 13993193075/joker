@@ -171,11 +171,7 @@
         </div>
         <!-- 富文本 -->
         <div v-if="item.inputType === 'richtext'" :style="style.richtext(item, myProps)">
-            <compRichtext
-                ref="text"
-                v-model="dataBox.fieldsValue[item.fieldName]"
-                :options="richtext.options"
-            />
+            <ly0Richtext v-model="dataBox.fieldsValue[item.fieldName]" :myProps="richtextProps"></ly0Richtext>
         </div>
         <!-- 富文本show -->
         <div v-if="item.inputType === 'richtextShow'">
@@ -334,12 +330,7 @@
 <script setup>
 import {ref, computed, reactive} from "vue";
 import styleModule from './style.js'
-
-// 引入富文本组件及样式
-import { QuillEditor as compRichtext } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.core.css'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import '@vueup/vue-quill/dist/vue-quill.bubble.css'
+import {request} from "axios";
 
 const props = defineProps(["myProps", "dataBox", "item"]);
 
@@ -483,17 +474,8 @@ const images = reactive({
     })
 })
 
-const richtext = reactive({
-    options: computed(()=>{
-        return {
-            action: props.dataBox.upload, // 必填参数 图片上传地址
-            methods: 'post', // 必填参数 图片上传方式
-            // token: '' // 可选参数 如果需要token验证，假设你的token有存放在session-storage
-            name: 'upload_file', // 必填参数 文件的参数名
-            size: props.myProps.richtext.size, // 可选参数  可上传的图片大小，单位为Kb, 1M = 1024Kb
-            // accept: 'multipart/form-data, image/png, image/gif, image/jpeg, image/bmp, image/x-icon,image/jpg' // 可选参数 可上传的图片格式
-        }
-    })
+const richtextProps = ref({
+    uploadUrl: props.dataBox.upload
 })
 
 const video = reactive({
