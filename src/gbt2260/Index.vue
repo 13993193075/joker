@@ -180,7 +180,6 @@ const hdlPopup = () => {
 const hdlChangeCode2 = value => {
     return new Promise((resolve, reject) => {
         ly0request.ly0.storpro({
-            scopeThis: this,
             noSession: true,
             storproName: 'ly0d3.gbt2260code4.code2',
             data: {code2: value},

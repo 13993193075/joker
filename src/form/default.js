@@ -50,6 +50,6 @@ export default {
     },
     dataBox: {
         fieldsValue: {},
-        hdlSubmit(scopeThis, fieldsValue){}
+        hdlSubmit(fieldsValue){}
     }
 }

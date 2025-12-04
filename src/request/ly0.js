@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const domainPara = 'http://127.0.0.1:443'
 const upload = '/ly0/upload-req/image'
 const upload_carplate = '/ly0/upload-req/carplate'
@@ -29,7 +31,6 @@ async function ly0request({
     domain = domainPara,
     url, // 路由
     data, // 请求数据
-    scopeThis, // 当前的组件实例
 }){
     try {
         const response = await request({domain, url, data})
@@ -37,9 +38,6 @@ async function ly0request({
         // session 异常
         if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
             console.log('session异常', response.data.sessionStatusMessage)
-            if(scopeThis){
-                // scopeThis.$message(response.data.sessionStatusMessage)
-            }
 
             let ly0session = ly0sessionLoad()
             ly0sessionSave({
@@ -50,7 +48,7 @@ async function ly0request({
                         : 'ly0d0user',
                 },
             })
-            ly0sessionLose(scopeThis ?? null)
+            ly0sessionLose()
             return { code: 1, message: 'session 异常' }
         }
 
@@ -67,7 +65,6 @@ async function storpro({
     storproName, // 存储过程名称
     data,
     noSession = false, // 不进行session验证
-    scopeThis, // 当前的组件实例
 }) {
     try {
         const result = await ly0request({
@@ -84,7 +81,6 @@ async function storpro({
                     data: data ?? null,
                 },
             },
-            scopeThis: scopeThis ?? null,
         })
         return result
     } catch (err) {
@@ -109,7 +105,7 @@ function ly0sessionClear() {
 }
 
 // session丢失
-function ly0sessionLose(scopeThis) {
+function ly0sessionLose() {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -130,13 +126,13 @@ function ly0sessionLose(scopeThis) {
         }
     }
     if (lose) {
-        scopeThis.$router.replace({ path: route })
+        router.replace({ path: route })
     }
     return lose
 }
 
 // session丢失
-function ly0sessionLoseWithUsertbl(scopeThis, usertbl) {
+function ly0sessionLoseWithUsertbl(usertbl) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -158,7 +154,7 @@ function ly0sessionLoseWithUsertbl(scopeThis, usertbl) {
         }
     }
     if (lose) {
-        scopeThis.$router.replace({ path: route })
+        router.replace({ path: route })
     }
     return lose
 }

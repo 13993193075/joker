@@ -1,3 +1,4 @@
+import { useRouter } from 'vue-router';
 import { computed, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, defineComponent, h, onMounted, onBeforeUnmount, ref, watch, nextTick as nextTick$1, reactive, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, unref } from 'vue';
 
 function _mergeNamespaces(n, m) {
@@ -21956,6 +21957,7 @@ const {
   mergeConfig
 } = axios;
 
+const router = useRouter();
 const domainPara = 'http://127.0.0.1:443';
 const upload$1 = '/ly0/upload-req/image';
 const upload_carplate = '/ly0/upload-req/carplate';
@@ -21988,9 +21990,7 @@ async function ly0request$1(_ref2) {
     domain = domainPara,
     url,
     // 路由
-    data,
-    // 请求数据
-    scopeThis // 当前的组件实例
+    data // 请求数据
   } = _ref2;
   try {
     const response = await request$1({
@@ -22002,16 +22002,13 @@ async function ly0request$1(_ref2) {
     // session 异常
     if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
       console.log('session异常', response.data.sessionStatusMessage);
-      if (scopeThis) {
-        // scopeThis.$message(response.data.sessionStatusMessage)
-      }
       let ly0session = ly0sessionLoad();
       ly0sessionSave({
         session: {
           usertbl: ly0session && ly0session.session && ly0session.session.usertbl ? ly0session.session.usertbl : 'ly0d0user'
         }
       });
-      ly0sessionLose(scopeThis !== null && scopeThis !== void 0 ? scopeThis : null);
+      ly0sessionLose();
       return {
         code: 1,
         message: 'session 异常'
@@ -22031,9 +22028,7 @@ async function storpro(_ref3) {
     storproName,
     // 存储过程名称
     data,
-    noSession = false,
-    // 不进行session验证
-    scopeThis // 当前的组件实例
+    noSession = false // 不进行session验证
   } = _ref3;
   try {
     const result = await ly0request$1({
@@ -22046,8 +22041,7 @@ async function storpro(_ref3) {
           storproName,
           data: data !== null && data !== void 0 ? data : null
         }
-      },
-      scopeThis: scopeThis !== null && scopeThis !== void 0 ? scopeThis : null
+      }
     });
     return result;
   } catch (err) {
@@ -22072,7 +22066,7 @@ function ly0sessionClear() {
 }
 
 // session丢失
-function ly0sessionLose(scopeThis) {
+function ly0sessionLose() {
   let ly0session = ly0sessionLoad(),
     lose = false,
     route = '';
@@ -22088,7 +22082,7 @@ function ly0sessionLose(scopeThis) {
     }
   }
   if (lose) {
-    scopeThis.$router.replace({
+    router.replace({
       path: route
     });
   }
@@ -22096,7 +22090,7 @@ function ly0sessionLose(scopeThis) {
 }
 
 // session丢失
-function ly0sessionLoseWithUsertbl(scopeThis, usertbl) {
+function ly0sessionLoseWithUsertbl(usertbl) {
   let ly0session = ly0sessionLoad(),
     lose = false,
     route = '';
@@ -22112,7 +22106,7 @@ function ly0sessionLoseWithUsertbl(scopeThis, usertbl) {
     }
   }
   if (lose) {
-    scopeThis.$router.replace({
+    router.replace({
       path: route
     });
   }
@@ -22420,7 +22414,7 @@ var styleModule = {
 
 var script$g = {
   __name: 'LabelBox',
-  props: ["scopeThis", "myProps", "dataBox", "item"],
+  props: ["myProps", "dataBox", "item"],
   setup(__props) {
 
 const props = __props;
@@ -22436,7 +22430,7 @@ const style = {
 
 const hdlClick = () => {
     if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick(props.scopeThis, props.dataBox.fieldsValue);
+        props.item.hdlLabelClick(props.dataBox.fieldsValue, props.item);
     }
 };
 
@@ -39331,7 +39325,7 @@ const _hoisted_28 = { key: 30 };
 
 var script$f = {
   __name: 'InputBox',
-  props: ["scopeThis", "myProps", "dataBox", "item"],
+  props: ["myProps", "dataBox", "item"],
   setup(__props) {
 
 const props = __props;
@@ -39356,12 +39350,12 @@ const select = reactive({
         if (props.item.items) {
             return props.item.items
         } else if (props.item.hdlGetItems) {
-            return props.item.hdlGetItems(props.scopeThis)
+            return props.item.hdlGetItems(props.dataBox.fieldsValue, props.item)
         }
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, value);
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -39393,7 +39387,7 @@ const datePicker = reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, value);
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -39401,7 +39395,7 @@ const datePicker = reactive({
 const ly0switch = reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, value);
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -39409,7 +39403,7 @@ const ly0switch = reactive({
 const radioGroup = reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, value);
+            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -39536,7 +39530,7 @@ const download = reactive({
             return props.myProps.download.downloadLabelNoSrc
         }
         if (props.item.hdlGetDownloadLabel) {
-            return props.item.hdlGetDownloadLabel(props.scopeThis, props.item)
+            return props.item.hdlGetDownloadLabel(props.dataBox.fieldsValue, props.item)
         }
         return props.myProps.download.downloadLabel
     }),
@@ -39679,16 +39673,16 @@ return (_ctx, _cache) => {
         ? (openBlock(), createElementBlock("div", {
             key: 3,
             style: normalizeStyle(style.text(__props.item, __props.myProps))
-          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue)
-                ? __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue)
+          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
                 : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
       (__props.item.inputType === 'expression0')
         ? (openBlock(), createElementBlock("div", {
             key: 4,
             style: normalizeStyle(style.text0(__props.item))
-          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue)
-                ? __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue)
+          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
                 : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
       (__props.item.inputType === 'line')
@@ -39820,7 +39814,7 @@ return (_ctx, _cache) => {
                           plain: style.button_group(__props.item, item0, item1).button.facade.plain,
                           round: style.button_group(__props.item, item0, item1).button.facade.round,
                           circle: style.button_group(__props.item, item0, item1).button.facade.circle,
-                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.scopeThis) : null),
+                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.dataBox.fieldsValue, __props.item) : null),
                           key: index1
                         }, {
                           default: withCtx(() => [
@@ -40135,7 +40129,7 @@ const _hoisted_4$6 = ["colspan"];
 
 var script$e = {
   __name: 'Form',
-  props: ["scopeThis", "myProps", "dataBox"],
+  props: ["myProps", "dataBox"],
   setup(__props) {
 
 const style = reactive({
@@ -40155,12 +40149,11 @@ return (_ctx, _cache) => {
 
   return (openBlock(), createElementBlock(Fragment, null, [
     createCommentVNode(" 置顶菜单 "),
-    (__props.myProps.menu)
+    (__props.myProps.menu && __props.myProps.menu.menu && __props.myProps.menu.menu.length > 0)
       ? (openBlock(), createBlock(_component_ly0Menu, {
           key: 0,
-          scopeThis: __props.scopeThis,
           myProps: __props.myProps.menu
-        }, null, 8 /* PROPS */, ["scopeThis", "myProps"]))
+        }, null, 8 /* PROPS */, ["myProps"]))
       : createCommentVNode("v-if", true),
     createCommentVNode(" 表单区域可以分为多个列 "),
     createElementVNode("div", {
@@ -40172,7 +40165,7 @@ return (_ctx, _cache) => {
             createElementVNode("tbody", null, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, (item0, index0) => {
                 return (openBlock(), createElementBlock(Fragment, { key: index0 }, [
-                  (item0.hdlVisible ? item0.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue) : true)
+                  (item0.hdlVisible ? item0.hdlVisible(__props.dataBox.fieldsValue) : true)
                     ? (openBlock(), createElementBlock("tr", _hoisted_1$c, [
                         (!!item0.label)
                           ? (openBlock(), createElementBlock("td", {
@@ -40180,11 +40173,10 @@ return (_ctx, _cache) => {
                               style: normalizeStyle(style.field_box.left)
                             }, [
                               createVNode(script$g, {
-                                scopeThis: __props.scopeThis,
                                 myProps: __props.myProps,
                                 dataBox: __props.dataBox,
                                 item: item0
-                              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
+                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
                             ], 4 /* STYLE */))
                           : createCommentVNode("v-if", true),
                         createElementVNode("td", {
@@ -40205,7 +40197,7 @@ return (_ctx, _cache) => {
                                 default: withCtx(() => [
                                   (openBlock(true), createElementBlock(Fragment, null, renderList(item0.items, (item1, index1) => {
                                     return (openBlock(), createElementBlock(Fragment, { key: index1 }, [
-                                      (item1.hdlVisible ? item1.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue) : true)
+                                      (item1.hdlVisible ? item1.hdlVisible(__props.dataBox.fieldsValue) : true)
                                         ? (openBlock(), createBlock(_component_el_collapse_item, {
                                             key: 0,
                                             title: item1.title,
@@ -40219,7 +40211,7 @@ return (_ctx, _cache) => {
                                                   return (openBlock(), createElementBlock(Fragment, { key: index2 }, [
                                                     (
                                                             item2.hdlVisible
-                                                            ? item2.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue)
+                                                            ? item2.hdlVisible(__props.dataBox.fieldsValue)
                                                             : true
                                                         )
                                                       ? (openBlock(), createElementBlock("tr", _hoisted_3$7, [
@@ -40229,11 +40221,10 @@ return (_ctx, _cache) => {
                                                                 style: normalizeStyle(style.field_box.left)
                                                               }, [
                                                                 createVNode(script$g, {
-                                                                  scopeThis: __props.scopeThis,
                                                                   myProps: __props.myProps,
                                                                   dataBox: __props.dataBox,
                                                                   item: item2
-                                                                }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
+                                                                }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
                                                               ], 4 /* STYLE */))
                                                             : createCommentVNode("v-if", true),
                                                           createElementVNode("td", {
@@ -40241,11 +40232,10 @@ return (_ctx, _cache) => {
                                                             colspan: style.no_field_label(item2)
                                                           }, [
                                                             createVNode(script$f, {
-                                                              scopeThis: __props.scopeThis,
                                                               myProps: __props.myProps,
                                                               dataBox: __props.dataBox,
                                                               item: item2
-                                                            }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
+                                                            }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
                                                           ], 12 /* STYLE, PROPS */, _hoisted_4$6)
                                                         ]))
                                                       : createCommentVNode("v-if", true)
@@ -40263,11 +40253,10 @@ return (_ctx, _cache) => {
                               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
                             : (openBlock(), createBlock(script$f, {
                                 key: 1,
-                                scopeThis: __props.scopeThis,
                                 myProps: __props.myProps,
                                 dataBox: __props.dataBox,
                                 item: item0
-                              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"]))
+                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"]))
                         ], 12 /* STYLE, PROPS */, _hoisted_2$c)
                       ]))
                     : createCommentVNode("v-if", true)
@@ -40291,7 +40280,7 @@ return (_ctx, _cache) => {
               type: style.submit_box.button.facade.type,
               plain: style.submit_box.button.facade.plain,
               style: normalizeStyle(style.submit_box.button.style),
-              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.scopeThis, __props.dataBox.fieldsValue)))
+              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.dataBox.fieldsValue)))
             }, {
               default: withCtx(() => [...(_cache[1] || (_cache[1] = [
                 createTextVNode("提交", -1 /* CACHED */)
@@ -40362,50 +40351,52 @@ var ly0default$2 = {
   }};
 
 var script$d = {
-    props: ['scopeThis', 'myProps', 'dataBox'],
-    components: { compForm: script$e },
-    computed: {
-        myProps0() {
-            return Object.assign({}, ly0default$2.myProps, this.myProps)
-        }
-    }
-};
+  __name: 'index',
+  props: ["myProps", "dataBox"],
+  setup(__props) {
 
-function render$7(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_compForm = resolveComponent("compForm");
+const props = __props;
+const myProps0 = ref(Object.assign({}, ly0default$2.myProps, props.myProps));
+
+return (_ctx, _cache) => {
   const _component_el_dialog = resolveComponent("el-dialog");
 
-  return ($options.myProps0.popup.visible)
+  return (myProps0.value.popup.visible)
     ? (openBlock(), createBlock(_component_el_dialog, {
         key: 0,
-        modelValue: $options.myProps0.popup.visible,
-        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (($options.myProps0.popup.visible) = $event)),
+        modelValue: myProps0.value.popup.visible,
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((myProps0.value.popup.visible) = $event)),
         "custom-class": "code-template-dialog",
         "close-on-press-escape": true,
         "append-to-body": "",
-        title: $options.myProps0.popup.title,
-        width: $options.myProps0.popup.width,
-        top: $options.myProps0.popup.top,
+        title: myProps0.value.popup.title,
+        width: myProps0.value.popup.width,
+        top: myProps0.value.popup.top,
         "destroy-on-close": true
       }, {
         default: withCtx(() => [
-          createVNode(_component_compForm, {
-            scopeThis: $props.scopeThis,
-            myProps: $options.myProps0,
-            dataBox: $props.dataBox
-          }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox"])
+          (myProps0.value)
+            ? (openBlock(), createBlock(script$e, {
+                key: 0,
+                myProps: myProps0.value,
+                dataBox: __props.dataBox
+              }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
+            : createCommentVNode("v-if", true)
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (openBlock(), createBlock(_component_compForm, {
-        key: 1,
-        scopeThis: $props.scopeThis,
-        myProps: $options.myProps0,
-        dataBox: $props.dataBox
-      }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox"]))
+    : (myProps0.value)
+      ? (openBlock(), createBlock(script$e, {
+          key: 1,
+          myProps: myProps0.value,
+          dataBox: __props.dataBox
+        }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
+      : createCommentVNode("v-if", true)
+}
 }
 
-script$d.render = render$7;
+};
+
 script$d.__file = "src/form/index.vue";
 
 var ly0default$1 = {
@@ -40423,7 +40414,7 @@ var ly0default$1 = {
 };
 
 var script$c = {
-    props: ['scopeThis', 'myProps'],
+    props: ['myProps'],
     computed: {
         myProps0(){
             return Object.assign({}, ly0default$1.myProps, this.myProps)
@@ -40456,7 +40447,7 @@ var script$c = {
                 // 节点存在自定义索引
                 if (!!menu[i].index && index === menu[i].index) {
                     if (menu[i].handle) {
-                        menu[i].handle(this.scopeThis, index);
+                        menu[i].handle(index);
                     }
                     result = true;
                     break
@@ -40464,7 +40455,7 @@ var script$c = {
                 // 节点不存在自定义索引
                 if (index === index0) {
                     if (menu[i].handle) {
-                        menu[i].handle(this.scopeThis, index);
+                        menu[i].handle(index);
                     }
                     result = true;
                     break
@@ -40515,7 +40506,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                     'disabled' in item
                     ? item.disabled
                     : 'hdlDisabled' in item
-                        ? item.hdlDisabled($props.scopeThis, item, index)
+                        ? item.hdlDisabled(item, index)
                         : false
                 
               }, {
@@ -40544,7 +40535,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                             'disabled' in item0
                             ? item0.disabled
                             : 'hdlDisabled' in item0
-                                ? item0.hdlDisabled($props.scopeThis, item0, index0)
+                                ? item0.hdlDisabled(item0, index0)
                                 : false
                         
                           }, {
@@ -40581,7 +40572,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                                     'disabled' in item1
                                     ? item1.disabled
                                     : 'hdlDisabled' in item1
-                                        ? item1.hdlDisabled($props.scopeThis, item1, index1)
+                                        ? item1.hdlDisabled(item1, index1)
                                         : false
                                 
                                       }, {
@@ -40622,7 +40613,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                                             'disabled' in item2
                                             ? item2.disabled
                                             : 'hdlDisabled' in item2
-                                                ? item2.hdlDisabled($props.scopeThis, item2, index2)
+                                                ? item2.hdlDisabled(item2, index2)
                                                 : false
                                         
                                                   }, {
@@ -40660,7 +40651,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                                                     'disabled' in item3
                                                     ? item3.disabled
                                                     : 'hdlDisabled' in item3
-                                                        ? item3.hdlDisabled($props.scopeThis, item3, index3)
+                                                        ? item3.hdlDisabled(item3, index3)
                                                         : false
                                                 
                                                     }, {
@@ -41742,7 +41733,6 @@ const hdlPopup = () => {
 const hdlChangeCode2 = value => {
     return new Promise((resolve, reject) => {
         request.ly0.storpro({
-            scopeThis: this,
             noSession: true,
             storproName: 'ly0d3.gbt2260code4.code2',
             data: {code2: value},

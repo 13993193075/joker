@@ -25,7 +25,7 @@
                     'disabled' in item
                     ? item.disabled
                     : 'hdlDisabled' in item
-                        ? item.hdlDisabled(scopeThis, item, index)
+                        ? item.hdlDisabled(item, index)
                         : false
                 "
             >{{ item.title }}</el-menu-item>
@@ -43,7 +43,7 @@
                             'disabled' in item0
                             ? item0.disabled
                             : 'hdlDisabled' in item0
-                                ? item0.hdlDisabled(scopeThis, item0, index0)
+                                ? item0.hdlDisabled(item0, index0)
                                 : false
                         "
                     >{{ item0.title }}</el-menu-item>
@@ -72,7 +72,7 @@
                                     'disabled' in item1
                                     ? item1.disabled
                                     : 'hdlDisabled' in item1
-                                        ? item1.hdlDisabled(scopeThis, item1, index1)
+                                        ? item1.hdlDisabled(item1, index1)
                                         : false
                                 "
                             >{{ item1.title }}</el-menu-item>
@@ -105,7 +105,7 @@
                                             'disabled' in item2
                                             ? item2.disabled
                                             : 'hdlDisabled' in item2
-                                                ? item2.hdlDisabled(scopeThis, item2, index2)
+                                                ? item2.hdlDisabled(item2, index2)
                                                 : false
                                         "
                                     >{{ item2.title }}</el-menu-item>
@@ -137,7 +137,7 @@
                                                     'disabled' in item3
                                                     ? item3.disabled
                                                     : 'hdlDisabled' in item3
-                                                        ? item3.hdlDisabled(scopeThis, item3, index3)
+                                                        ? item3.hdlDisabled(item3, index3)
                                                         : false
                                                 "
                                             >{{ item3.title }}</el-menu-item>
@@ -158,7 +158,7 @@
 <script>
 import ly0default from './default.js'
 export default {
-    props: ['scopeThis', 'myProps'],
+    props: ['myProps'],
     computed: {
         myProps0(){
             return Object.assign({}, ly0default.myProps, this.myProps)
@@ -191,7 +191,7 @@ export default {
                 // 节点存在自定义索引
                 if (!!menu[i].index && index === menu[i].index) {
                     if (menu[i].handle) {
-                        menu[i].handle(this.scopeThis, index)
+                        menu[i].handle(index)
                     }
                     result = true
                     break
@@ -199,7 +199,7 @@ export default {
                 // 节点不存在自定义索引
                 if (index === index0) {
                     if (menu[i].handle) {
-                        menu[i].handle(this.scopeThis, index)
+                        menu[i].handle(index)
                     }
                     result = true
                     break
