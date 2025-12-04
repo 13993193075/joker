@@ -11,20 +11,16 @@
 import {ref, computed} from "vue";
 import styleModule from './style.js'
 
-const props = defineProps(["myProps", "dataBox", "item"]);
+const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
 
-const style = {
-    box: computed(()=>{
-        return styleModule.label.box(props.item)
-    }),
-    label: computed(()=>{
-        return styleModule.label.label(props.item)
-    }),
-}
+const style = ref({
+    box: styleModule.label.box(props.item),
+    label: styleModule.label.label(props.item),
+})
 
 const hdlClick = () => {
     if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick(props.dataBox.fieldsValue, props.item);
+        props.item.hdlLabelClick(props.scopeThis, props.dataBox.fieldsValue, props.item);
     }
 }
 </script>

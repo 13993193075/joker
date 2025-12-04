@@ -13,14 +13,14 @@
         </div>
         <div v-if="item.inputType === 'expression'" :style="style.text(item, myProps)">
             {{
-                item.hdlExpression && item.hdlExpression(dataBox.fieldsValue, item)
+                item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue, item)
                 ? item.hdlExpression(dataBox.fieldsValue, item)
                 : '&nbsp;'
             }}
         </div>
         <div v-if="item.inputType === 'expression0'" :style="style.text0(item)">
             {{
-                item.hdlExpression && item.hdlExpression(dataBox.fieldsValue, item)
+                item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue, item)
                 ? item.hdlExpression(dataBox.fieldsValue, item)
                 : '&nbsp;'
             }}
@@ -112,7 +112,7 @@
                                 :plain="style.button_group(item, item0, item1).button.facade.plain"
                                 :round="style.button_group(item, item0, item1).button.facade.round"
                                 :circle="style.button_group(item, item0, item1).button.facade.circle"
-                                @click="item1.hdlClick ? item1.hdlClick(dataBox.fieldsValue, item) : null"
+                                @click="item1.hdlClick ? item1.hdlClick(scopeThis, dataBox.fieldsValue, item) : null"
                                 :key="index1"
                             >
                                 <span v-if="item1.text">{{ item1.text }}</span>
@@ -332,7 +332,7 @@ import {ref, computed, reactive} from "vue";
 import styleModule from './style.js'
 import {request} from "axios";
 
-const props = defineProps(["myProps", "dataBox", "item"]);
+const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
 
 const input = reactive({
     placeholder: computed(() => {
@@ -359,7 +359,7 @@ const select = reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
         }
     }
 })
@@ -391,7 +391,7 @@ const datePicker = reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
         }
     }
 })
@@ -399,7 +399,7 @@ const datePicker = reactive({
 const ly0switch = reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
         }
     }
 })
@@ -407,7 +407,7 @@ const ly0switch = reactive({
 const radioGroup = reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
         }
     }
 })

@@ -22418,23 +22418,19 @@ var styleModule = {
 
 var script$h = {
   __name: 'LabelBox',
-  props: ["myProps", "dataBox", "item"],
+  props: ["scopeThis", "myProps", "dataBox", "item"],
   setup(__props) {
 
 const props = __props;
 
-const style = {
-    box: vue.computed(()=>{
-        return styleModule.label.box(props.item)
-    }),
-    label: vue.computed(()=>{
-        return styleModule.label.label(props.item)
-    }),
-};
+const style = vue.ref({
+    box: styleModule.label.box(props.item),
+    label: styleModule.label.label(props.item),
+});
 
 const hdlClick = () => {
     if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick(props.dataBox.fieldsValue, props.item);
+        props.item.hdlLabelClick(props.scopeThis, props.dataBox.fieldsValue, props.item);
     }
 };
 
@@ -22442,11 +22438,11 @@ return (_ctx, _cache) => {
   return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createCommentVNode(" label-box "),
     vue.createElementVNode("div", {
-      style: vue.normalizeStyle(style.box),
+      style: vue.normalizeStyle(style.value.box),
       onClick: hdlClick
     }, [
       vue.createElementVNode("span", {
-        style: vue.normalizeStyle(style.label)
+        style: vue.normalizeStyle(style.value.label)
       }, vue.toDisplayString(__props.item.label), 5 /* TEXT, STYLE */)
     ], 4 /* STYLE */)
   ], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */))
@@ -22489,7 +22485,7 @@ const _hoisted_28 = { key: 30 };
 
 var script$g = {
   __name: 'InputBox',
-  props: ["myProps", "dataBox", "item"],
+  props: ["scopeThis", "myProps", "dataBox", "item"],
   setup(__props) {
 
 const props = __props;
@@ -22519,7 +22515,7 @@ const select = vue.reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -22551,7 +22547,7 @@ const datePicker = vue.reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -22559,7 +22555,7 @@ const datePicker = vue.reactive({
 const ly0switch = vue.reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -22567,7 +22563,7 @@ const ly0switch = vue.reactive({
 const radioGroup = vue.reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
         }
     }
 });
@@ -22829,7 +22825,7 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 3,
             style: vue.normalizeStyle(style.text(__props.item, __props.myProps))
-          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue, __props.item)
                 ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
                 : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
@@ -22837,7 +22833,7 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 4,
             style: vue.normalizeStyle(style.text0(__props.item))
-          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue, __props.item)
                 ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
                 : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
@@ -22970,7 +22966,7 @@ return (_ctx, _cache) => {
                           plain: style.button_group(__props.item, item0, item1).button.facade.plain,
                           round: style.button_group(__props.item, item0, item1).button.facade.round,
                           circle: style.button_group(__props.item, item0, item1).button.facade.circle,
-                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.dataBox.fieldsValue, __props.item) : null),
+                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.scopeThis, __props.dataBox.fieldsValue, __props.item) : null),
                           key: index1
                         }, {
                           default: vue.withCtx(() => [
@@ -23284,7 +23280,7 @@ const _hoisted_4$6 = ["colspan"];
 
 var script$f = {
   __name: 'Form',
-  props: ["myProps", "dataBox"],
+  props: ["scopeThis", "myProps", "dataBox"],
   setup(__props) {
 
 const style = vue.reactive({
@@ -23307,8 +23303,9 @@ return (_ctx, _cache) => {
     (__props.myProps.menu && __props.myProps.menu.menu && __props.myProps.menu.menu.length > 0)
       ? (vue.openBlock(), vue.createBlock(_component_ly0Menu, {
           key: 0,
+          scopeThis: __props.scopeThis,
           myProps: __props.myProps.menu
-        }, null, 8 /* PROPS */, ["myProps"]))
+        }, null, 8 /* PROPS */, ["scopeThis", "myProps"]))
       : vue.createCommentVNode("v-if", true),
     vue.createCommentVNode(" 表单区域可以分为多个列 "),
     vue.createElementVNode("div", {
@@ -23320,7 +23317,7 @@ return (_ctx, _cache) => {
             vue.createElementVNode("tbody", null, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.items, (item0, index0) => {
                 return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index0 }, [
-                  (item0.hdlVisible ? item0.hdlVisible(__props.dataBox.fieldsValue) : true)
+                  (item0.hdlVisible ? item0.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue) : true)
                     ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$d, [
                         (!!item0.label)
                           ? (vue.openBlock(), vue.createElementBlock("td", {
@@ -23328,10 +23325,11 @@ return (_ctx, _cache) => {
                               style: vue.normalizeStyle(style.field_box.left)
                             }, [
                               vue.createVNode(script$h, {
+                                scopeThis: __props.scopeThis,
                                 myProps: __props.myProps,
                                 dataBox: __props.dataBox,
                                 item: item0
-                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
+                              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
                             ], 4 /* STYLE */))
                           : vue.createCommentVNode("v-if", true),
                         vue.createElementVNode("td", {
@@ -23352,7 +23350,7 @@ return (_ctx, _cache) => {
                                 default: vue.withCtx(() => [
                                   (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item0.items, (item1, index1) => {
                                     return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index1 }, [
-                                      (item1.hdlVisible ? item1.hdlVisible(__props.dataBox.fieldsValue) : true)
+                                      (item1.hdlVisible ? item1.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue) : true)
                                         ? (vue.openBlock(), vue.createBlock(_component_el_collapse_item, {
                                             key: 0,
                                             title: item1.title,
@@ -23366,7 +23364,7 @@ return (_ctx, _cache) => {
                                                   return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index2 }, [
                                                     (
                                                             item2.hdlVisible
-                                                            ? item2.hdlVisible(__props.dataBox.fieldsValue)
+                                                            ? item2.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue)
                                                             : true
                                                         )
                                                       ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_3$7, [
@@ -23376,10 +23374,11 @@ return (_ctx, _cache) => {
                                                                 style: vue.normalizeStyle(style.field_box.left)
                                                               }, [
                                                                 vue.createVNode(script$h, {
+                                                                  scopeThis: __props.scopeThis,
                                                                   myProps: __props.myProps,
                                                                   dataBox: __props.dataBox,
                                                                   item: item2
-                                                                }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
+                                                                }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
                                                               ], 4 /* STYLE */))
                                                             : vue.createCommentVNode("v-if", true),
                                                           vue.createElementVNode("td", {
@@ -23387,10 +23386,11 @@ return (_ctx, _cache) => {
                                                             colspan: style.no_field_label(item2)
                                                           }, [
                                                             vue.createVNode(script$g, {
+                                                              scopeThis: __props.scopeThis,
                                                               myProps: __props.myProps,
                                                               dataBox: __props.dataBox,
                                                               item: item2
-                                                            }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"])
+                                                            }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
                                                           ], 12 /* STYLE, PROPS */, _hoisted_4$6)
                                                         ]))
                                                       : vue.createCommentVNode("v-if", true)
@@ -23408,10 +23408,11 @@ return (_ctx, _cache) => {
                               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
                             : (vue.openBlock(), vue.createBlock(script$g, {
                                 key: 1,
+                                scopeThis: __props.scopeThis,
                                 myProps: __props.myProps,
                                 dataBox: __props.dataBox,
                                 item: item0
-                              }, null, 8 /* PROPS */, ["myProps", "dataBox", "item"]))
+                              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"]))
                         ], 12 /* STYLE, PROPS */, _hoisted_2$c)
                       ]))
                     : vue.createCommentVNode("v-if", true)
@@ -23435,7 +23436,7 @@ return (_ctx, _cache) => {
               type: style.submit_box.button.facade.type,
               plain: style.submit_box.button.facade.plain,
               style: vue.normalizeStyle(style.submit_box.button.style),
-              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.dataBox.fieldsValue)))
+              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.scopeThis, __props.dataBox.fieldsValue)))
             }, {
               default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
                 vue.createTextVNode("提交", -1 /* CACHED */)
@@ -23507,7 +23508,7 @@ var ly0default$2 = {
 
 var script$e = {
   __name: 'index',
-  props: ["myProps", "dataBox"],
+  props: ["scopeThis", "myProps", "dataBox"],
   setup(__props) {
 
 const props = __props;
@@ -23533,9 +23534,10 @@ return (_ctx, _cache) => {
           (myProps0.value)
             ? (vue.openBlock(), vue.createBlock(script$f, {
                 key: 0,
+                scopeThis: __props.scopeThis,
                 myProps: myProps0.value,
                 dataBox: __props.dataBox
-              }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
+              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox"]))
             : vue.createCommentVNode("v-if", true)
         ]),
         _: 1 /* STABLE */
@@ -23543,9 +23545,10 @@ return (_ctx, _cache) => {
     : (myProps0.value)
       ? (vue.openBlock(), vue.createBlock(script$f, {
           key: 1,
+          scopeThis: __props.scopeThis,
           myProps: myProps0.value,
           dataBox: __props.dataBox
-        }, null, 8 /* PROPS */, ["myProps", "dataBox"]))
+        }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox"]))
       : vue.createCommentVNode("v-if", true)
 }
 }
@@ -23569,87 +23572,79 @@ var ly0default$1 = {
 };
 
 var script$d = {
-    props: ['myProps'],
-    computed: {
-        myProps0(){
-            return Object.assign({}, ly0default$1.myProps, this.myProps)
-        }
-    },
-    methods: {
-        handleSelect(
-            key,
-            // keyPath
-        ) {
-            this.handleRun(key, this.myProps.menu, '');
-        },
-        handleOpen() {},
-            // key,
-            // keyPath
-        handleClose() {},
-            // key,
-            // keyPath
-            // 执行菜单句柄
-        handleRun(
-            index, // 目标索引
-            menu, // 当前菜单
-            indexFather, // 父节点索引
-        ) {
-            let result = false;
-            // 遍历菜单节点
-            for (let i = 0; i < menu.length; i++) {
-                // 内部索引继承
-                let index0 = indexFather ? indexFather + '-' + i : '' + i;
-                // 节点存在自定义索引
-                if (!!menu[i].index && index === menu[i].index) {
-                    if (menu[i].handle) {
-                        menu[i].handle(index);
-                    }
-                    result = true;
-                    break
-                }
-                // 节点不存在自定义索引
-                if (index === index0) {
-                    if (menu[i].handle) {
-                        menu[i].handle(index);
-                    }
-                    result = true;
-                    break
-                }
-                // 存在子节点，递归调用
-                if (!!menu[i].menu && menu[i].menu.length > 0) {
-                    result = this.handleRun(index, menu[i].menu, index0);
-                    if (!!result) {
-                        break
-                    }
-                }
+  __name: 'index',
+  props: ["scopeThis", "myProps"],
+  setup(__props) {
+
+const props = __props;
+const myProps0 = vue.ref(Object.assign({}, ly0default$1.myProps, props.myProps));
+
+const handleRun = (
+    index, // 目标索引
+    menu, // 当前菜单
+    indexFather, // 父节点索引
+) => {
+    let result = false;
+    // 遍历菜单节点
+    for (let i = 0; i < menu.length; i++) {
+        // 内部索引继承
+        let index0 = indexFather ? indexFather + '-' + i : '' + i;
+        // 节点存在自定义索引
+        if (!!menu[i].index && index === menu[i].index) {
+            if (menu[i].handle) {
+                menu[i].handle(props.scopeThis, index);
             }
-            return result
-        },
-    },
+            result = true;
+            break
+        }
+        // 节点不存在自定义索引
+        if (index === index0) {
+            if (menu[i].handle) {
+                menu[i].handle(props.scopeThis, index);
+            }
+            result = true;
+            break
+        }
+        // 存在子节点，递归调用
+        if (!!menu[i].menu && menu[i].menu.length > 0) {
+            result = handleRun(index, menu[i].menu, index0);
+            if (!!result) {
+                break
+            }
+        }
+    }
+    return result
 };
 
-function render$6(_ctx, _cache, $props, $setup, $data, $options) {
+const handleSelect = key=>{
+    handleRun(key, props.myProps.menu, '');
+};
+
+const handleOpen = key=>{};
+const handleClose = key=> {};
+
+return (_ctx, _cache) => {
   const _component_el_menu_item = vue.resolveComponent("el-menu-item");
   const _component_el_sub_menu = vue.resolveComponent("el-sub-menu");
   const _component_el_menu = vue.resolveComponent("el-menu");
 
   return (vue.openBlock(), vue.createBlock(_component_el_menu, {
-    mode: $options.myProps0.mode,
-    "default-active": $options.myProps0.defaultActive,
-    onOpen: $options.handleOpen,
-    onClose: $options.handleClose,
-    onSelect: $options.handleSelect,
-    "background-color": $options.myProps0.backgroundColor,
-    "text-color": $options.myProps0.textColor,
-    "active-text-color": $options.myProps0.activeTextColor,
+    mode: myProps0.value.mode,
+    "default-active": myProps0.value.defaultActive,
+    onOpen: handleOpen,
+    onClose: handleClose,
+    onSelect: handleSelect,
+    "background-color": myProps0.value.backgroundColor,
+    "text-color": myProps0.value.textColor,
+    "active-text-color": myProps0.value.activeTextColor,
     "menu-trigger": "hover",
-    style: vue.normalizeStyle('--el-menu-horizontal-height: ' + $options.myProps0.horizontalHeight + '; ' +
-            $options.myProps0.styleBase + ' ' +
-            $options.myProps0.style)
+    style: vue.normalizeStyle('--el-menu-horizontal-height: ' + myProps0.value.horizontalHeight + '; ' +
+            myProps0.value.styleBase + ' ' +
+            myProps0.value.style)
   }, {
     default: vue.withCtx(() => [
       vue.createCommentVNode(" 第1层 "),
-      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($props.myProps.menu, (item, index) => {
+      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(__props.myProps.menu, (item, index) => {
         return (vue.openBlock(), vue.createElementBlock(vue.Fragment, {
           key: item.index ? item.index : String(index)
         }, [
@@ -23661,7 +23656,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                     'disabled' in item
                     ? item.disabled
                     : 'hdlDisabled' in item
-                        ? item.hdlDisabled(item, index)
+                        ? item.hdlDisabled(__props.scopeThis, item, index)
                         : false
                 
               }, {
@@ -23690,7 +23685,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                             'disabled' in item0
                             ? item0.disabled
                             : 'hdlDisabled' in item0
-                                ? item0.hdlDisabled(item0, index0)
+                                ? item0.hdlDisabled(__props.scopeThis, item0, index0)
                                 : false
                         
                           }, {
@@ -23727,7 +23722,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                                     'disabled' in item1
                                     ? item1.disabled
                                     : 'hdlDisabled' in item1
-                                        ? item1.hdlDisabled(item1, index1)
+                                        ? item1.hdlDisabled(__props.scopeThis, item1, index1)
                                         : false
                                 
                                       }, {
@@ -23768,7 +23763,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                                             'disabled' in item2
                                             ? item2.disabled
                                             : 'hdlDisabled' in item2
-                                                ? item2.hdlDisabled(item2, index2)
+                                                ? item2.hdlDisabled(__props.scopeThis, item2, index2)
                                                 : false
                                         
                                                   }, {
@@ -23806,7 +23801,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
                                                     'disabled' in item3
                                                     ? item3.disabled
                                                     : 'hdlDisabled' in item3
-                                                        ? item3.hdlDisabled(item3, index3)
+                                                        ? item3.hdlDisabled(__props.scopeThis, item3, index3)
                                                         : false
                                                 
                                                     }, {
@@ -23838,10 +23833,12 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
       }), 128 /* KEYED_FRAGMENT */))
     ]),
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["mode", "default-active", "onOpen", "onClose", "onSelect", "background-color", "text-color", "active-text-color", "style"]))
+  }, 8 /* PROPS */, ["mode", "default-active", "background-color", "text-color", "active-text-color", "style"]))
+}
 }
 
-script$d.render = render$6;
+};
+
 script$d.__file = "src/menu/index.vue";
 
 var quill$1 = {exports: {}};

@@ -10,9 +10,9 @@
         :top="myProps0.popup.top"
         :destroy-on-close="true"
     >
-        <compForm v-if="myProps0" :myProps="myProps0" :dataBox="dataBox"></compForm>
+        <compForm v-if="myProps0" :scopeThis="scopeThis" :myProps="myProps0" :dataBox="dataBox"></compForm>
     </el-dialog>
-    <compForm v-else-if="myProps0" :myProps="myProps0" :dataBox="dataBox"></compForm>
+    <compForm v-else-if="myProps0" :scopeThis="scopeThis" :myProps="myProps0" :dataBox="dataBox"></compForm>
 </template>
 
 <style lang="scss" scoped></style>
@@ -22,6 +22,6 @@ import compForm from './Form.vue'
 import ly0default from './default.js'
 import {ref} from "vue";
 
-const props = defineProps(["myProps", "dataBox"]);
+const props = defineProps(["scopeThis", "myProps", "dataBox"]);
 const myProps0 = ref(Object.assign({}, ly0default.myProps, props.myProps))
 </script>

@@ -1,15 +1,16 @@
 <template>
     <!-- 置顶菜单 -->
-    <ly0Menu v-if="myProps.menu && myProps.menu.menu && myProps.menu.menu.length > 0" :myProps="myProps.menu"></ly0Menu>
+    <ly0Menu v-if="myProps.menu && myProps.menu.menu && myProps.menu.menu.length > 0" :scopeThis="scopeThis" :myProps="myProps.menu"></ly0Menu>
     <!-- 表单区域可以分为多个列 -->
     <div :style="style.root_box">
         <div v-for="(item, index) in myProps.cols" :key="index">
             <table>
                 <tbody>
                     <template v-for="(item0, index0) in item.items" :key="index0">
-                        <tr v-if="item0.hdlVisible ? item0.hdlVisible(dataBox.fieldsValue) : true">
+                        <tr v-if="item0.hdlVisible ? item0.hdlVisible(scopeThis, dataBox.fieldsValue) : true">
                             <td :style="style.field_box.left" v-if="!!item0.label">
                                 <compLabelBox
+                                    :scopeThis = "scopeThis"
                                     :myProps="myProps"
                                     :dataBox="dataBox"
                                     :item="item0"
@@ -27,7 +28,7 @@
                                 >
                                     <template v-for="(item1, index1) in item0.items" :key="index1">
                                         <el-collapse-item
-                                            v-if="item1.hdlVisible ? item1.hdlVisible(dataBox.fieldsValue) : true"
+                                            v-if="item1.hdlVisible ? item1.hdlVisible(scopeThis, dataBox.fieldsValue) : true"
                                             :title="item1.title"
                                             :name="item1.name ? item1.name : index1"
                                         >
@@ -36,12 +37,13 @@
                                                     <tr
                                                         v-if="
                                                             item2.hdlVisible
-                                                            ? item2.hdlVisible(dataBox.fieldsValue)
+                                                            ? item2.hdlVisible(scopeThis, dataBox.fieldsValue)
                                                             : true
                                                         "
                                                     >
                                                         <td :style="style.field_box.left" v-if="item2.label">
                                                             <compLabelBox
+                                                                :scopeThis="scopeThis"
                                                                 :myProps="myProps"
                                                                 :dataBox="dataBox"
                                                                 :item="item2"
@@ -52,6 +54,7 @@
                                                             :colspan="style.no_field_label(item2)"
                                                         >
                                                             <compInputBox
+                                                                :scopeThis="scopeThis"
                                                                 :myProps="myProps"
                                                                 :dataBox="dataBox"
                                                                 :item="item2"
@@ -65,6 +68,7 @@
                                 </el-collapse>
                                 <compInputBox
                                     v-else
+                                    :scopeThis="scopeThis"
                                     :myProps="myProps"
                                     :dataBox="dataBox"
                                     :item="item0"
@@ -85,7 +89,7 @@
                 :type="style.submit_box.button.facade.type"
                 :plain="style.submit_box.button.facade.plain"
                 :style="style.submit_box.button.style"
-                @click="dataBox.hdlSubmit(dataBox.fieldsValue)"
+                @click="dataBox.hdlSubmit(scopeThis, dataBox.fieldsValue)"
             >提交</el-button>
         </div>
     </template>
@@ -97,7 +101,7 @@ import compInputBox from './InputBox.vue'
 import {computed, reactive} from "vue";
 import styleModule from './style.js'
 
-const props = defineProps(["myProps", "dataBox"]);
+const props = defineProps(["scopeThis", "myProps", "dataBox"]);
 
 const style = reactive({
     collapse: computed(() => styleModule.collapse()),
