@@ -263,11 +263,8 @@
         <!-- 行政区划 -->
         <div v-if="item.inputType === 'd3gbt2260'">
             <ly0gbt2260
-                :myProps="{
-                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '',
-                    readOnly: item.readOnly
-                }"
-                @getValue="hdlGetValue.gbt2260"
+                :myProps="{readOnly: item.readOnly}"
+                v-model="dataBox.fieldsValue[item.fieldName]"
             ></ly0gbt2260>
         </div>
     
@@ -294,11 +291,8 @@
         <!-- 商品标价 -->
         <div v-if="item.inputType === 'd7price'">
             <ly0d7price
-                :myProps="{
-                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-                    readOnly: item.readOnly,
-                }"
-                @getValue="hdlGetValue.ly0d7price"
+                :myProps="{readOnly: item.readOnly}"
+                v-model="dataBox.fieldsValue[item.fieldName]"
             ></ly0d7price>
         </div>
         <!-- 商品规格 -->
@@ -593,16 +587,10 @@ const style = reactive({
 })
 
 const hdlGetValue = {
-    gbt2260(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.code6 ? result.code6 : ''
-    },
     ly0d7group(result) {
         props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
     },
     ly0d7postal(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
-    },
-    ly0d7price(result) {
         props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
     },
     ly0d7size(result) {

@@ -1,133 +1,157 @@
-<template><div @click="hdl.popup">
-    <table>
-        <tbody>
-            <tr v-if="!value || value.length === 0">
-                <td><i v-if="!myProps.readOnly" class="el-icon-edit" style="color: blue"></i></td>
-                <td>[未标价]</td>
-            </tr>
-            <tr v-for="(item, index) in value">
-                <td>
-                    <i v-if="!myProps.readOnly && index === 0" class="el-icon-edit" style="color: blue"></i>
-                </td>
-                <td>
-                    <span v-if="!!item.name" class="value-name">{{ item.name }}</span>
-                    <span v-else class="value-name-empty">{{ nameEmpty }}</span>
-                    <span class="value-price">{{ Math.floor(item.price) / 100 }}</span>
-                    <img v-if="!!item.member" class="value-member" src="./member.png" />
-                    <img v-if="!!item.hot" class="value-hot" src="./hot.png" />
-                    <span class="value-note">{{ item.note ? item.note : '' }}</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <el-dialog
-        v-model="popup.visible"
-        :custom-class="'code-template-dialog'"
-        :close-on-press-escape="true"
-        append-to-body
-        title="商品标价"
-        width="1240px"
-        :destroy-on-close="true"
-    >
-        <table style="width: 100%">
-        <tbody>
-            <tr>
-                <th>标价名称</th>
-                <th>单价</th>
-                <th>会员标注</th>
-                <th>热点标注</th>
-                <th>备注</th>
-                <th></th>
-            </tr>
-            <tr v-for="(item, index) in popup.value">
-                <th><el-input class="input-name" v-model="item.name"></el-input></th>
-                <th><el-input class="input-price" v-model="item.price"></el-input></th>
-                <th>
-                    <el-switch
-                        v-model="item.member"
-                        active-text="是"
-                        inactive-text="否"
-                        :active-value="true"
-                        :inactive-value="false"
-                    ></el-switch>
-                </th>
-                <th>
-                    <el-switch
-                        v-model="item.hot"
-                        active-text="是"
-                        inactive-text="否"
-                        :active-value="true"
-                        :inactive-value="false"
-                    ></el-switch>
-                </th>
-                <th><el-input class="input-note" v-model="item.note"></el-input></th>
-                <th>
-                    <el-button
-                        type="danger"
-                        icon="el-icon-delete"
-                        circle
-                        size="small"
-                        @click="hdl.delete(index)"
-                    ></el-button>
-                </th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>
-                    <el-button
-                        type="primary"
-                        icon="el-icon-plus"
-                        circle
-                        size="small"
-                        style="margin-top: 20px"
-                        @click="hdl.append"
-                    ></el-button>
-                </th>
-            </tr>
+<template>
+    <div @click="hdl.popup">
+        <table>
+            <tbody>
+                <tr v-if="!value || value.length === 0">
+                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td>[未标价]</td>
+                </tr>
+                <tr v-for="(item, index) in value" :key="index">
+                    <td>
+                        <el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon>
+                        </td>
+                    <td>
+                        <span v-if="!!item.name" :style="style.value.name">{{ item.name }}</span>
+                        <span v-else :style="style.value.name_empty">{{ nameEmpty }}</span>
+                        <span :style="style.value.price">￥{{ (item.price / 100).toFixed(2) }}</span>
+                        <img v-if="!!item.member" :style="style.value.member" src="./member.png" alt="会员" />
+                        <img v-if="!!item.hot" :style="style.value.hot" src="./hot.png" alt="热点" />
+                        <span :style="style.value.note">{{ item.note || '' }}</span>
+                    </td>
+                </tr>
             </tbody>
         </table>
-        <div class="line"></div>
-        <div class="select-submit">
-            <el-button type="danger" plain @click="hdl.submit">确认</el-button>
-        </div>
-    </el-dialog>
-</div></template>
+        <el-dialog
+            v-model="popup.visible"
+            :custom-class="'code-template-dialog'"
+            :close-on-press-escape="true"
+            append-to-body
+            title="商品标价"
+            width="1240px"
+            :destroy-on-close="true"
+        >
+            <table style="width: 100%;">
+            <tbody>
+                <tr>
+                    <th>标价名称</th>
+                    <th>单价（元）</th>
+                    <th>会员标注</th>
+                    <th>热点标注</th>
+                    <th>备注</th>
+                    <th></th>
+                </tr>
+                <tr v-for="(item, index) in popup.value" :key="index">
+                    <td><el-input :style="style.input.name" v-model="item.name"></el-input></td>
+                    <td><el-input-number
+                        :style="style.input.price"
+                        v-model="item.price"
+                        :min="0"
+                        :precision="2"
+                        controls-position="right"
+                    /></td>
+                    <td>
+                        <el-switch
+                            v-model="item.member"
+                            active-text="是"
+                            inactive-text="否"
+                            :active-value="true"
+                            :inactive-value="false"
+                        ></el-switch>
+                    </td>
+                    <td>
+                        <el-switch
+                            v-model="item.hot"
+                            active-text="是"
+                            inactive-text="否"
+                            :active-value="true"
+                            :inactive-value="false"
+                        ></el-switch>
+                    </td>
+                    <td><el-input :style="style.input.note" v-model="item.note"></el-input></td>
+                    <td>
+                        <el-button
+                            type="danger"
+                            circle
+                            size="small"
+                            @click="hdl.delete(index)"
+                        ><el-icon><Delete /></el-icon></el-button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5"></td>
+                    <td>
+                        <el-button
+                            type="primary"
+                            circle
+                            size="small"
+                            style="margin-top: 20px;"
+                            @click="hdl.append"
+                        ><el-icon><Plus /></el-icon></el-button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div :style="style.line"></div>
+            <div>
+                <el-button type="danger" plain @click="hdl.submit">确认</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</template>
 
 <style lang="scss" scoped>
-@use 'index';
+.edit-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+}
 </style>
 
 <script setup>
-import {ref} from "vue";
+import {reactive, ref, watch, computed} from "vue";
 
-const props = defineProps(["myProps"]);
-const emit = defineEmits(['get-value'])
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        readOnly: {
+            type: Boolean,
+            default: false
+        }
+    }
+    
+});
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
+const value = computed(() => props.modelValue || [])
+const nameEmpty = ref('[未设置标价名称]')
+
 const popup = ref({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    value: []
 })
-const nameEmpty = ref('[未设置标价名称]')
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value))
-            popup.value.value.forEach(i => {
-                i.price = Math.floor(i.price) / 100
-            })
-            popup.value.visible = true
+        if (props.myProps.readOnly) {
+            return
         }
+        const copiedValue = JSON.parse(JSON.stringify(value.value))
+        popup.value.value = copiedValue.map(item => ({
+            ...item,
+            // 价格从“分”转换为“元”
+            price: item.price / 100
+        }))
+        popup.value.visible = true
     },
     append() {
         popup.value.value.push({
             name: '',
-            price: 0,
+            price: 0, // 初始价格为 0 元
             member: false,
             hot: false,
             note: '',
@@ -136,16 +160,59 @@ const hdl = {
     delete(index) {
         popup.value.value.splice(index, 1)
     },
-    hdlSubmit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value))
-        value.value.forEach(i => {
-            i.price = Math.floor(i.price * 100)
+    submit() {
+        const submittingValue = JSON.parse(JSON.stringify(popup.value.value))
+        submittingValue.forEach(item => {
+            // 确保 price 是数字，然后转为“分”
+            item.price = Math.floor(Number(item.price) * 100)
         })
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        })
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", submittingValue)
         popup.value.visible = false
     },
 }
+
+const style = reactive({
+    value: {
+        name: {},
+        name_empty: {
+            color: '#919191'
+        },
+        price: {
+            'margin-left': '10px',
+            color: 'blue'
+        },
+        member: {
+            'margin-left': '10px',
+            width: '32px',
+            height: '32px'
+        },
+        hot: {
+            'margin-left': '10px',
+            width: '20px',
+            height: '20px'
+        },
+        note: {
+            'margin-left': '10px'
+        }
+    },
+    input: {
+        name: {
+            width: '200px',
+            'margin-bottom': '10px'
+        },
+        price: {
+            width: '120px'
+        },
+        note: {
+            width: '200px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+})
 </script>

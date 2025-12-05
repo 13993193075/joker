@@ -51,6 +51,7 @@
                         <td>
                             <el-select
                                 v-model="popup.select.code2"
+                                placeholder="请选择 省"
                                 filterable
                                 :style="style.popup.select"
                                 @change="hdlChangeCode2"
@@ -69,6 +70,7 @@
                         <td>
                             <el-select
                                 v-model="popup.select.code4"
+                                placeholder="请选择 市"
                                 filterable
                                 :style="style.popup.select"
                                 @change="hdlChangeCode4"
@@ -87,6 +89,7 @@
                         <td>
                             <el-select
                                 v-model="popup.select.code6"
+                                placeholder="请选择 县"
                                 filterable
                                 :style="style.popup.select"
                             >
@@ -113,25 +116,36 @@
 </style>
 
 <script setup>
-import {reactive, onMounted, watch} from "vue";
+import {reactive, ref, watch, computed} from "vue";
 import ly0request from '../request/index.js'
 
+// 遵循 Vue 3 v-model 规范，使用 modelValue
 const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: String,
+        default: () => ''
+    },
     myProps: {
-        type: Object,
-        default: () => ({ readOnly: false, value: '', _id: null }) // 提供清晰的默认值
+        readOnly: {
+            type: Boolean,
+            default: false
+        }
     }
+    
 });
-const emit = defineEmits(['get-value'])
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = reactive({
+const value = reactive(Object.assign({
     code2: '',
     text2: '',
     code4: '',
     text4: '',
     code6: '',
     text6: '',
-});
+}, {code6: props.modelValue || ''}))
+
 const popup = reactive({
     visible: false,
     select: {
@@ -144,7 +158,7 @@ const popup = reactive({
     }
 })
 
-watch(() => props.myProps.value,
+watch(() => props.modelValue,
     async (valNew, valOld) => {
         // 只有当传入的值有效时才进行网络请求
         if (!valNew) return;
@@ -178,16 +192,18 @@ watch(() => props.myProps.value,
 );
 
 const hdlPopup = async () => {
-    if (!props.myProps.readOnly) {
-        popup.select.code2 = value.code2
-        await hdlChangeCode2(popup.select.code2)
-        
-        popup.select.code4 = value.code4
-        await hdlChangeCode4(popup.select.code4)
-        
-        popup.select.code6 = value.code6
-        popup.visible = true
+    if (props.myProps.readOnly) {
+        return
     }
+    
+    popup.select.code2 = value.code2
+    await hdlChangeCode2(popup.select.code2)
+    
+    popup.select.code4 = value.code4
+    await hdlChangeCode4(popup.select.code4)
+    
+    popup.select.code6 = value.code6
+    popup.visible = true
 }
 
 const hdlChangeCode2 = async value => { // 使用 async 标记
@@ -225,16 +241,8 @@ const hdlSubmit = () => {
     value.code6 = popup.select.code6
     const foundItem6 = popup.select.arrCode6.find(i => i.code6 === value.code6)
     value.text6 = foundItem6 ? foundItem6.text6 : ''
-    emit("get-value", {
-        code6: value.code6
-            ? value.code6
-            : value.code4
-                ? value.code4
-                : value.code2
-                    ? value.code2
-                    : '',
-        _id: '_id' in props.myProps ? props.myProps._id : null,
-    })
+    // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+    emit("update:modelValue", value.code6 ?? value.code4 ?? value.code2 ?? '')
     popup.visible = false
 }
 
