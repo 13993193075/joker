@@ -21967,7 +21967,7 @@ const upload$1 = '/ly0/upload-req/image';
 const upload_carplate = '/ly0/upload-req/carplate';
 
 // 后端请求
-async function request$2(_ref) {
+async function request$1(_ref) {
   let {
     domain,
     url,
@@ -21997,7 +21997,7 @@ async function ly0request(_ref2) {
     data // 请求数据
   } = _ref2;
   try {
-    const response = await request$2({
+    const response = await request$1({
       domain,
       url,
       data
@@ -22036,7 +22036,7 @@ async function storpro(_ref3) {
   } = _ref3;
   try {
     const result = await ly0request({
-      domain,
+      domain: domain ? domain : domainPara,
       url: '/ly0/storpro/exec',
       data: {
         noSession: noSession && (noSession === true || noSession === 'true') ? noSession : false,
@@ -22120,7 +22120,7 @@ var ly0request$1 = {
   domain: domainPara,
   upload: upload$1,
   upload_carplate,
-  request: request$2,
+  request: request$1,
   ly0request,
   storpro,
   ly0sessionSave,
@@ -22130,7 +22130,7 @@ var ly0request$1 = {
   ly0sessionLoseWithUsertbl
 };
 
-var request$1 = {
+var request = {
   ly0: ly0request$1
 };
 
@@ -22455,13 +22455,13 @@ script$h.__file = "src/form/LabelBox.vue";
 
 const _hoisted_1$e = { key: 12 };
 const _hoisted_2$d = { key: 0 };
-const _hoisted_3$8 = { key: 13 };
-const _hoisted_4$7 = { key: 0 };
-const _hoisted_5$6 = { key: 14 };
-const _hoisted_6$6 = { key: 0 };
-const _hoisted_7$6 = { key: 16 };
-const _hoisted_8$5 = ["innerHTML"];
-const _hoisted_9$4 = { key: 17 };
+const _hoisted_3$7 = { key: 13 };
+const _hoisted_4$6 = { key: 0 };
+const _hoisted_5$5 = { key: 14 };
+const _hoisted_6$5 = { key: 0 };
+const _hoisted_7$5 = { key: 16 };
+const _hoisted_8$4 = ["innerHTML"];
+const _hoisted_9$3 = { key: 17 };
 const _hoisted_10$2 = ["width", "height", "poster"];
 const _hoisted_11$1 = ["src"];
 const _hoisted_12 = ["src"];
@@ -22989,7 +22989,7 @@ return (_ctx, _cache) => {
       vue.createCommentVNode(" 图片&富文本&视频 "),
       vue.createCommentVNode(" 图片 "),
       (__props.item.inputType === 'image')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$8, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$7, [
             vue.createElementVNode("div", null, [
               vue.createVNode(_component_el_image, {
                 style: vue.normalizeStyle(style.image(__props.item, __props.myProps)),
@@ -23001,7 +23001,7 @@ return (_ctx, _cache) => {
             ]),
             vue.createCommentVNode(" 设置了图片删除功能，同时图片不为空 "),
             (!!__props.item.imageDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
-              ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$7, [
+              ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$6, [
                   vue.createVNode(_component_el_button, {
                     size: "small",
                     icon: !__props.dataBox.fieldsValue[__props.item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
@@ -23018,7 +23018,7 @@ return (_ctx, _cache) => {
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 多个图片 "),
       (__props.item.inputType === 'images')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$6, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$5, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(__props.dataBox.fieldsValue[__props.item.fieldName], (itemImages, indexImages) => {
               return (vue.openBlock(), vue.createElementBlock("div", {
                 key: indexImages,
@@ -23032,7 +23032,7 @@ return (_ctx, _cache) => {
                   }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
                 ]),
                 (!!__props.item.imageDelete)
-                  ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_6$6, [
+                  ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_6$5, [
                       vue.createVNode(_component_el_button, {
                         size: "small",
                         icon: "el-icon-delete",
@@ -23064,15 +23064,15 @@ return (_ctx, _cache) => {
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 富文本show "),
       (__props.item.inputType === 'richtextShow')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7$6, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7$5, [
             vue.createElementVNode("div", {
               innerHTML: __props.dataBox.fieldsValue[__props.item.fieldName]
-            }, null, 8 /* PROPS */, _hoisted_8$5)
+            }, null, 8 /* PROPS */, _hoisted_8$4)
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 视频 "),
       (__props.item.inputType === 'video')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$4, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$3, [
             vue.createElementVNode("div", null, [
               vue.createElementVNode("video", {
                 width: style.video(__props.item, __props.myProps).width,
@@ -23274,8 +23274,8 @@ script$g.__file = "src/form/InputBox.vue";
 
 const _hoisted_1$d = { key: 0 };
 const _hoisted_2$c = ["colspan"];
-const _hoisted_3$7 = { key: 0 };
-const _hoisted_4$6 = ["colspan"];
+const _hoisted_3$6 = { key: 0 };
+const _hoisted_4$5 = ["colspan"];
 
 
 var script$f = {
@@ -23367,7 +23367,7 @@ return (_ctx, _cache) => {
                                                             ? item2.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue)
                                                             : true
                                                         )
-                                                      ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_3$7, [
+                                                      ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_3$6, [
                                                           (item2.label)
                                                             ? (vue.openBlock(), vue.createElementBlock("td", {
                                                                 key: 0,
@@ -23391,7 +23391,7 @@ return (_ctx, _cache) => {
                                                               dataBox: __props.dataBox,
                                                               item: item2
                                                             }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
-                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$6)
+                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$5)
                                                         ]))
                                                       : vue.createCommentVNode("v-if", true)
                                                   ], 64 /* STABLE_FRAGMENT */))
@@ -40688,26 +40688,41 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css' // snow主题
 import '@vueup/vue-quill/dist/vue-quill.bubble.css'
 */
 
+/*
+在外部引用您的富文本组件时，您应该使用以下写法：
+    <ly0Richtext v-model="richtextValue" :myProps="richtextProps"></ly0Richtext>
+v-model 是一个语法糖（syntactic sugar）。当你在一个自定义组件上使用 v-model 时，它会自动扩展为：
+    1. 传入一个名为 modelValue 的 prop（用于接收值）
+    2. 监听一个名为 update:modelValue 的自定义事件（用于更新值）
+*/
 
 var script$c = {
   __name: 'index',
-  props: ["myProps"],
+  props: {
+    // v-model 对应的 prop
+    modelValue: {
+        type: String,
+        default: '',
+    },
+    myProps: {
+        type: Object,
+        default: () => ({}),
+    }
+},
   emits: ['update:modelValue'],
   setup(__props, { emit: __emit }) {
 
 const props = __props;
 const emit = __emit;
 
-// 富文本的值
-const modelValue = vue.ref('');
 // 文件上传地址
-const uploadUrl = vue.ref(props.myProps.uploadUrl ? props.myProps.uploadUrl : request.ly0.upload);
+const uploadUrl = props.myProps.uploadUrl || request.ly0.upload;
 // 指定上传文件的参数名称(Field Name)
-const uploadFieldName = vue.ref(props.myProps.uploadFieldName ? props.myProps.uploadFieldName : "upload_file");
+const uploadFieldName = props.myProps.uploadFieldName || "upload_file";
 // 限制文件上传的最大大小，默认5MB
-const maxSize = vue.ref(props.myProps.maxSize ? props.myProps.maxSize : 1024 * 5);
-const theme = vue.ref(props.myProps.theme ? props.myProps.theme : "snow"); // 默认snow主题
-vue.reactive(props.myProps.customOptions ? props.myProps.customOptions : ()=>{});
+const maxSize = props.myProps.maxSize || 1024 * 5;
+const theme = props.myProps.theme || "snow"; // 默认snow主题
+const customOptions = vue.reactive(props.myProps.customOptions || {});
 
 const quillEditor = vue.ref(null);
 
@@ -40723,7 +40738,7 @@ const imageHandler = () => {
         if (!file) return
         
         // 检查文件大小
-        if (file.size / 1024 > maxSize) {
+        if (file.size / 1024 > maxSize.value) {
             alert(`图片大小不能超过 ${maxSize} KB`);
             return
         }
@@ -40737,15 +40752,15 @@ const imageHandler = () => {
         quill.insertEmbed(length, 'image', 'uploading...');
         
         const formData = new FormData();
-        formData.append(uploadFieldName, file);
+        formData.append(uploadFieldName.value, file);
         
         try {
             // ⚠️ 模拟/替换为你真实的上传逻辑 (例如使用 axios 或 fetch)
             // 注意：这里需要你处理好响应，确保返回图片 URL
             
             // 假设使用 fetch
-            const response = await request$1.ly0.request({
-                uploadUrl: uploadUrl ? uploadUrl : request$1.ly0.domain + request$1.ly0.upload,
+            const response = await request.ly0.request({
+                uploadUrl: uploadUrl ? uploadUrl : request.ly0.domain + request.ly0.upload,
                 data: formData
             });
             
@@ -40797,7 +40812,7 @@ const editorOptions = vue.computed(() => {
                 }
             }
         },
-        ...props.customOptions // 允许用户覆盖默认选项
+        ...customOptions // 允许用户覆盖默认选项
     }
 });
 
@@ -40811,9 +40826,9 @@ return (_ctx, _cache) => {
     vue.createVNode(vue.unref(QuillEditor), {
       ref_key: "quillEditor",
       ref: quillEditor,
-      content: modelValue.value,
+      content: __props.modelValue,
       options: editorOptions.value,
-      theme: theme.value,
+      theme: vue.unref(theme),
       contentType: "html",
       "onUpdate:content": handleContentUpdate
     }, null, 8 /* PROPS */, ["content", "options", "theme"])
@@ -41705,7 +41720,7 @@ var script$6 = {
 
 const _hoisted_1$6 = { class: "el-upload__tip" };
 const _hoisted_2$6 = ["src"];
-const _hoisted_3$6 = {
+const _hoisted_3$5 = {
   key: 0,
   style: {"font-size":"xx-small"}
 };
@@ -41756,7 +41771,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["modelValue"]),
     (_ctx.fileList.length>0)
-      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$6, vue.toDisplayString("已上传"+_ctx.fileList.length+"个图片"), 1 /* TEXT */))
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$5, vue.toDisplayString("已上传"+_ctx.fileList.length+"个图片"), 1 /* TEXT */))
       : vue.createCommentVNode("v-if", true),
     (_ctx.fileList.length>0)
       ? (vue.openBlock(), vue.createBlock(_component_el_button, {
@@ -41786,35 +41801,33 @@ var upload = {
   Upload_pictureCard: script$6
 };
 
-const _hoisted_1$5 = { class: "value-code" };
-const _hoisted_2$5 = { class: "value-text" };
-const _hoisted_3$5 = { class: "value-code" };
-const _hoisted_4$5 = { class: "value-text" };
-const _hoisted_5$5 = { class: "value-code" };
-const _hoisted_6$5 = { class: "value-text" };
-const _hoisted_7$5 = { class: "select-row" };
-const _hoisted_8$4 = { class: "select-row" };
-const _hoisted_9$3 = { class: "select-submit" };
+const _hoisted_1$5 = { style: {"width":"100%"} };
+const _hoisted_2$5 = { style: {"width":"30%"} };
 
 
 var script$5 = {
   __name: 'index',
-  props: ["myProps"],
+  props: {
+    myProps: {
+        type: Object,
+        default: () => ({ readOnly: false, value: '', _id: null }) // 提供清晰的默认值
+    }
+},
   emits: ['get-value'],
   setup(__props, { emit: __emit }) {
 
 const props = __props;
 const emit = __emit;
 
-const value = vue.ref(Object.assign({
+const value = vue.reactive({
     code2: '',
     text2: '',
     code4: '',
     text4: '',
     code6: '',
     text6: '',
-}, {code6: props.myProps.value}));
-const popup = vue.ref({
+});
+const popup = vue.reactive({
     visible: false,
     select: {
         arrCode2: [],
@@ -41826,108 +41839,134 @@ const popup = vue.ref({
     }
 });
 
-vue.onMounted(()=>{
-    request$1.ly0.storpro({
-        noSession: true,
-        storproName: 'ly0d3.gbt2260code2.init',
-    }).then(result=>{
-        popup.value.select.arrCode2 = result.arrCode2;
-    });
-});
-
 vue.watch(() => props.myProps.value,
-(valNew, valOld) => {
-        request$1.ly0.storpro({
+    async (valNew, valOld) => {
+        // 只有当传入的值有效时才进行网络请求
+        if (!valNew) return;
+        
+        const result2 = await request.ly0.storpro({
+            noSession: true,
+            storproName: 'ly0d3.gbt2260code2.init',
+        });
+        popup.select.arrCode2 = result2.arrCode2.filter(item => item.code2);
+        
+        const result6 = await request.ly0.storpro({
             noSession: true,
             storproName: 'ly0d3.gbt2260code6.get',
-            data: {
-                code6: valNew,
-            },
-        }).then(result=>{
-            if(result.itemCode6){
-                value.value = result.itemCode6;
-            }
+            data: { code6: valNew },
         });
+        
+        if(result6.itemCode6){
+            // 保持响应式
+            Object.assign(value, result6.itemCode6);
+            
+            // 确保按顺序加载级联数据
+            if (value.code2) {
+                await hdlChangeCode2(value.code2);
+            }
+            if (value.code4) {
+                await hdlChangeCode4(value.code4);
+            }
+        }
     },
-    {
-        immediate: true // 关键：让它在组件初始化时立即运行
-    }
+    { immediate: true }
 );
 
-const hdlPopup = () => {
+const hdlPopup = async () => {
     if (!props.myProps.readOnly) {
-        popup.value.select.code2 = value.value.code2;
-        hdlChangeCode2(popup.value.select.code2).then(() => {
-            popup.value.select.code4 = value.value.code4;
-            hdlChangeCode4(popup.value.select.code4).then(() => {
-                popup.value.select.code6 = value.value.code6;
-                popup.value.visible = true;
-            });
-        });
+        popup.select.code2 = value.code2;
+        await hdlChangeCode2(popup.select.code2);
+        
+        popup.select.code4 = value.code4;
+        await hdlChangeCode4(popup.select.code4);
+        
+        popup.select.code6 = value.code6;
+        popup.visible = true;
     }
 };
 
-const hdlChangeCode2 = value => {
-    return new Promise((resolve, reject) => {
-        request$1.ly0.storpro({
-            noSession: true,
-            storproName: 'ly0d3.gbt2260code4.code2',
-            data: {code2: value},
-        }).then(result => {
-            popup.value.select.arrCode4 = result.arrCode4;
-            popup.value.select.code4 = '';
-            popup.value.select.arrCode6 = [];
-            popup.value.select.code6 = '';
-            resolve();
-        });
-    })
+const hdlChangeCode2 = async value => { // 使用 async 标记
+    const result = await request.ly0.storpro({
+        noSession: true,
+        storproName: 'ly0d3.gbt2260code4.code2',
+        data: {code2: value},
+    });
+    
+    popup.select.arrCode4 = result.arrCode4.filter(item => item.code4);
+    popup.select.code4 = '';
+    popup.select.arrCode6 = [];
+    popup.select.code6 = '';
 };
 
-const hdlChangeCode4 = value => {
-    return new Promise((resolve, reject) => {
-        request$1.storpro({
-            noSession: true,
-            storproName: 'ly0d3.gbt2260code6.code4',
-            data: {code4: value},
-        }).then(result => {
-            popup.value.select.arrCode6 = result.arrCode6;
-            popup.value.select.code6 = '';
-            resolve();
-        });
-    })
+const hdlChangeCode4 = async value => {
+    const result = await request.ly0.storpro({
+        noSession: true,
+        storproName: 'ly0d3.gbt2260code6.code4',
+        data: {code4: value},
+    });
+    
+    popup.select.arrCode6 = result.arrCode6.filter(item => item.code6);
+    popup.select.code6 = '';
 };
 
 const hdlSubmit = () => {
-    value.value.code2 = popup.value.select.code2;
-    value.value.text2 = value.value.code2
-        ? popup.value.select.arrCode2.find(i => {
-            return i.code2 === value.value.code2
-        }).text2
-        : '';
-    value.value.code4 = popup.value.select.code4;
-    value.value.text4 = value.value.code4
-        ? popup.value.select.arrCode4.find(i => {
-            return i.code4 === value.value.code4
-        }).text4
-        : '';
-    value.value.code6 = popup.value.select.code6;
-    value.value.text6 = value.value.code6
-        ? popup.value.select.arrCode6.find(i => {
-            return i.code6 === value.value.code6
-        }).text6
-        : '';
+    // ... (安全查找逻辑) ...
+    value.code2 = popup.select.code2;
+    const foundItem2 = popup.select.arrCode2.find(i => i.code2 === value.code2);
+    value.text2 = foundItem2 ? foundItem2.text2 : '';
+    value.code4 = popup.select.code4;
+    const foundItem4 = popup.select.arrCode4.find(i => i.code4 === value.code4);
+    value.text4 = foundItem4 ? foundItem4.text4 : '';
+    value.code6 = popup.select.code6;
+    const foundItem6 = popup.select.arrCode6.find(i => i.code6 === value.code6);
+    value.text6 = foundItem6 ? foundItem6.text6 : '';
     emit("get-value", {
-        code6: value.value.code6
-            ? value.value.code6
-            : value.value.code4
-                ? value.value.code4
-                : value.value.code2
-                    ? value.value.code2
+        code6: value.code6
+            ? value.code6
+            : value.code4
+                ? value.code4
+                : value.code2
+                    ? value.code2
                     : '',
         _id: '_id' in props.myProps ? props.myProps._id : null,
     });
-    popup.value.visible = false;
+    popup.visible = false;
 };
+
+const style = vue.reactive({
+    value: {
+        code: {
+            color: '#6a6a6a',
+        },
+        text: {
+            color: '#0000bb',
+            'padding-left': '10px',
+        }
+    },
+    popup: {
+        label: {
+            'text-align': 'right',
+            'font-size': 'medium',
+            'padding-right': '20px'
+        },
+        select: {
+            width: '300px',
+            'margin-top': '10px',
+            'margin-bottom': '10px',
+            height: '40px',
+            'line-height': '40px'
+        },
+        submit: {
+            'text-align': 'right'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#999999',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+});
 
 return (_ctx, _cache) => {
   const _component_edit = vue.resolveComponent("edit");
@@ -41955,35 +41994,47 @@ return (_ctx, _cache) => {
               : vue.createCommentVNode("v-if", true)
           ]),
           vue.createElementVNode("td", null, [
-            vue.createElementVNode("span", _hoisted_1$5, vue.toDisplayString('[' + (value.value.code2 ? value.value.code2 : '省') + ']'), 1 /* TEXT */)
+            vue.createElementVNode("span", {
+              style: vue.normalizeStyle(style.value.code)
+            }, vue.toDisplayString('[' + (value.code2 ? value.code2 : '省') + ']'), 5 /* TEXT, STYLE */)
           ]),
           vue.createElementVNode("td", null, [
-            vue.createElementVNode("span", _hoisted_2$5, vue.toDisplayString(value.value.text2 ? value.value.text2 : ''), 1 /* TEXT */)
+            vue.createElementVNode("span", {
+              style: vue.normalizeStyle(style.value.text)
+            }, vue.toDisplayString(value.text2 ? value.text2 : ''), 5 /* TEXT, STYLE */)
           ])
         ]),
         vue.createElementVNode("tr", null, [
           _cache[4] || (_cache[4] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
           vue.createElementVNode("td", null, [
-            vue.createElementVNode("span", _hoisted_3$5, vue.toDisplayString('[' + (value.value.code4 ? value.value.code4 : '市') + ']'), 1 /* TEXT */)
+            vue.createElementVNode("span", {
+              style: vue.normalizeStyle(style.value.code)
+            }, vue.toDisplayString('[' + (value.code4 ? value.code4 : '市') + ']'), 5 /* TEXT, STYLE */)
           ]),
           vue.createElementVNode("td", null, [
-            vue.createElementVNode("span", _hoisted_4$5, vue.toDisplayString(value.value.text4 ? value.value.text4 : ''), 1 /* TEXT */)
+            vue.createElementVNode("span", {
+              style: vue.normalizeStyle(style.value.text)
+            }, vue.toDisplayString(value.text4 ? value.text4 : ''), 5 /* TEXT, STYLE */)
           ])
         ]),
         vue.createElementVNode("tr", null, [
           _cache[5] || (_cache[5] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
           vue.createElementVNode("td", null, [
-            vue.createElementVNode("span", _hoisted_5$5, vue.toDisplayString('[' + (value.value.code6 ? value.value.code6 : '县') + ']'), 1 /* TEXT */)
+            vue.createElementVNode("span", {
+              style: vue.normalizeStyle(style.value.code)
+            }, vue.toDisplayString('[' + (value.code6 ? value.code6 : '县') + ']'), 5 /* TEXT, STYLE */)
           ]),
           vue.createElementVNode("td", null, [
-            vue.createElementVNode("span", _hoisted_6$5, vue.toDisplayString(value.value.text6 ? value.value.text6 : ''), 1 /* TEXT */)
+            vue.createElementVNode("span", {
+              style: vue.normalizeStyle(style.value.text)
+            }, vue.toDisplayString(value.text6 ? value.text6 : ''), 5 /* TEXT, STYLE */)
           ])
         ])
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
-      modelValue: popup.value.visible,
-      "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((popup.value.visible) = $event)),
+      modelValue: popup.visible,
+      "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((popup.visible) = $event)),
       "custom-class": 'code-template-dialog',
       "close-on-press-escape": true,
       "append-to-body": "",
@@ -41992,97 +42043,107 @@ return (_ctx, _cache) => {
       "destroy-on-close": true
     }, {
       default: vue.withCtx(() => [
-        vue.createElementVNode("table", null, [
+        vue.createElementVNode("table", _hoisted_1$5, [
           vue.createElementVNode("tbody", null, [
             vue.createElementVNode("tr", null, [
-              _cache[6] || (_cache[6] = vue.createElementVNode("td", { style: {"width":"30%"} }, [
-                vue.createElementVNode("div", { class: "select-label" }, "省")
-              ], -1 /* CACHED */)),
+              vue.createElementVNode("td", _hoisted_2$5, [
+                vue.createElementVNode("div", {
+                  style: vue.normalizeStyle(style.popup.label)
+                }, "省", 4 /* STYLE */)
+              ]),
               vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_select, {
-                  modelValue: popup.value.select.code2,
-                  "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.value.select.code2) = $event)),
+                  modelValue: popup.select.code2,
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.select.code2) = $event)),
                   filterable: "",
-                  class: "select",
+                  style: vue.normalizeStyle(style.popup.select),
                   onChange: hdlChangeCode2
                 }, {
                   default: vue.withCtx(() => [
-                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.select.arrCode2, (item, index) => {
+                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.select.arrCode2, (item, index) => {
                       return (vue.openBlock(), vue.createBlock(_component_el_option, {
                         label: item.text2,
                         value: item.code2,
-                        key: index
+                        key: item.code2
                       }, null, 8 /* PROPS */, ["label", "value"]))
                     }), 128 /* KEYED_FRAGMENT */))
                   ]),
                   _: 1 /* STABLE */
-                }, 8 /* PROPS */, ["modelValue"])
+                }, 8 /* PROPS */, ["modelValue", "style"])
               ])
             ]),
-            vue.createElementVNode("tr", _hoisted_7$5, [
-              _cache[7] || (_cache[7] = vue.createElementVNode("td", null, [
-                vue.createElementVNode("div", { class: "select-label" }, "市")
-              ], -1 /* CACHED */)),
+            vue.createElementVNode("tr", null, [
+              vue.createElementVNode("td", null, [
+                vue.createElementVNode("div", {
+                  style: vue.normalizeStyle(style.popup.label)
+                }, "市", 4 /* STYLE */)
+              ]),
               vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_select, {
-                  modelValue: popup.value.select.code4,
-                  "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((popup.value.select.code4) = $event)),
+                  modelValue: popup.select.code4,
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((popup.select.code4) = $event)),
                   filterable: "",
-                  class: "select",
+                  style: vue.normalizeStyle(style.popup.select),
                   onChange: hdlChangeCode4
                 }, {
                   default: vue.withCtx(() => [
-                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.select.arrCode4, (item, index) => {
+                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.select.arrCode4, (item, index) => {
                       return (vue.openBlock(), vue.createBlock(_component_el_option, {
                         label: item.text4,
                         value: item.code4,
-                        key: index
+                        key: item.code4
                       }, null, 8 /* PROPS */, ["label", "value"]))
                     }), 128 /* KEYED_FRAGMENT */))
                   ]),
                   _: 1 /* STABLE */
-                }, 8 /* PROPS */, ["modelValue"])
+                }, 8 /* PROPS */, ["modelValue", "style"])
               ])
             ]),
-            vue.createElementVNode("tr", _hoisted_8$4, [
-              _cache[8] || (_cache[8] = vue.createElementVNode("td", null, [
-                vue.createElementVNode("div", { class: "select-label" }, "县")
-              ], -1 /* CACHED */)),
+            vue.createElementVNode("tr", null, [
+              vue.createElementVNode("td", null, [
+                vue.createElementVNode("div", {
+                  style: vue.normalizeStyle(style.popup.label)
+                }, "县", 4 /* STYLE */)
+              ]),
               vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_select, {
-                  modelValue: popup.value.select.code6,
-                  "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((popup.value.select.code6) = $event)),
+                  modelValue: popup.select.code6,
+                  "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((popup.select.code6) = $event)),
                   filterable: "",
-                  class: "select"
+                  style: vue.normalizeStyle(style.popup.select)
                 }, {
                   default: vue.withCtx(() => [
-                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.select.arrCode6, (item, index) => {
+                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.select.arrCode6, (item, index) => {
                       return (vue.openBlock(), vue.createBlock(_component_el_option, {
                         label: item.text6,
                         value: item.code6,
-                        key: index
+                        key: item.code6
                       }, null, 8 /* PROPS */, ["label", "value"]))
                     }), 128 /* KEYED_FRAGMENT */))
                   ]),
                   _: 1 /* STABLE */
-                }, 8 /* PROPS */, ["modelValue"])
+                }, 8 /* PROPS */, ["modelValue", "style"])
               ])
             ])
           ])
         ]),
-        _cache[10] || (_cache[10] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
-        vue.createElementVNode("div", _hoisted_9$3, [
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.line)
+        }, null, 4 /* STYLE */),
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.popup.submit)
+        }, [
           vue.createVNode(_component_el_button, {
             type: "danger",
             plain: "",
             onClick: hdlSubmit
           }, {
-            default: vue.withCtx(() => [...(_cache[9] || (_cache[9] = [
+            default: vue.withCtx(() => [...(_cache[6] || (_cache[6] = [
               vue.createTextVNode("确认", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
           })
-        ])
+        ], 4 /* STYLE */)
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["modelValue"])
@@ -42092,7 +42153,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$5.__scopeId = "data-v-38e9d5a6";
 script$5.__file = "src/gbt2260/index.vue";
 
 const _hoisted_1$4 = { key: 0 };
@@ -42351,7 +42411,7 @@ const hdl = {
         let arrPromise = [];
         value.value.forEach(i => {
             arrPromise.push(
-                request$1.ly0.storpro({
+                request.ly0.storpro({
                     noSession: true,
                     storproName: 'ly0d3.gbt2260code6.get',
                     data: { code6: i.gbt2260code },
@@ -43264,10 +43324,10 @@ var index = {
     app.component('ly0d7thumb', script);
   },
   FileSaver: FileSaver$1,
-  request: request$1
+  request
 };
 
 exports.FileSaver = FileSaver$1;
 exports.default = index;
-exports.request = request$1;
+exports.request = request;
 //# sourceMappingURL=index.cjs.js.map

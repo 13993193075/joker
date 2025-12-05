@@ -68,7 +68,7 @@ async function storpro({
 }) {
     try {
         const result = await ly0request({
-            domain,
+            domain: domain ? domain : domainPara,
             url: '/ly0/storpro/exec',
             data: {
                 noSession:

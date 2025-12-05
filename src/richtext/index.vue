@@ -21,19 +21,34 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css' // snow主题
 import '@vueup/vue-quill/dist/vue-quill.bubble.css'
 */
 
-const props = defineProps(["myProps"])
+/*
+在外部引用您的富文本组件时，您应该使用以下写法：
+    <ly0Richtext v-model="richtextValue" :myProps="richtextProps"></ly0Richtext>
+v-model 是一个语法糖（syntactic sugar）。当你在一个自定义组件上使用 v-model 时，它会自动扩展为：
+    1. 传入一个名为 modelValue 的 prop（用于接收值）
+    2. 监听一个名为 update:modelValue 的自定义事件（用于更新值）
+*/
+const props = defineProps({
+    // v-model 对应的 prop
+    modelValue: {
+        type: String,
+        default: '',
+    },
+    myProps: {
+        type: Object,
+        default: () => ({}),
+    }
+})
 const emit = defineEmits(['update:modelValue'])
 
-// 富文本的值
-const modelValue = ref('')
 // 文件上传地址
-const uploadUrl = ref(props.myProps.uploadUrl ? props.myProps.uploadUrl : request.ly0.upload)
+const uploadUrl = props.myProps.uploadUrl || ly0request.ly0.upload
 // 指定上传文件的参数名称(Field Name)
-const uploadFieldName = ref(props.myProps.uploadFieldName ? props.myProps.uploadFieldName : "upload_file")
+const uploadFieldName = props.myProps.uploadFieldName || "upload_file"
 // 限制文件上传的最大大小，默认5MB
-const maxSize = ref(props.myProps.maxSize ? props.myProps.maxSize : 1024 * 5)
-const theme = ref(props.myProps.theme ? props.myProps.theme : "snow") // 默认snow主题
-const customOptions = reactive(props.myProps.customOptions ? props.myProps.customOptions : ()=>{})
+const maxSize = props.myProps.maxSize || 1024 * 5
+const theme = props.myProps.theme || "snow" // 默认snow主题
+const customOptions = reactive(props.myProps.customOptions || {})
 
 const quillEditor = ref(null)
 
@@ -49,7 +64,7 @@ const imageHandler = () => {
         if (!file) return
         
         // 检查文件大小
-        if (file.size / 1024 > maxSize) {
+        if (file.size / 1024 > maxSize.value) {
             alert(`图片大小不能超过 ${maxSize} KB`)
             return
         }
@@ -63,7 +78,7 @@ const imageHandler = () => {
         quill.insertEmbed(length, 'image', 'uploading...')
         
         const formData = new FormData()
-        formData.append(uploadFieldName, file)
+        formData.append(uploadFieldName.value, file)
         
         try {
             // ⚠️ 模拟/替换为你真实的上传逻辑 (例如使用 axios 或 fetch)
@@ -123,7 +138,7 @@ const editorOptions = computed(() => {
                 }
             }
         },
-        ...props.customOptions // 允许用户覆盖默认选项
+        ...customOptions // 允许用户覆盖默认选项
     }
 })
 
