@@ -2,20 +2,25 @@
     <div>
         <el-upload
                 class="avatar"
-                :style="hdlStyleAvatarBox()"
-                :action="myProps0.uploadUrl"
-                v-model:file-list="fileList"
+                :style="style.avatarBox"
+                :action="myProps_box.uploadUrl"
+                v-model:file-list="fileList_box"
                 :show-file-list="false"
-                :before-upload="hdlBeforeUpload"
-                :on-preview="hdlPreview"
-                :on-remove="hdlRemove"
-                :on-success="hdlSuccess"
+                :before-upload="hdl.beforeUpload"
+                :on-preview="hdl.preview"
+                :on-remove="hdl.remove"
+                :on-success="hdl.success"
+                :limit="1"
         >
-            <img v-if="fileList.length>0 && fileList[0].response && fileList[0].response.data && fileList[0].response.data.src" :src="fileList[0].response.data.src" class="avatar" :style="hdlStyleAvatarImage()">
-            <el-icon v-else class="avatar-uploader-icon" :style="hdlStyleAvatarIcon()"><Plus /></el-icon>
+            <img
+                v-if="fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src"
+                :src="fileList_box[0].response.data.src"
+                class="avatar"
+                :style="style.avatarImage">
+            <el-icon v-else class="avatar-uploader-icon" :style="style.avatarIcon"><Plus /></el-icon>
         </el-upload>
-        <div v-if="fileList.length>0 && fileList[0].response && fileList[0].response.data && fileList[0].response.data.src">
-            <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdlDeleteAll">删除</el-button>
+        <div v-if="fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src">
+            <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdl.deleteAll">删除</el-button>
         </div>
 
     </div>
@@ -30,104 +35,112 @@
     }
 </style>
 
-<script>
-    import ly0default from "./default.js"
-    export default {
-        props: ['myProps'], // 注释见default.js中的myProps
-        data(){return{
-            fileList: []
-        }},
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
-            }
-        },
-        methods: {
-            hdlStyleAvatarBox(){
-                return "width:" + this.myProps0.avatar.width + "; " +
-                    "height:" + this.myProps0.avatar.height + "; " +
-                    "position: relative; " +
-                    "overflow: hidden; " +
-                    "cursor: pointer;"
-            },
-            hdlStyleAvatarImage(){
-                return "display: block;" +
-                    "width:" + this.myProps0.avatar.width + "; " +
-                    "height:" + this.myProps0.avatar.height + ";"
-            },
-            hdlStyleAvatarIcon(){
-                return "display: block; " +
-                    "width:" + this.myProps0.avatar.width + "; " +
-                    "height:" + this.myProps0.avatar.height + "; " +
-                    "line-height:" + this.myProps0.avatar.height + "; " +
-                    "font-size: 28px; " +
-                    "color: #8c939d; " +
-                    "text-align: center;"
-            },
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type
-                let isFileSize = file.size / 1024 < this.myProps0.size
+<script setup>
+import {reactive, ref} from "vue";
+import { ElMessage } from 'element-plus';
+import ly0default from "./default.js"
 
-                if (!isFileType) {
-                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type)
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB')
-                    return false
-                }
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+});
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
 
-                this.$message('正在上传 ...')
-                return true
-            },
-            // eslint-disable-next-line
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-            },
-            // eslint-disable-next-line
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                // 因为只能上传1个图片，移除即清空
-                this.fileList = []
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                })
-            },
-            // eslint-disable-next-line
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    // 因为只能上传1个图片，这里需要清空图片列表
-                    this.fileList = []
-                    this.fileList.push(file)
-
-                    // 返回上传结果
-                    this.$emit('getUploadResult', {
-                        fileList: [{
-                            src: response.data.src
-                        }]
-                    })
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    })
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    })
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传文件
-                // 重置文件列表
-                this.fileList = []
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                })
+const myProps_box = reactive(Object.assign({}, ly0default, props.myProps))
+let fileList_box = reactive([])
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item,
+        response: {
+            data: {
+                src: item
             }
         }
+    })
+})
+
+const style = reactive({
+    avatarBox: {
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+        position: 'relative',
+        overflow: 'hidden',
+        cursor: 'pointer'
+    },
+    avatarImage: {
+        display: 'block',
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+    },
+    avatarIcon: {
+        display: 'block',
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+        "line-height": myProps_box.avatar.height,
+        "font-size": "28px",
+        color: "#8c939d",
+        "text-align": "center"
     }
+})
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type
+        const isFileSize = file.size / 1024 < myProps_box.size
+        
+        if (!isFileType) {
+            ElMessage.error('上传文件的格式只能是 ' + myProps_box.type)
+            return false
+        }
+        if (!isFileSize) {
+            ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB')
+            return false
+        }
+        ElMessage('正在上传 ...')
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        // 因为只能上传一个图片，移除即清空
+        fileList_box.splice(0, fileList_box.length)
+        const arr = []
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", arr)
+    },
+    success (response, file, fileList) { // 上传
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        // 只能上传一个图片
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)))
+        if (response.code === 0) {
+            const arr = []
+            fileList_box.forEach(i=>{
+                arr.push(i.response.data.src)
+            })
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", arr)
+            
+            ElMessage({type: 'info', message: '上传成功'})
+        } else {
+            ElMessage({type: 'error', message: '上传失败'})
+        }
+    },
+    deleteAll () { // 删除全部已上传文件
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length)
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", [])
+    }
+}
 </script>

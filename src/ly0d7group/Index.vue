@@ -1,17 +1,17 @@
 <template>
-    <div @click="hdlPopup">
+    <div @click="hdl.popup">
         <table>
             <tbody>
-                <tr v-if="!value || value.length === 0">
-                    <td><i v-if="!myProps.readOnly" class="el-icon-edit" style="color: blue"></i></td>
+                <tr v-if="!modelValue_box || modelValue_box.length === 0">
+                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未分类]</td>
                 </tr>
                 <tr v-else>
-                    <td><i v-if="!myProps.readOnly" class="el-icon-edit" style="color: blue"></i></td>
+                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>
-                        <template v-for="(item, index) in value">
+                        <template v-for="(item, index) in modelValue_box">
                             <template v-if="!!item">
-                                <div class="value-item">{{ item }}</div>
+                                <div :style="style.modelValue_box.item">{{ item }}</div>
                             </template>
                         </template>
                     </td>
@@ -31,18 +31,16 @@
                 <tbody>
                     <tr>
                         <td>
-                            <template v-for="(item, index) in popup.value" :key="index">
-                                <div class="popup-value-item">
-                                    <el-input class="input" v-model="popup.value[index]"></el-input>
+                            <template v-for="(item, index) in popup.formData" :key="index">
+                                <div :style="style.popup.item">
+                                    <el-input :style="style.popup.input" v-model="popup.value[index]"></el-input>
                                     <el-button
-                                        class="delete"
+                                        :style="style.popup.delete"
                                         type="danger"
                                         circle
                                         size="small"
                                         @click="hdl.delete(index)"
-                                    >
-                                        <el-icon><Delete></Delete></el-icon>
-                                    </el-button>
+                                    ><el-icon><Delete></Delete></el-icon></el-button>
                                 </div>
                             </template>
                         </td>
@@ -64,8 +62,8 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="line"></div>
-            <div class="select-submit">
+            <div :style="style.line"></div>
+            <div>
                 <el-button type="danger" plain @click="hdl.submit">确认</el-button>
             </div>
         </el-dialog>
@@ -73,42 +71,95 @@
 </template>
 
 <style lang="scss" scoped>
-@use 'index';
+.edit-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+}
 </style>
 
 <script setup>
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 
-const props = defineProps(["myProps"]);
-const emit = defineEmits(['get-value'])
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+    
+});
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
-const popup = ref({
+const modelValue_box = reactive(props.modelValue ?? [])
+const popup = reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    formData: []
 })
 
 const hdl = {
     // 弹出编辑窗口
     popup() {
         if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value))
-            popup.value.visible = true;
+            popup.formData = JSON.parse(JSON.stringify(modelValue))
+            popup.visible = true;
         }
     },
     append() {
-        popup.value.value.push({ value: '' })
+        popup.formData.push({ value: '' })
     },
     delete(index) {
-        popup.value.value.splice(index, 1)
+        popup.formData.splice(index, 1)
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value))
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        })
-        popup.value.visible = false
-    },
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", submittingValue)
+        popup.visible = false
+    }
 }
+
+const style = reactive({
+    modelValue_box: {
+        item: {
+            display: 'inline-block',
+            margin: '10px',
+            padding: '10px',
+            'background-color': '#a6a6a6',
+            'border-radius': '5px',
+            color: 'white'
+        }
+    },
+    popup: {
+        item: {
+            display: 'inline-block',
+            margin: '10px',
+            padding: '10px',
+            'background-color': '#a6a6a6',
+            'border-radius': '5px'
+        },
+        input: {
+            width: '200px'
+        },
+        delete: {
+            'margin-left': '10px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+})
 </script>

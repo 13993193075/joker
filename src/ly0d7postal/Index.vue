@@ -2,32 +2,30 @@
     <div @click="hdl.popup">
         <table>
             <tbody>
-                <tr v-if="!value || value.length === 0">
-                    <td><i v-if="!myProps.readOnly" class="el-icon-edit" style="color: blue"></i></td>
+                <tr v-if="!modelValue_box || modelValue_box.length === 0">
+                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未设置更多邮寄地址]</td>
                 </tr>
-                <tr v-for="(item, index) in value" :key="index">
-                    <td>
-                        <i v-if="!myProps.readOnly && index === 0" class="el-icon-edit" style="color: blue"></i>
-                    </td>
+                <tr v-for="(item, index) in modelValue_box" :key="index">
+                    <td><el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>
                         <table>
                             <tbody>
                                 <tr>
-                                    <td class="item-label">国内行政区划</td>
-                                    <td class="item-value">{{ item.gbt2260text }}</td>
+                                    <td :style="style.modelValue_box.label">国内行政区划</td>
+                                    <td :style="style.modelValue_box.value">{{ item.gbt2260text }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="item-label">详细地址</td>
-                                    <td class="item-value">{{ item.address }}</td>
+                                    <td :style="style.modelValue_box.label">详细地址</td>
+                                    <td :style="style.modelValue_box.value">{{ item.address }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="item-label">联系电话</td>
-                                    <td class="item-value">{{ item.tel }}</td>
+                                    <td :style="style.modelValue_box.label">联系电话</td>
+                                    <td :style="style.modelValue_box.value">{{ item.tel }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="item-label">联系人</td>
-                                    <td class="item-value">{{ item.name }}</td>
+                                    <td :style="style.modelValue_box.label">联系人</td>
+                                    <td :style="style.modelValue_box.value">{{ item.name }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -53,54 +51,49 @@
                     <th>联系人</th>
                     <th></th>
                 </tr>
-                <tr v-for="(item, index) in popup.value" :key="index">
+                <tr v-for="(item, index) in popup.formData" :key="index">
                     <!-- 左对齐，使用<td> -->
                     <td>
                         <ly0d3gbt2260
-                            :myProps="{ value: item.gbt2260code, _id: index }"
-                            @getValue="hdl.ly0d3gbt2260GetValue"
+                            v-model="item.gbt2260code"
+                            :myProps="{ readonly: true }"
                         ></ly0d3gbt2260>
                     </td>
                     <!-- 居中对齐，使用<th> -->
-                    <th>
-                        <el-input class="input-address" v-model="item.address"></el-input>
-                    </th>
-                    <th>
-                        <el-input class="input-tel" v-model="item.tel"></el-input>
-                    </th>
-                    <th>
-                        <el-input class="input-name" v-model="item.name"></el-input>
-                    </th>
-                    <th>
+                    <td>
+                        <el-input :style="style.popup.address" v-model="item.address"></el-input>
+                    </td>
+                    <td>
+                        <el-input :style="style.popup.tel" v-model="item.tel"></el-input>
+                    </td>
+                    <td>
+                        <el-input :style="style.popup.name" v-model="item.name"></el-input>
+                    </td>
+                    <td>
                         <el-button
                             type="danger"
-                            icon="el-icon-delete"
                             circle
                             size="small"
                             @click="hdl.delete(index)"
-                        ></el-button>
-                    </th>
+                        ><el-icon><Delete /></el-icon></el-button>
+                    </td>
                 </tr>
                 <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>
+                    <td colspan="4"></td>
+                    <td>
                         <el-button
                             type="primary"
-                            icon="el-icon-plus"
                             circle
                             size="small"
                             style="margin-top: 20px"
                             @click="hdl.append"
-                        ></el-button>
-                    </th>
+                        ><el-icon><Plus /></el-icon></el-button>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        <div class="line"></div>
-        <div class="select-submit">
+        <div :style="style.line"></div>
+        <div>
             <el-button type="danger" plain @click="hdl.submit">确认</el-button>
         </div>
         </el-dialog>
@@ -108,34 +101,52 @@
 </template>
 
 <style lang="scss" scoped>
-@use 'index';
+.edit-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+}
 </style>
 
 <script setup>
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import ly0request from '../request/index.js'
 
-const props = defineProps(["myProps"]);
-const emit = defineEmits(['get-value'])
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+    
+});
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
-const popup = ref({
+const modelValue_box = reactive(props.modelValue ?? [])
+const popup = reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    formData: []
 })
 
 const hdl = {
-    ly0d3gbt2260GetValue(result) {
-        popup.value.value[result._id].gbt2260code = result.code6
-    },
     popup() {
         if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value))
-            popup.value.visible = true
+            popup.formData = JSON.parse(JSON.stringify(modelValue_box))
+            popup.visible = true
         }
     },
     append() {
-        popup.value.value.push({
+        popup.formData.push({
             gbt2260code: '',
             address: '',
             tel: '',
@@ -143,12 +154,12 @@ const hdl = {
         })
     },
     delete(index) {
-        popup.value.value.splice(index, 1)
+        popup.formData.splice(index, 1)
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value))
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
         let arrPromise = []
-        value.value.forEach(i => {
+        submittingValue.forEach(i => {
             arrPromise.push(
                 ly0request.ly0.storpro({
                     noSession: true,
@@ -159,16 +170,43 @@ const hdl = {
         })
         Promise.all(arrPromise).then(result => {
             result.forEach((item, index) => {
-                value.value[index].gbt2260text =
+                submittingValue[index].gbt2260text =
                     item.itemCode6.text2 + '-' + item.itemCode6.text4 + '-' + item.itemCode6.text6
             })
-            emit("get-value", {
-                value: JSON.parse(JSON.stringify(popup.value.value)),
-                _id: props.myProps._id ?? null
-            })
-            popup.value.visible = false
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", submittingValue)
+            popup.visible = false
         })
-    },
-    
+    }
 }
+
+const style = reactive({
+    modelValue_box: {
+        label: {
+            'text-align': 'right',
+            'padding-right': '10px',
+            'color': '#919191'
+        },
+        value: {
+            color: 'blue'
+        }
+    },
+    popup: {
+        address: {
+            width: '300px'
+        },
+        tel: {
+            width: '200px'
+        },
+        name: {
+            width: '200px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+})
 </script>

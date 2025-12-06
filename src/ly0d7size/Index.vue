@@ -1,20 +1,18 @@
 <template><div @click="hdl.popup">
     <table>
         <tbody>
-            <tr v-if="!value || value.length === 0">
-                <td><i v-if="!myProps.readOnly" class="el-icon-edit" style="color: blue"></i></td>
+            <tr v-if="!modelValue_box || modelValue_box.length === 0">
+                <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                 <td>[未设置规格]</td>
             </tr>
             <tr v-for="(item, index) in value">
+                <td><el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                 <td>
-                    <i v-if="!myProps.readOnly && index === 0" class="el-icon-edit" style="color: blue"></i>
-                </td>
-                <td>
-                    <span v-if="!!item.name" class="value-name">{{ item.name }}</span>
-                    <span v-else class="value-name-empty">{{ nameEmpty }}</span>
-                    <span v-if="!!item.size" class="value-size">{{ item.size }}</span>
-                    <span v-else class="value-size-empty">{{ sizeEmpty }}</span>
-                    <img v-if="!!item.new" class="value-new" src="./new.png" />
+                    <span v-if="!!item.name">{{ item.name }}</span>
+                    <span v-else :style="style.modelValue_box.nameEmpty">[未设置规格名称]</span>
+                    <span v-if="!!item.size" :style="style.modelValue_box.size">{{ item.size }}</span>
+                    <span v-else :style="style.modelValue_box.sizeEmpty">[未设置规格内容]</span>
+                    <img v-if="!!item.new" :style="style.modelValue_box.new" src="./new.png" />
                 </td>
             </tr>
         </tbody>
@@ -36,10 +34,10 @@
                 <th>上新标注</th>
                 <th></th>
             </tr>
-            <tr v-for="(item, index) in popup.value">
-                <th><el-input class="input-name" v-model="item.name"></el-input></th>
-                <th><el-input class="input-size" v-model="item.size"></el-input></th>
-                <th>
+            <tr v-for="(item, index) in popup.formData">
+                <td><el-input class="input-name" v-model="item.name"></el-input></td>
+                <td><el-input class="input-size" v-model="item.size"></el-input></td>
+                <td>
                     <el-switch
                         v-model="item.new"
                         active-text="是"
@@ -47,83 +45,130 @@
                         :active-value="true"
                         :inactive-value="false"
                     ></el-switch>
-                </th>
-                <th>
+                </td>
+                <td>
                     <el-button
                         type="danger"
-                        icon="el-icon-delete"
                         circle
                         size="small"
                         @click="hdl.delete(index)"
-                    ></el-button>
-                </th>
+                    ><el-icon><Delete /></el-icon></el-button>
+                </td>
             </tr>
             <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>
+                <td colspan="3"></td>
+                <td>
                     <el-button
                         type="primary"
-                        icon="el-icon-plus"
                         circle
                         size="small"
                         style="margin-top: 20px"
                         @click="hdl.append"
-                    ></el-button>
-                </th>
+                    ><el-icon><Plus /></el-icon></el-button>
+                </td>
             </tr>
         </tbody>
         </table>
-        <div class="line"></div>
-        <div class="select-submit">
+        <div :style="style.line"></div>
+        <div>
             <el-button type="danger" plain @click="hdl.submit">确认</el-button>
         </div>
     </el-dialog>
 </div></template>
 
 <style lang="scss" scoped>
-@use 'index';
+.edit-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+}
 </style>
 
 <script setup>
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 
-const props = defineProps(["myProps"]);
-const emit = defineEmits(['get-value'])
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+});
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
-const popup = ref({
+const modelValue_box = reactive(props.modelValue ?? [])
+const popup = reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    formData: []
 })
-const nameEmpty = ref('[未设置规格名称]')
-const sizeEmpty = ref('[未设置规格内容]')
 
 const hdl = {
     popup() {
         if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value))
-            popup.value.visible = true
+            popup.formData = JSON.parse(JSON.stringify(modelValue_box))
+            popup.visible = true
         }
     },
     append() {
-        popup.value.value.push({
+        popup.formData.push({
             name: '',
             size: '',
             new: false,
         })
     },
     delete(index) {
-        popup.value.value.splice(index, 1)
+        popup.formData.splice(index, 1)
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value))
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        })
-        popup.value.visible = false
-    },
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", submittingValue)
+        popup.visible = false
+    }
 }
+
+const style = reactive({
+    modelValue_box: {
+        nameEmpty: {
+            color: '#919191'
+        },
+        size: {
+            'margin-left': '10px',
+            color: 'blue'
+        },
+        sizeEmpty: {
+            color: '#919191'
+        },
+        new: {
+            'margin-left': '10px',
+            width: '32px',
+            height: '32px'
+        }
+    },
+    popup: {
+        name: {
+            width: '200px',
+            'margin-bottom': '10px',
+        },
+        size: {
+            width: '300px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+})
 </script>

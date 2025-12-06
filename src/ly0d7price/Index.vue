@@ -2,21 +2,19 @@
     <div @click="hdl.popup">
         <table>
             <tbody>
-                <tr v-if="!value || value.length === 0">
+                <tr v-if="!modelValue_box || modelValue_box.length === 0">
                     <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未标价]</td>
                 </tr>
-                <tr v-for="(item, index) in value" :key="index">
+                <tr v-for="(item, index) in modelValue_box" :key="index">
+                    <td><el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>
-                        <el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon>
-                        </td>
-                    <td>
-                        <span v-if="!!item.name" :style="style.value.name">{{ item.name }}</span>
-                        <span v-else :style="style.value.name_empty">{{ nameEmpty }}</span>
-                        <span :style="style.value.price">￥{{ (item.price / 100).toFixed(2) }}</span>
-                        <img v-if="!!item.member" :style="style.value.member" src="./member.png" alt="会员" />
-                        <img v-if="!!item.hot" :style="style.value.hot" src="./hot.png" alt="热点" />
-                        <span :style="style.value.note">{{ item.note || '' }}</span>
+                        <span v-if="!!item.name" :style="style.modelValue_box.name">{{ item.name }}</span>
+                        <span v-else :style="style.modelValue_box.name_empty">[未设置标价名称]</span>
+                        <span :style="style.modelValue_box.price">￥{{ (item.price / 100).toFixed(2) }}</span>
+                        <img v-if="!!item.member" :style="style.modelValue_box.member" src="./member.png" alt="会员" />
+                        <img v-if="!!item.hot" :style="style.modelValue_box.hot" src="./hot.png" alt="热点" />
+                        <span :style="style.modelValue_box.note">{{ item.note || '' }}</span>
                     </td>
                 </tr>
             </tbody>
@@ -40,10 +38,10 @@
                     <th>备注</th>
                     <th></th>
                 </tr>
-                <tr v-for="(item, index) in popup.value" :key="index">
-                    <td><el-input :style="style.input.name" v-model="item.name"></el-input></td>
+                <tr v-for="(item, index) in popup.formData" :key="index">
+                    <td><el-input :style="style.popup.name" v-model="item.name"></el-input></td>
                     <td><el-input-number
-                        :style="style.input.price"
+                        :style="style.popup.price"
                         v-model="item.price"
                         :min="0"
                         :precision="2"
@@ -67,7 +65,7 @@
                             :inactive-value="false"
                         ></el-switch>
                     </td>
-                    <td><el-input :style="style.input.note" v-model="item.note"></el-input></td>
+                    <td><el-input :style="style.popup.note" v-model="item.note"></el-input></td>
                     <td>
                         <el-button
                             type="danger"
@@ -107,7 +105,7 @@
 </style>
 
 <script setup>
-import {reactive, ref, watch, computed} from "vue";
+import {reactive, ref} from "vue";
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 const props = defineProps({
@@ -117,22 +115,23 @@ const props = defineProps({
         default: () => []
     },
     myProps: {
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
     }
     
 });
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = computed(() => props.modelValue || [])
-const nameEmpty = ref('[未设置标价名称]')
-
-const popup = ref({
+const modelValue_box = reactive(props.modelValue ?? [])
+const popup = reactive({
     visible: false,
-    value: []
+    formData: []
 })
 
 const hdl = {
@@ -140,16 +139,16 @@ const hdl = {
         if (props.myProps.readOnly) {
             return
         }
-        const copiedValue = JSON.parse(JSON.stringify(value.value))
-        popup.value.value = copiedValue.map(item => ({
+        const copiedValue = JSON.parse(JSON.stringify(modelValue_box))
+        popup.formData = copiedValue.map(item => ({
             ...item,
             // 价格从“分”转换为“元”
             price: item.price / 100
         }))
-        popup.value.visible = true
+        popup.visible = true
     },
     append() {
-        popup.value.value.push({
+        popup.formData.push({
             name: '',
             price: 0, // 初始价格为 0 元
             member: false,
@@ -158,22 +157,22 @@ const hdl = {
         })
     },
     delete(index) {
-        popup.value.value.splice(index, 1)
+        popup.formData.splice(index, 1)
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.value.value))
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
         submittingValue.forEach(item => {
             // 确保 price 是数字，然后转为“分”
             item.price = Math.floor(Number(item.price) * 100)
         })
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", submittingValue)
-        popup.value.visible = false
+        popup.visible = false
     },
 }
 
 const style = reactive({
-    value: {
+    modelValue_box: {
         name: {},
         name_empty: {
             color: '#919191'
@@ -196,7 +195,7 @@ const style = reactive({
             'margin-left': '10px'
         }
     },
-    input: {
+    popup: {
         name: {
             width: '200px',
             'margin-bottom': '10px'

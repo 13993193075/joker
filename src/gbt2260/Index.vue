@@ -9,28 +9,28 @@
                         </el-icon>
                     </td>
                     <td>
-                        <span :style="style.value.code">{{ '[' + (value.code2 ? value.code2 : '省') + ']' }}</span>
+                        <span :style="style.modelValue_box.code">{{ '[' + (modelValue_box.code2 ? modelValue_box.code2 : '省') + ']' }}</span>
                     </td>
                     <td>
-                        <span :style="style.value.text">{{ value.text2 ? value.text2 : '' }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <span :style="style.value.code">{{ '[' + (value.code4 ? value.code4 : '市') + ']' }}</span>
-                    </td>
-                    <td>
-                        <span :style="style.value.text">{{ value.text4 ? value.text4 : '' }}</span>
+                        <span :style="style.modelValue_box.text">{{ modelValue_box.text2 ? modelValue_box.text2 : '' }}</span>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>
-                        <span :style="style.value.code">{{ '[' + (value.code6 ? value.code6 : '县') + ']' }}</span>
+                        <span :style="style.modelValue_box.code">{{ '[' + (modelValue_box.code4 ? modelValue_box.code4 : '市') + ']' }}</span>
                     </td>
                     <td>
-                        <span :style="style.value.text">{{ value.text6 ? value.text6 : '' }}</span>
+                        <span :style="style.modelValue_box.text">{{ modelValue_box.text4 ? modelValue_box.text4 : '' }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span :style="style.modelValue_box.code">{{ '[' + (modelValue_box.code6 ? modelValue_box.code6 : '县') + ']' }}</span>
+                    </td>
+                    <td>
+                        <span :style="style.modelValue_box.text">{{ modelValue_box.text6 ? modelValue_box.text6 : '' }}</span>
                     </td>
                 </tr>
             </tbody>
@@ -50,14 +50,14 @@
                         <td style="width: 30%"><div :style="style.popup.label">省</div></td>
                         <td>
                             <el-select
-                                v-model="popup.select.code2"
+                                v-model="popup.formData.code2"
                                 placeholder="请选择 省"
                                 filterable
                                 :style="style.popup.select"
                                 @change="hdlChangeCode2"
                             >
                                 <el-option
-                                    v-for="(item, index) in popup.select.arrCode2"
+                                    v-for="(item, index) in popup.formData.arrCode2"
                                     :label="item.text2"
                                     :value="item.code2"
                                     :key="item.code2"
@@ -69,14 +69,14 @@
                         <td><div :style="style.popup.label">市</div></td>
                         <td>
                             <el-select
-                                v-model="popup.select.code4"
+                                v-model="popup.formData.code4"
                                 placeholder="请选择 市"
                                 filterable
                                 :style="style.popup.select"
                                 @change="hdlChangeCode4"
                             >
                                 <el-option
-                                    v-for="(item, index) in popup.select.arrCode4"
+                                    v-for="(item, index) in popup.formData.arrCode4"
                                     :label="item.text4"
                                     :value="item.code4"
                                     :key="item.code4"
@@ -88,13 +88,13 @@
                         <td><div :style="style.popup.label">县</div></td>
                         <td>
                             <el-select
-                                v-model="popup.select.code6"
+                                v-model="popup.formData.code6"
                                 placeholder="请选择 县"
                                 filterable
                                 :style="style.popup.select"
                             >
                                 <el-option
-                                    v-for="(item, index) in popup.select.arrCode6"
+                                    v-for="(item, index) in popup.formData.arrCode6"
                                     :label="item.text6"
                                     :value="item.code6"
                                     :key="item.code6"
@@ -127,28 +127,31 @@ const props = defineProps({
         default: () => ''
     },
     myProps: {
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
     }
     
 });
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = defineEmits(['update:modelValue', 'change'])
 
-const value = reactive(Object.assign({
+const modelValue_box = reactive(Object.assign({
     code2: '',
     text2: '',
     code4: '',
     text4: '',
     code6: '',
     text6: '',
-}, {code6: props.modelValue || ''}))
+}, {code6: props.modelValue ?? ''}))
 
 const popup = reactive({
     visible: false,
-    select: {
+    formData: {
         arrCode2: [],
         code2: '',
         arrCode4: [],
@@ -167,7 +170,7 @@ watch(() => props.modelValue,
             noSession: true,
             storproName: 'ly0d3.gbt2260code2.init',
         })
-        popup.select.arrCode2 = result2.arrCode2.filter(item => item.code2)
+        popup.formData.arrCode2 = result2.arrCode2.filter(item => item.code2)
         
         const result6 = await ly0request.ly0.storpro({
             noSession: true,
@@ -177,14 +180,14 @@ watch(() => props.modelValue,
         
         if(result6.itemCode6){
             // 保持响应式
-            Object.assign(value, result6.itemCode6)
+            Object.assign(modelValue_box, result6.itemCode6)
             
             // 确保按顺序加载级联数据
-            if (value.code2) {
-                await hdlChangeCode2(value.code2)
+            if (modelValue_box.code2) {
+                await hdlChangeCode2(modelValue_box.code2)
             }
-            if (value.code4) {
-                await hdlChangeCode4(value.code4)
+            if (modelValue_box.code4) {
+                await hdlChangeCode4(modelValue_box.code4)
             }
         }
     },
@@ -196,13 +199,13 @@ const hdlPopup = async () => {
         return
     }
     
-    popup.select.code2 = value.code2
-    await hdlChangeCode2(popup.select.code2)
+    popup.formData.code2 = modelValue_box.code2
+    await hdlChangeCode2(popup.formData.code2)
     
-    popup.select.code4 = value.code4
-    await hdlChangeCode4(popup.select.code4)
+    popup.formData.code4 = modelValue_box.code4
+    await hdlChangeCode4(popup.formData.code4)
     
-    popup.select.code6 = value.code6
+    popup.formData.code6 = modelValue_box.code6
     popup.visible = true
 }
 
@@ -213,10 +216,10 @@ const hdlChangeCode2 = async value => { // 使用 async 标记
         data: {code2: value},
     })
     
-    popup.select.arrCode4 = result.arrCode4.filter(item => item.code4)
-    popup.select.code4 = ''
-    popup.select.arrCode6 = []
-    popup.select.code6 = ''
+    popup.formData.arrCode4 = result.arrCode4.filter(item => item.code4)
+    popup.formData.code4 = ''
+    popup.formData.arrCode6 = []
+    popup.formData.code6 = ''
 }
 
 const hdlChangeCode4 = async value => {
@@ -226,28 +229,28 @@ const hdlChangeCode4 = async value => {
         data: {code4: value},
     })
     
-    popup.select.arrCode6 = result.arrCode6.filter(item => item.code6)
-    popup.select.code6 = ''
+    popup.formData.arrCode6 = result.arrCode6.filter(item => item.code6)
+    popup.formData.code6 = ''
 }
 
 const hdlSubmit = () => {
     // ... (安全查找逻辑) ...
-    value.code2 = popup.select.code2
-    const foundItem2 = popup.select.arrCode2.find(i => i.code2 === value.code2)
-    value.text2 = foundItem2 ? foundItem2.text2 : ''
-    value.code4 = popup.select.code4
-    const foundItem4 = popup.select.arrCode4.find(i => i.code4 === value.code4)
-    value.text4 = foundItem4 ? foundItem4.text4 : ''
-    value.code6 = popup.select.code6
-    const foundItem6 = popup.select.arrCode6.find(i => i.code6 === value.code6)
-    value.text6 = foundItem6 ? foundItem6.text6 : ''
+    modelValue_box.code2 = popup.formData.code2
+    const foundItem2 = popup.formData.arrCode2.find(i => i.code2 === modelValue_box.code2)
+    modelValue_box.text2 = foundItem2 ? foundItem2.text2 : ''
+    modelValue_box.code4 = popup.formData.code4
+    const foundItem4 = popup.formData.arrCode4.find(i => i.code4 === modelValue_box.code4)
+    modelValue_box.text4 = foundItem4 ? foundItem4.text4 : ''
+    modelValue_box.code6 = popup.formData.code6
+    const foundItem6 = popup.formData.arrCode6.find(i => i.code6 === modelValue_box.code6)
+    modelValue_box.text6 = foundItem6 ? foundItem6.text6 : ''
     // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-    emit("update:modelValue", value.code6 ?? value.code4 ?? value.code2 ?? '')
+    emit("update:modelValue", modelValue_box.code6 ?? modelValue_box.code4 ?? modelValue_box.code2 ?? '')
     popup.visible = false
 }
 
 const style = reactive({
-    value: {
+    modelValue_box: {
         code: {
             color: '#6a6a6a',
         },

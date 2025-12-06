@@ -1,5 +1,5 @@
 <template>
-    <div class="rich-text-editor-container">
+    <div>
         <compRichtext
             ref="quillEditor"
             :content="modelValue"
@@ -149,12 +149,4 @@ const handleContentUpdate = (content) => {
 </script>
 
 <style scoped lang="scss">
-/* 样式范围限制在组件内部，但 @vueup/vue-quill 的样式是全局的 */
-.rich-text-editor-container {
-    min-height: 200px;
-}
-/* 可以覆盖一些基础样式 */
-:deep(.ql-editor) {
-    min-height: 200px;
-}
 </style>
