@@ -19,7 +19,7 @@ function text(item, myProps){
         'border-left': '#ababab solid 1px',
         'border-top': '#ababab solid 1px',
         'padding-left': '10px',
-        width: item.inputWidth ? item.inputWidth : myProps.inputWidth
+        width: item.inputWidth ? item.inputWidth : myProps.para.inputWidth
     }
 }
 
@@ -34,7 +34,7 @@ function text0(item){
 // inputType: "input", "select", "date-picker"
 function input(item, myProps){
     return {
-        width: item.inputWidth ? item.inputWidth : myProps.inputWidth,
+        width: item.inputWidth ? item.inputWidth : myProps.para.inputWidth,
         height: '40px'
     }
 }
@@ -101,8 +101,8 @@ function button_group(item, groupItem, buttonItem){
 // inputType: "image"
 function image(item, myProps){
     return {
-        width: item.imageWidth ? item.imageWidth : myProps.imageWidth,
-        height: item.imageHeight ? item.imageHeight : myProps.imageHeight,
+        width: item.imageWidth ? item.imageWidth : myProps.para.image.width,
+        height: item.imageHeight ? item.imageHeight : myProps.para.image.height,
     }
 }
 
@@ -114,8 +114,8 @@ function images(item, myProps){
             margin: '10px'
         },
         itemThumb: {
-            width: item.imageWidth ? item.imageWidth : myProps.thumbWidth,
-            height: item.imageHeight ? item.imageHeight : myProps.thumbHeight,
+            width: item.imageWidth ? item.imageWidth : myProps.para.thumb.width,
+            height: item.imageHeight ? item.imageHeight : myProps.para.thumb.height,
         }
     }
 }
@@ -124,7 +124,7 @@ function images(item, myProps){
 function richtext(item, myProps){
     return {
         // 富文本编辑器宽度
-        width: item.editorWidth ? item.editorWidth : myProps.richtext.editorWidth,
+        width: item.editorWidth ? item.editorWidth : myProps.para.richtext.editorWidth,
     }
 }
 

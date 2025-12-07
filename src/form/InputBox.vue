@@ -330,7 +330,7 @@ const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
 
 const input = reactive({
     placeholder: computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.input
+        return props.item.placeholder ? props.item.placeholder : props.myProps.para.placeholder.input
     }),
     showPassword: computed(()=>{
         return !!props.item.showPassword
@@ -342,7 +342,7 @@ const input = reactive({
 
 const select = reactive({
     placeholder: computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.select
+        return props.item.placeholder ? props.item.placeholder : props.myProps.para.placeholder.select
     }),
     items: computed(()=>{
         if (props.item.items) {
@@ -364,12 +364,12 @@ const datePicker = reactive({
             return props.item.placeholder
         }
         if (props.item.type === 'datetime') {
-            return props.myProps.placeholder.datetime
+            return props.myProps.para.placeholder.datetime
         }
         if (props.item.type === 'date') {
-            return props.myProps.placeholder.date
+            return props.myProps.para.placeholder.date
         }
-        return props.myProps.placeholder.datetime
+        return props.myProps.para.placeholder.datetime
     }),
     format: computed(() => {
         if (props.item.format) {
@@ -512,16 +512,16 @@ const download = reactive({
         if (props.item.downloadFileName) {
             return props.item.downloadFileName
         }
-        return props.myProps.download.fileName
+        return props.myProps.para.download.fileName
     }),
     downloadLabel: computed(() => {
         if (!props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.myProps.download.downloadLabelNoSrc
+            return props.myProps.para.download.downloadLabelNoSrc
         }
         if (props.item.hdlGetDownloadLabel) {
             return props.item.hdlGetDownloadLabel(props.dataBox.fieldsValue, props.item)
         }
-        return props.myProps.download.downloadLabel
+        return props.myProps.para.download.downloadLabel
     }),
     downloadSrc: computed(() => {
         if (props.dataBox.fieldsValue[props.item.fieldName]) {

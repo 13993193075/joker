@@ -12,44 +12,39 @@ export default {
             mode: 'horizontal',
             menu: []
         },
-        inputWidth: '200px',
-        imageWidth: '400px',
-        imageHeight: '300px',
-        thumbWidth: '40px',
-        thumbHeight: '30px',
-        videoWidth: '400px',
-        videoHeight: '300px',
-        placeholder: {
-            input: '请输入',
-            select: '请选择',
-            datetime: '请选择时间',
-            date: '请选择日期'
+        cols: [],
+        submit: {
+            switch: false, // true - 提交模式, false - 组件模式
+            watch: false, // 提交监听
+            async handle({formData, scopeThis}){}, // 异步用户句柄
+            url: '', // 后台提交 - URL地址
+            storpro: '', // 后台提交 - 存储过程
         },
-        richtext: {
-            editorWidth: '500px', // 富文本编辑器宽度
-            size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
-        },
-        download: { // 行内下载
-            fileName: 'new-file', // 下载文件名
-            downloadLabel: '点击这里下载', // 下载标签
-            downloadLabelNoSrc: '没有可供下载的资源', // 下载标签
-        },
-        cols: [
-            {
-                items: [
-                    {
-                        inputType: 'collapse',
-                        accordion: false, // 手风琴模式
-                        activeNames: '', // 当前活动的面板名称
-                        items: [
-                        ]
-                    }
-                ]
+        para: {
+            inputWidth: '200px',
+            placeholder: {
+                input: '请输入',
+                select: '请选择',
+                datetime: '请选择时间',
+                date: '请选择日期'
+            },
+            image: {
+                width: '400px',
+                height: '300px',
+            },
+            thumb: {
+                width: '40px',
+                height: '30px',
+            },
+            richtext: {
+                editorWidth: '500px', // 富文本编辑器宽度
+                size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
+            },
+            download: { // 行内下载
+                fileName: 'new-file', // 下载文件名
+                downloadLabel: '点击这里下载', // 下载标签
+                downloadLabelNoSrc: '没有可供下载的资源', // 下载标签
             }
-        ]
-    },
-    dataBox: {
-        fieldsValue: {},
-        hdlSubmit(fieldsValue){}
+        }
     }
 }

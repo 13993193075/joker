@@ -7,14 +7,14 @@ const upload_carplate = '/ly0/upload-req/carplate'
 
 // 后端请求
 async function request({
-    domain,
-    url, // 路由
-    data // 请求数据
+    domain = '',
+    url = '', // 路由
+    data = null // 请求数据
 }) {
     let t0 = new Date() // 计时
     try {
         const response = await axios({
-            url: (domain ? domain : '') + (url ? url : ''),
+            url: (domain || '') + (url || ''),
             method: 'post',
             dataType: 'json',
             data: data ?? null
@@ -26,11 +26,11 @@ async function request({
     }
 }
 
-// ly0后端请求
+// ly0后端请求，需要处理session异常
 async function ly0request({
-    domain,
-    url, // 路由
-    data, // 请求数据
+    domain = '',
+    url = '', // 路由
+    data = null, // 请求数据
 }){
     try {
         const response = await request({domain, url, data})
@@ -39,7 +39,7 @@ async function ly0request({
         if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
             console.log('session异常', response.data.sessionStatusMessage)
 
-            let ly0session = ly0sessionLoad()
+            const ly0session = ly0sessionLoad()
             ly0sessionSave({
                 session: {
                     usertbl:
@@ -61,20 +61,20 @@ async function ly0request({
 
 // 存储过程
 async function storpro({
-    domain,
-    storproName, // 存储过程名称
-    data,
+    domain = domainPara,
+    storproName = '', // 存储过程名称
+    data = null,
     noSession = false, // 不进行session验证
 }) {
     try {
+        if(!storproName){
+            return null
+        }
         const result = await ly0request({
-            domain: domain ? domain : domainPara,
+            domain,
             url: '/ly0/storpro/exec',
             data: {
-                noSession:
-                    noSession && (noSession === true || noSession === 'true')
-                    ? noSession
-                    : false,
+                noSession,
                 ly0session: ly0sessionLoad(),
                 storproBody: {
                     storproName,

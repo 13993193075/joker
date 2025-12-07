@@ -4,36 +4,30 @@ import label from "./style-label.js";
 import input from "./style-input.js";
 
 // 折叠面板
-function collapse(){
-    return {
-        style: {
-            'margin-bottom': '10px'
-        },
-        table: {
-            'text-align': 'center',
-            width: '100%'
-        }
+const collapse = {
+    style: {
+        'margin-bottom': '10px'
+    },
+    table: {
+        'text-align': 'center',
+        width: '100%'
     }
 }
 
 // 字段盒子
-function field_box(){
-    return {
-        left: {
-            padding: "10px"
-        },
-        right: {
-            padding: "10px"
-        }
+const field_box = {
+    left: {
+        padding: "10px"
+    },
+    right: {
+        padding: "10px"
     }
 }
 
 // 行际分割线
-function line(){
-    return {
-        height: '1px',
-        'background-color': '#bdbdbd'
-    }
+const line = {
+    height: '1px',
+    'background-color': '#bdbdbd'
 }
 
 // 没有field-label, field-value独占一行（field-box）
@@ -46,27 +40,23 @@ function no_field_label(item){
 }
 
 // 表单区域可以分为多个列
-const root_box = () => {
-    return {
-        display: 'flex',
-        'justify-content': 'space-around'
-    };
-};
+const root_box = {
+    display: 'flex',
+    'justify-content': 'space-around'
+}
 
 // 提交区域
-function submit_box(){
-    return {
+const submit_box = {
+    style: {
+        'text-align': 'left'
+    },
+    button: {
         style: {
-            'text-align': 'left'
+            'margin-top': '10px'
         },
-        button: {
-            style: {
-                'margin-top': '10px'
-            },
-            facade: {
-                type: 'danger',
-                plain: true
-            }
+        facade: {
+            type: 'danger',
+            plain: true
         }
     }
 }
