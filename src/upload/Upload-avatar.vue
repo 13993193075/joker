@@ -56,7 +56,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'change'])
 
 const myProps_box = reactive(Object.assign({}, ly0default, props.myProps))
-let fileList_box = reactive([])
+const fileList_box = reactive([])
 props.modelValue.forEach((item, index) => {
     fileList_box.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
@@ -115,9 +115,8 @@ const hdl = {
         // 重置文件列表， 注意：通过使用splice保持响应性
         // 因为只能上传一个图片，移除即清空
         fileList_box.splice(0, fileList_box.length)
-        const arr = []
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", arr)
+        emit("update:modelValue", [])
     },
     success (response, file, fileList) { // 上传
         // 重置文件列表， 注意：通过使用splice保持响应性

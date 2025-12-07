@@ -44,7 +44,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'change'])
 
 const myProps_box = reactive(Object.assign({}, ly0default, props.myProps))
-let fileList_box = reactive([])
+const fileList_box = reactive([])
 props.modelValue.forEach((item, index) => {
     fileList_box.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
