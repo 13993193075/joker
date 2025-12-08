@@ -3,33 +3,34 @@
         <table>
             <tbody>
                 <tr>
-                    <th></th>
-                    <th>
+                    <td></td>
+                    <td>
                         <el-image
-                            :style="style"
-                            :src="value.thumb"
-                            :preview-src-list="[value.thumb]"
+                            :style="style.thumb"
+                            :src="modelValue_box[myProps.thumb.fieldName][0]"
+                            :preview-src-list="modelValue_box[myProps.thumb.fieldName]"
                             :preview-teleported="true"
                             :hide-on-click-modal="true"
                         ></el-image>
-                    </th>
+                    </td>
                 </tr>
                 <tr @click="hdl.popup">
-                    <th><i v-if="!myProps.readOnly" class="el-icon-edit" style="color: blue"></i></th>
-                    <th>
+                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td>
                         <div>
-                            <span v-if="!!value.number" class="value-number">{{ value.number }}</span>
-                            <span v-else class="value-number-empty">[未设置商品编号]</span>
+                            <span v-if="!!modelValue_box[myProps.number.fieldName]">{{ modelValue_box[myProps.number.fieldName] }}</span>
+                            <span v-else style="color: #919191;">[未设置商品编号]</span>
                         </div>
                         <div>
-                            <span v-if="!!value.name" class="value-number">{{ value.name }}</span>
-                            <span v-else class="value-number-empty">[未设置商品名称]</span>
+                            <span v-if="!!modelValue_box[myProps.name.fieldName]">{{ modelValue_box[myProps.name.fieldName] }}</span>
+                            <span v-else style="color: #919191;">[未设置商品名称]</span>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             </tbody>
         </table>
         <el-dialog
+            v-if="!myProps.readOnly"
             v-model="popup.visible"
             :custom-class="'code-template-dialog'"
             :close-on-press-escape="true"
@@ -41,45 +42,39 @@
             <table style="width: 100%">
                 <tbody>
                     <tr>
-                        <th>
+                        <td>
                             <el-collapse>
                                 <el-collapse-item title="原图">
                                     <el-image
-                                        :style="style"
-                                        :src="value.thumb"
-                                        :preview-src-list="[popup.value.thumb]"
+                                        :style="style.thumb"
+                                        :src="popup.formData.thumb[0]"
+                                        :preview-src-list="popup.formData.thumb"
                                     ></el-image>
                                 </el-collapse-item>
                             </el-collapse>
-                        </th>
+                        </td>
                     </tr>
                     <tr>
-                        <th>
+                        <td>
                             <div style="margin-top: 10px; margin-bottom: 10px">上传新图</div>
                             <ly0Upload_avatar
+                                v-model="popup.formData.thumb"
                                 :myProps="upload.props"
-                                @getUploadResult="upload.getResult"
                             ></ly0Upload_avatar>
-                        </th>
+                        </td>
                     </tr>
                     <tr>
                         <th>
                             <div style="margin-top: 10px; margin-bottom: 10px">商品编号</div>
-                            <div><el-input class="input-number" v-model="popup.value.number"></el-input></div>
+                            <div><el-input style="width: 200px;" v-model="popup.formData.number"></el-input></div>
                             <div style="margin-top: 10px; margin-bottom: 10px">商品名称</div>
-                            <div>
-                                <el-input
-                                    class="input-number"
-                                    v-model="popup.value.name"
-                                    style="width: 400px"
-                                ></el-input>
-                            </div>
-                        </th>
+                            <div><el-input style="width: 400px;" v-model="popup.formData.name"></el-input></div>
+                            </th>
                     </tr>
                 </tbody>
             </table>
-            <div class="line"></div>
-            <div class="select-submit">
+            <div :style="style.line"></div>
+            <div>
                 <el-button type="danger" plain @click="hdl.submit">确认</el-button>
             </div>
         </el-dialog>
@@ -87,78 +82,88 @@
 </template>
 
 <style lang="scss" scoped>
-@use 'index';
+.edit-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+}
 </style>
 
 <script setup>
-import {ref, computed} from "vue";
+import {reactive} from "vue";
+import {ly0 as ly0request} from '../request/index.js'
 
-const props = defineProps(["myProps"]);
-const emit = defineEmits(['get-value'])
-
-const value = ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : {
-    number: '',
-    name: '',
-    thumb: '',
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+const props = defineProps({
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+    
 });
-const popup = ref({
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = defineEmits(['update:modelValue', 'change'])
+
+const modelValue_box = reactive(props.modelValue ?? {})
+const popup = reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
-})
-const size = ref({
-    width: '100px',
-    height: '100px',
-})
-const style = computed(()=>()=>{
-    return {
-        width:
-            props.myProps.thumb.size && props.myProps.thumb.size.width
-                ? props.myProps.thumb.size.width
-                : size.value.width,
-        height:
-            props.myProps.thumb.size && props.myProps.thumb.size.height
-                ? props.myProps.thumb.size.height
-                : size.value.height
+    formData: {
+        thumb: '',
+        name: '',
+        number: '',
     }
 })
 
-const upload = {
-    props: computed(()=>()=>{
-        return {
-            uploadUrl: props.myProps.thumb.uploadUrl,
-            avatar: {
-                width:
-                    props.myProps.thumb.size && props.myProps.thumb.size.width
-                        ? props.myProps.thumb.size.width
-                        : props.size.width,
-                height:
-                    props.myProps.thumb.size && props.myProps.thumb.size.height
-                        ? props.myProps.thumb.size.height
-                        : size.value.height,
-            },
-        }
-    }),
-    getResult(result) {
-        // 可以获取多个文件上传结果
-        popup.value.value.thumb = result.fileList.length === 0 ? '' : result.fileList[0].src
-    },
-}
+const upload = reactive({
+    props: {
+        uploadUrl: props.myProps.thumb.uploadUrl || ly0request.upload,
+        avatar: {
+            width: props.myProps.thumb.width || '100px',
+            height: props.myProps.thumb.height || '100px'
+        },
+    }
+})
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value))
-            popup.value.visible = true
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = {
+            thumb: modelValue_box[props.myProps.thumb.fieldName],
+            number: modelValue_box[props.myProps.number.fieldName],
+            name: modelValue_box[props.myProps.name.fieldName],
+        }
+        popup.visible = true
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value))
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        })
-        popup.value.visible = false
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        Object.assign(modelValue_box, popup.formData)
+        emit("update:modelValue", modelValue_box)
+        popup.visible = false
     },
+}
+
+const style = {
+    thumb: {
+        width: props.myProps.thumb.width || '100px',
+        height: props.myProps.thumb.height || '100px'
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
 }
 
 </script>

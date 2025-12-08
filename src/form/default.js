@@ -1,5 +1,6 @@
 // 默认值
 
+import {ly0 as ly0resquest} from '../request/index.js'
 export default {
     myProps: {
         popup: {
@@ -20,6 +21,9 @@ export default {
             url: '', // 后台提交 - URL地址
             storpro: '', // 后台提交 - 存储过程
         },
+        uploadUrl: ly0resquest.domain + ly0resquest.upload,
+        uploadUrl_image: ly0resquest.domain + ly0resquest.upload_image,
+        uploadUrl_carplate: ly0resquest.domain + ly0resquest.upload_carplate,
         para: {
             inputWidth: '200px',
             placeholder: {
@@ -36,6 +40,10 @@ export default {
                 width: '40px',
                 height: '30px',
             },
+            video: {
+                width: '300px',
+                height: '200px',
+            },
             richtext: {
                 editorWidth: '500px', // 富文本编辑器宽度
                 size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
@@ -44,6 +52,19 @@ export default {
                 fileName: 'new-file', // 下载文件名
                 downloadLabel: '点击这里下载', // 下载标签
                 downloadLabelNoSrc: '没有可供下载的资源', // 下载标签
+            },
+            ly0d7thumb: {
+                thumb: {
+                    fieldName: 'thumb',
+                    width: '100px',
+                    height: '100px',
+                },
+                name: {
+                    fieldName: 'name',
+                },
+                number: {
+                    fieldName: 'number',
+                }
             }
         }
     }

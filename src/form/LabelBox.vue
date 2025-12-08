@@ -8,10 +8,14 @@
 </template>
 
 <script setup>
-import {ref, computed} from "vue";
+import {ref, inject} from "vue";
 import styleModule from './style.js'
 
-const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
+const props = defineProps(["item"]);
+// 表单数据及方法注入
+const formData = inject("formData")
+const formProps = inject("formProps")
+const scopeThis = inject("scopeThis")
 
 const style = ref({
     box: styleModule.label.box(props.item),
@@ -20,7 +24,7 @@ const style = ref({
 
 const hdlClick = () => {
     if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick(props.scopeThis, props.dataBox.fieldsValue, props.item);
+        props.item.hdlLabelClick({formData, scopeThis});
     }
 }
 </script>

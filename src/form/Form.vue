@@ -1,20 +1,15 @@
 <template>
     <!-- 置顶菜单 -->
-    <ly0Menu v-if="myProps.menu && myProps.menu.menu && myProps.menu.menu.length > 0" :scopeThis="scopeThis" :myProps="myProps.menu"></ly0Menu>
+    <ly0Menu v-if="formProps.menu && formProps.menu.menu && formProps.menu.menu.length > 0" :scopeThis="scopeThis" :formProps="formProps.menu"></ly0Menu>
     <!-- 表单区域可以分为多个列 -->
     <div :style="style.root_box">
-        <div v-for="(item, index) in myProps.cols" :key="index">
+        <div v-for="(item, index) in formProps.cols" :key="index">
             <table>
                 <tbody>
                     <template v-for="(item0, index0) in item.items" :key="index0">
-                        <tr v-if="item0.hdlVisible ? item0.hdlVisible({formData: modelValue, scopeThis}) : true">
+                        <tr v-if="item0.hdlVisible ? item0.hdlVisible({formData, scopeThis}) : true">
                             <td :style="style.field_box.left" v-if="!!item0.label">
-                                <compLabelBox
-                                    v-model="modelValue"
-                                    :myProps="myProps"
-                                    :scopeThis = "scopeThis"
-                                    :item="item0"
-                                ></compLabelBox>
+                                <compLabelBox :item="item0"></compLabelBox>
                             </td>
                             <td :style="style.field_box.right" :colspan="style.no_field_label(item0)">
                                 <el-collapse
@@ -28,7 +23,7 @@
                                 >
                                     <template v-for="(item1, index1) in item0.items" :key="index1">
                                         <el-collapse-item
-                                            v-if="item1.hdlVisible ? item1.hdlVisible({formData: modelValue, scopeThis}) : true"
+                                            v-if="item1.hdlVisible ? item1.hdlVisible({formData, scopeThis}) : true"
                                             :title="item1.title"
                                             :name="item1.name ? item1.name : index1"
                                         >
@@ -37,28 +32,18 @@
                                                     <tr
                                                         v-if="
                                                             item2.hdlVisible
-                                                            ? item2.hdlVisible({formData: modelValue, scopeThis})
+                                                            ? item2.hdlVisible({formData, scopeThis})
                                                             : true
                                                         "
                                                     >
                                                         <td :style="style.field_box.left" v-if="item2.label">
-                                                            <compLabelBox
-                                                                v-model="modelValue"
-                                                                :myProps="myProps"
-                                                                :scopeThis="scopeThis"
-                                                                :item="item2"
-                                                            ></compLabelBox>
+                                                            <compLabelBox :item="item2"></compLabelBox>
                                                         </td>
                                                         <td
                                                             :style="style.field_box.right"
                                                             :colspan="style.no_field_label(item2)"
                                                         >
-                                                            <compInputBox
-                                                                v-model="modelValue"
-                                                                :myProps="myProps"
-                                                                :scopeThis="scopeThis"
-                                                                :item="item2"
-                                                            ></compInputBox>
+                                                            <compInputBox :item="item2"></compInputBox>
                                                         </td>
                                                     </tr>
                                                 </template>
@@ -66,13 +51,7 @@
                                         </el-collapse-item>
                                     </template>
                                 </el-collapse>
-                                <compInputBox
-                                    v-else
-                                    v-model="modelValue"
-                                    :myProps="myProps"
-                                    :scopeThis="scopeThis"
-                                    :item="item0"
-                                ></compInputBox>
+                                <compInputBox :item="item0"></compInputBox>
                             </td>
                         </tr>
                     </template>
@@ -82,7 +61,7 @@
     </div>
 
     <!-- 提交 -->
-    <template v-if="myProps.submit.switch">
+    <template v-if="formProps.submit.switch">
         <div :style="style.line"></div>
         <div :style="style.submit_box.style">
             <el-button
@@ -96,13 +75,16 @@
 </template>
 
 <script setup>
-import {reactive, watch, computed} from "vue";
+import {reactive, inject} from "vue";
 import compLabelBox from './LabelBox.vue'
 import compInputBox from './InputBox.vue'
 import styleModule from './style.js'
 import ly0request from '../request/index.js'
 
-const props = defineProps(['modelValue', 'myProps', 'scopeThis'])
+// 表单数据及方法注入
+const formData = inject("formData")
+const formProps = inject("formProps")
+const scopeThis = inject("scopeThis")
 
 const style = reactive({
     collapse: styleModule.collapse,
@@ -115,11 +97,11 @@ const style = reactive({
 
 const hdl = {
     async submit(){
-        if(props.myProps.submit.handle){
+        if(formProps.submit.handle){
             // 执行用户句柄
-            const result = await props.myProps.submit.handle({
-                formData: props.modelValue,
-                scopeThis: props.scopeThis
+            const result = await formProps.submit.handle({
+                formData,
+                scopeThis
             })
             if(result.code !== 0){
                 return
@@ -127,10 +109,10 @@ const hdl = {
         }
         
         // 后台提交 - URL地址
-        if(props.myProps.submit.url){
+        if(formProps.submit.url){
             const result = await ly0request.ly0.ly0request({
-                url: props.myProps.submit.url,
-                data: props.modelValue
+                url: formProps.submit.url,
+                data: formData
             })
             if(result.code !== 0){
                 return
@@ -138,10 +120,10 @@ const hdl = {
         }
         
         // 后台提交 - 存储过程
-        if(props.myProps.submit.storpro){
+        if(formProps.submit.storpro){
             const result = await ly0request.ly0.storpro({
-                storproName: props.myProps.submit.storpro,
-                data: props.modelValue
+                storproName: formProps.submit.storpro,
+                data: formData
             })
             if(result.code !== 0){
                 return
@@ -149,14 +131,13 @@ const hdl = {
         }
         
         // 提交监听
-        props.myProps.submit.watch = true
-        if(props.myProps.popup){
+        formProps.submit.watch = true
+        if(formProps.popup){
             // 关闭表单窗口
-            props.myProps.popup.visible = false
+            formProps.popup.visible = false
         }
     }
 }
-
 </script>
 
 <style lang="scss" scoped></style>

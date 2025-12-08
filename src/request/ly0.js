@@ -2,7 +2,8 @@ import axios from 'axios'
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const domainPara = 'http://127.0.0.1:443'
-const upload = '/ly0/upload-req/image'
+const upload = '/ly0/upload-req/file'
+const upload_image = '/ly0/upload-req/image'
 const upload_carplate = '/ly0/upload-req/carplate'
 
 // 后端请求
@@ -162,6 +163,7 @@ function ly0sessionLoseWithUsertbl(usertbl) {
 export default {
     domain: domainPara,
     upload,
+    upload_image,
     upload_carplate,
     request,
     ly0request,

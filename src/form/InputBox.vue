@@ -2,26 +2,26 @@
     <!-- input-box -->
     <div :style="style.box(item)">
         <!-- 只读 -->
-        <div v-if="item.inputType === 'text'" :style="style.text(item, myProps)">
-            {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
+        <div v-if="item.inputType === 'text'" :style="style.text(item, formProps)">
+            {{ formData[item.fieldName] ? formData[item.fieldName] : '&nbsp;' }}
         </div>
         <div v-if="item.inputType === 'text0'" :style="style.text0(item)">
-            {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
+            {{ formData[item.fieldName] ? formData[item.fieldName] : '&nbsp;' }}
         </div>
-        <div v-if="!item.inputType" :style="style.text(item, myProps)">
-            {{ dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : '&nbsp;' }}
+        <div v-if="!item.inputType" :style="style.text(item, formProps)">
+            {{ formData[item.fieldName] ? formData[item.fieldName] : '&nbsp;' }}
         </div>
-        <div v-if="item.inputType === 'expression'" :style="style.text(item, myProps)">
+        <div v-if="item.inputType === 'expression'" :style="style.text(item, formProps)">
             {{
-                item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue, item)
-                ? item.hdlExpression(dataBox.fieldsValue, item)
+                item.hdlExpression && item.hdlExpression({formData, scopeThis})
+                ? item.hdlExpression({formData, scopeThis})
                 : '&nbsp;'
             }}
         </div>
         <div v-if="item.inputType === 'expression0'" :style="style.text0(item)">
             {{
-                item.hdlExpression && item.hdlExpression(scopeThis, dataBox.fieldsValue, item)
-                ? item.hdlExpression(dataBox.fieldsValue, item)
+                item.hdlExpression && item.hdlExpression({formData, scopeThis})
+                ? item.hdlExpression({formData, scopeThis})
                 : '&nbsp;'
             }}
         </div>
@@ -30,19 +30,19 @@
         <!-- 修改数据 -->
         <el-input
             v-if="item.inputType === 'input'"
-            v-model="dataBox.fieldsValue[item.fieldName]"
+            v-model="formData[item.fieldName]"
             :placeholder="input.placeholder"
-            :style="style.input(item, myProps)"
+            :style="style.input(item, formProps)"
             @input="input.hdlCannotInput"
             :show-password="input.showPassword"
         ></el-input>
         <el-select
             v-if="item.inputType === 'select'"
             class="deep-input"
-            v-model="dataBox.fieldsValue[item.fieldName]"
+            v-model="formData[item.fieldName]"
             :placeholder="select.placeholder"
             filterable
-            :style="style.input(item, myProps)"
+            :style="style.input(item, formProps)"
             @change="select.hdlChange"
         >
             <el-option
@@ -55,16 +55,16 @@
         <el-date-picker
             v-if="item.inputType === 'date-picker'"
             class="deep-input"
-            v-model="dataBox.fieldsValue[item.fieldName]"
+            v-model="formData[item.fieldName]"
             :type="item.type ? item.type : 'datetime'"
             :placeholder="datePicker.placeholder"
             :format="datePicker.format"
-            :style="style.input(item, myProps)"
+            :style="style.input(item, formProps)"
             @change="datePicker.hdlChange"
         ></el-date-picker>
         <el-input-number
             v-if="item.inputType === 'input-number'"
-            v-model="dataBox.fieldsValue[item.fieldName]"
+            v-model="formData[item.fieldName]"
             :size="style.input_number(item).facade.size"
             :min="'min' in item ? item.min : 1"
             :max="'max' in item ? item.max : 100"
@@ -73,7 +73,7 @@
         ></el-input-number>
         <el-switch
             v-if="item.inputType === 'switch'"
-            v-model="dataBox.fieldsValue[item.fieldName]"
+            v-model="formData[item.fieldName]"
             :active-text="item.activeText"
             :inactive-text="item.inactiveText"
             :active-value="item.activeValue"
@@ -84,7 +84,7 @@
         ></el-switch>
         <el-radio-group
             v-if="item.inputType === 'radio-group'"
-            v-model="dataBox.fieldsValue[item.fieldName]"
+            v-model="formData[item.fieldName]"
             :disabled="!!item.disabled"
             @change="radioGroup.hdlChange"
         >
@@ -112,7 +112,7 @@
                                 :plain="style.button_group(item, item0, item1).button.facade.plain"
                                 :round="style.button_group(item, item0, item1).button.facade.round"
                                 :circle="style.button_group(item, item0, item1).button.facade.circle"
-                                @click="item1.hdlClick ? item1.hdlClick(scopeThis, dataBox.fieldsValue, item) : null"
+                                @click="item1.hdlClick ? item1.hdlClick({formData, scopeThis}) : null"
                                 :key="index1"
                             >
                                 <span v-if="item1.text">{{ item1.text }}</span>
@@ -128,32 +128,32 @@
         <div v-if="item.inputType === 'image'">
             <div>
                 <el-image
-                    :style="style.image(item, myProps)"
-                    :src="image.getSrc"
-                    :preview-src-list="[image.getSrc]"
+                    :style="style.image(item, formProps)"
+                    :src="image.getSrc[0]"
+                    :preview-src-list="image.getSrc"
                     :preview-teleported="true"
                     :hide-on-click-modal="true"
                 ></el-image>
             </div>
             <!-- 设置了图片删除功能，同时图片不为空 -->
-            <div v-if="!!item.imageDelete && !!dataBox.fieldsValue[item.fieldName]">
+            <div v-if="!!item.imageDelete && !!formData[item.fieldName]">
                 <el-button
                     size="small"
-                    :icon="!dataBox.fieldsValue[item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
+                    :icon="!formData[item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
                     @click="image.delete"
-                >{{ dataBox.fieldsValue[item.imageDelete] ? '图片已删除，恢复' : '删除' }}</el-button>
+                >{{ formData[item.imageDelete] ? '图片已删除，恢复' : '删除' }}</el-button>
             </div>
         </div>
         <!-- 多个图片 -->
         <div v-if="item.inputType === 'images'">
             <div
-                v-for="(itemImages, indexImages) in dataBox.fieldsValue[item.fieldName]"
+                v-for="(itemImages, indexImages) in formData[item.fieldName]"
                 :key="indexImages"
-                :style="style.images(item, myProps).itemBox"
+                :style="style.images(item, formProps).itemBox"
             >
                 <div>
                     <el-image
-                        :style="style.images(item, myProps).itemThumb"
+                        :style="style.images(item, formProps).itemThumb"
                         :src="images.getSrc(itemImages, indexImages)"
                         :preview-src-list="images.show"
                     ></el-image>
@@ -164,25 +164,25 @@
                         icon="el-icon-delete"
                         @click="images.delete(itemImages, indexImages)"
                     >{{
-                        dataBox.fieldsValue[item.imageDelete].includes(itemImages) ? '恢复' : '删除'
+                        formData[item.imageDelete].includes(itemImages) ? '恢复' : '删除'
                     }}</el-button>
                 </div>
             </div>
         </div>
         <!-- 富文本 -->
-        <div v-if="item.inputType === 'richtext'" :style="style.richtext(item, myProps)">
-            <ly0Richtext v-model="dataBox.fieldsValue[item.fieldName]" :myProps="richtextProps"></ly0Richtext>
+        <div v-if="item.inputType === 'richtext'" :style="style.richtext(item, formProps)">
+            <ly0Richtext v-model="formData[item.fieldName]" :myProps="richtextProps"></ly0Richtext>
         </div>
         <!-- 富文本show -->
         <div v-if="item.inputType === 'richtextShow'">
-            <div v-html="dataBox.fieldsValue[item.fieldName]"></div>
+            <div v-html="formData[item.fieldName]"></div>
         </div>
         <!-- 视频 -->
         <div v-if="item.inputType === 'video'">
             <div>
                 <video
-                    :width="style.video(item, myProps).width"
-                    :height="style.video(item, myProps).height"
+                    :width="style.video(item, formProps).width"
+                    :height="style.video(item, formProps).height"
                     controls
                     :poster="video.poster"
                 >
@@ -195,12 +195,12 @@
                 </video>
             </div>
             <!-- 设置了视频删除功能，同时视频不为空 -->
-            <div v-if="!!item.videoDelete && !!dataBox.fieldsValue[item.fieldName]">
+            <div v-if="!!item.videoDelete && !!formData[item.fieldName]">
                 <el-button
                     size="small"
-                    :icon="!dataBox.fieldsValue[item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
+                    :icon="!formData[item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick'"
                     @click="video.delete"
-                >{{ !!dataBox.fieldsValue[item.videoDelete] ? '视频已删除，恢复' : '删除' }}</el-button>
+                >{{ !!formData[item.videoDelete] ? '视频已删除，恢复' : '删除' }}</el-button>
             </div>
         </div>
     
@@ -208,7 +208,7 @@
         <!-- 下载 -->
         <div v-if="item.inputType === 'download'">
             <a
-                v-if="dataBox.fieldsValue[item.fieldName]"
+                v-if="formData[item.fieldName]"
                 :style="style.download.style"
                 :href="download.downloadSrc"
                 :download="download.fileName"
@@ -220,140 +220,135 @@
         <!-- 上传多个文件 -->
         <div v-if="item.inputType === 'upload'">
             <ly0Upload
-                :myProps="upload.props.val"
-                @getUploadResult="upload.getResult.hdl"
+                v-model="formData[item.fieldName]"
+                :myProps="{uploadUrl: upload.uploadUrl}"
             ></ly0Upload>
         </div>
         <!-- 拖拽上传 -->
         <div v-if="item.inputType === 'upload-drag'">
             <ly0Upload_drag
-                :myProps="upload.props.val"
-                @getUploadResult="upload.getResult.hdl"
+                v-model="formData[item.fieldName]"
+                :myProps="{uploadUrl: upload.uploadUrl}"
             ></ly0Upload_drag>
         </div>
         <!-- 图片列表 -->
         <div v-if="item.inputType === 'upload-picture'">
             <ly0Upload_picture
-                :myProps="upload.props.val"
-                @getUploadResult="upload.getResult.hdl"
+                v-model="formData[item.fieldName]"
+                :myProps="{uploadUrl: upload.uploadUrl_image}"
             ></ly0Upload_picture>
         </div>
         <!-- 图片墙 -->
         <div v-if="item.inputType === 'upload-picture-card'">
             <ly0Upload_pictureCard
-                :myProps="upload.props.val"
-                @getUploadResult="upload.getResult.hdl"
+                v-model="formData[item.fieldName]"
+                :myProps="{uploadUrl: upload.uploadUrl_image}"
             ></ly0Upload_pictureCard>
         </div>
         <!-- 头像 -->
         <div v-if="item.inputType === 'upload-avatar'">
             <ly0Upload_avatar
-                :myProps="upload.props.val"
-                @getUploadResult="upload.getResult.hdl"
+                v-model="formData[item.fieldName]"
+                :myProps="{uploadUrl: upload.uploadUrl_image}"
             ></ly0Upload_avatar>
         </div>
         <!-- 车牌识别 -->
         <div v-if="item.inputType === 'upload-carplate'">
             <ly0Upload_carplate
-                :myProps="upload.props.val_carplate"
-                @getUploadResult="upload.getResult.hdl_carplate"
+                v-model="formData[item.fieldName]"
+                :myProps="{uploadUrl: upload.uploadUrl_carplate}"
             ></ly0Upload_carplate>
         </div>
     
         <!-- 行政区划 -->
         <div v-if="item.inputType === 'd3gbt2260'">
             <ly0gbt2260
+                v-model="formData[item.fieldName]"
                 :myProps="{readOnly: item.readOnly}"
-                v-model="dataBox.fieldsValue[item.fieldName]"
             ></ly0gbt2260>
         </div>
     
         <!-- 商品分类 -->
         <div v-if="item.inputType === 'd7group'">
             <ly0d7group
-                :myProps="{
-                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-                    readOnly: item.readOnly,
-                }"
-                @getValue="hdlGetValue.ly0d7group"
+                v-model="formData[item.fieldName]"
+                :myProps="{readOnly: item.readOnly}"
             ></ly0d7group>
         </div>
         <!-- 邮寄地址 -->
         <div v-if="item.inputType === 'd7postal'">
             <ly0d7postal
-                :myProps="{
-                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-                    readOnly: item.readOnly,
-                }"
-                @getValue="hdlGetValue.ly0d7postal"
+                v-model="formData[item.fieldName]"
+                :myProps="{readOnly: item.readOnly}"
             ></ly0d7postal>
         </div>
         <!-- 商品标价 -->
         <div v-if="item.inputType === 'd7price'">
             <ly0d7price
+                v-model="formData[item.fieldName]"
                 :myProps="{readOnly: item.readOnly}"
-                v-model="dataBox.fieldsValue[item.fieldName]"
             ></ly0d7price>
         </div>
         <!-- 商品规格 -->
         <div v-if="item.inputType === 'd7size'">
             <ly0d7size
-                :myProps="{
-                    value: dataBox.fieldsValue[item.fieldName] ? dataBox.fieldsValue[item.fieldName] : [],
-                    readOnly: item.readOnly,
-                }"
-                @getValue="hdlGetValue.ly0d7size"
+                v-model="formData[item.fieldName]"
+                :myProps="{readOnly: item.readOnly}"
             ></ly0d7size>
         </div>
         <!-- 商品缩略图 -->
         <div v-if="item.inputType === 'd7thumb'">
             <ly0d7thumb
+                v-model="formData"
                 :myProps="{
-                    value: {
-                        thumb: dataBox.fieldsValue[item.fieldName.thumb],
-                        name: dataBox.fieldsValue[item.fieldName.name],
+                    thumb: {
+                        fieldName: item.thumb.fieldName || formProps.para.ly0d7thumb.thumb.fieldName,
+                        width: item.thumb.width || formProps.para.ly0d7thumb.thumb.width,
+                        height: item.thumb.height || formProps.para.ly0d7thumb.thumb.height
+                    },
+                    name: {
+                        fieldName: item.name.fieldName || formProps.para.ly0d7thumb.name.fieldName,
+                    },
+                    number: {
+                        fieldName: item.number.fieldName || formProps.para.ly0d7thumb.number.fieldName,
                     },
                     readOnly: item.readOnly
                 }"
-                @getValue="hdlGetValue.ly0d7thumb"
             ></ly0d7thumb>
         </div>
     </div>
 </template>
 
 <script setup>
-import {ref, computed, reactive} from "vue";
+import {reactive, ref, computed, inject} from "vue";
 import styleModule from './style.js'
-import {request} from "axios";
 
-const props = defineProps(["scopeThis", "myProps", "dataBox", "item"]);
+const props = defineProps(["item"]);
+// 表单数据及方法注入
+const formData = inject("formData")
+const formProps = inject("formProps")
+const scopeThis = inject("scopeThis")
 
 const input = reactive({
-    placeholder: computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.para.placeholder.input
-    }),
-    showPassword: computed(()=>{
-        return !!props.item.showPassword
-    }),
+    placeholder: props.item.placeholder || formProps.para.placeholder.input,
+    showPassword: !!props.item.showPassword,
     hdlCannotInput: event => { // 解决偶发不能输入的问题
-        props.dataBox.fieldsValue[props.item.fieldName] = event.target.value
+        formData[props.item.fieldName] = event.target.value
     }
 })
 
 const select = reactive({
-    placeholder: computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.para.placeholder.select
-    }),
+    placeholder: props.item.placeholder || formProps.para.placeholder.select,
     items: computed(()=>{
         if (props.item.items) {
             return props.item.items
         } else if (props.item.hdlGetItems) {
-            return props.item.hdlGetItems(props.dataBox.fieldsValue, props.item)
+            return props.item.hdlGetItems({formData, scopeThis})
         }
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange({formData, scopeThis, value})
         }
     }
 })
@@ -364,12 +359,12 @@ const datePicker = reactive({
             return props.item.placeholder
         }
         if (props.item.type === 'datetime') {
-            return props.myProps.para.placeholder.datetime
+            return formProps.para.placeholder.datetime
         }
         if (props.item.type === 'date') {
-            return props.myProps.para.placeholder.date
+            return formProps.para.placeholder.date
         }
-        return props.myProps.para.placeholder.datetime
+        return formProps.para.placeholder.datetime
     }),
     format: computed(() => {
         if (props.item.format) {
@@ -385,7 +380,7 @@ const datePicker = reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange({formData, scopeThis, value})
         }
     }
 })
@@ -393,7 +388,7 @@ const datePicker = reactive({
 const ly0switch = reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange({formData, scopeThis, value})
         }
     }
 })
@@ -401,7 +396,7 @@ const ly0switch = reactive({
 const radioGroup = reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value)
+            props.item.hdlChange({formData, scopeThis, value})
         }
     }
 })
@@ -410,20 +405,20 @@ const image = reactive({
     getSrc: computed(() => {
         if (
             props.item.imageDelete &&
-            props.dataBox.fieldsValue[props.item.imageDelete] &&
-            (props.dataBox.fieldsValue[props.item.imageDelete] === true ||
-                props.dataBox.fieldsValue[props.item.imageDelete] === 'true') // 图片已删除
+            formData[props.item.imageDelete] &&
+            (formData[props.item.imageDelete] === true ||
+                formData[props.item.imageDelete] === 'true') // 图片已删除
         ) {
-            return ''
+            return ['']
         }
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
+        if (formData[props.item.fieldName]) {
+            return formData[props.item.fieldName]
         }
-        return ''
+        return ['']
     }),
     delete: ()=>{
-        props.dataBox.fieldsValue[props.item.imageDelete] =
-            !props.dataBox.fieldsValue[props.item.imageDelete]
+        formData[props.item.imageDelete] =
+            !formData[props.item.imageDelete]
     }
 })
 
@@ -431,34 +426,32 @@ const images = reactive({
     getSrc: (itemImages, indexImages) => {
         if (
             !props.item.imageDelete ||
-            !props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)
+            !formData[props.item.imageDelete].includes(itemImages)
         ) {
             return itemImages
         }
         return ''
     },
     delete: (itemImages, indexImages) => {
-        if (!props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)) {
-            props.dataBox.fieldsValue[props.item.imageDelete].push(itemImages)
+        if (!formData[props.item.imageDelete].includes(itemImages)) {
+            formData[props.item.imageDelete].push(itemImages)
             return
         }
         
-        props.dataBox.fieldsValue[props.item.imageDelete] = props.dataBox.fieldsValue[
-            props.item.imageDelete
-            ].filter(i => {
+        formData[props.item.imageDelete] = formData[props.item.imageDelete].filter(i => {
             return i !== itemImages
         })
     },
     show: computed(()=>{
         let result = []
         if (!props.item.imageDelete) {
-            props.dataBox.fieldsValue[props.item.fieldName].forEach(i => {
+            formData[props.item.fieldName].forEach(i => {
                 result.push(i)
             })
         } else {
-            props.dataBox.fieldsValue[props.item.fieldName]
+            formData[props.item.fieldName]
                 .filter(i => {
-                    return !props.dataBox.fieldsValue[props.item.imageDelete].includes(i)
+                    return !formData[props.item.imageDelete].includes(i)
                 })
                 .forEach(i => {
                     result.push(i)
@@ -469,112 +462,69 @@ const images = reactive({
 })
 
 const richtextProps = ref({
-    uploadUrl: props.dataBox.upload
+    uploadUrl: formProps.para.uploadUrl
 })
 
 const video = reactive({
     src: computed(()=>{
         if (
             props.item.videoDelete &&
-            props.dataBox.fieldsValue[props.item.videoDelete] &&
-            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
-                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+            formData[props.item.videoDelete] &&
+            (formData[props.item.videoDelete] === true ||
+                formData[props.item.videoDelete] === 'true') // 图片已删除
         ) {
             return ''
         }
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
+        if (formData[props.item.fieldName]) {
+            return formData[props.item.fieldName]
         }
         return ''
     }),
     poster: computed(()=>{
         if (
             props.item.videoDelete &&
-            props.dataBox.fieldsValue[props.item.videoDelete] &&
-            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
-                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+            formData[props.item.videoDelete] &&
+            (formData[props.item.videoDelete] === true ||
+                formData[props.item.videoDelete] === 'true') // 图片已删除
         ) {
             return ''
         }
-        if (props.dataBox.fieldsValue[props.item.poster]) {
-            return props.dataBox.fieldsValue[props.item.poster]
+        if (formData[props.item.poster]) {
+            return formData[props.item.poster]
         }
         return ''
     }),
     delete: ()=>{
-        props.dataBox.fieldsValue[props.item.videoDelete] =
-            !props.dataBox.fieldsValue[props.item.videoDelete]
+        formData[props.item.videoDelete] =
+            !formData[props.item.videoDelete]
     },
 })
 
 const download = reactive({
-    fileName: computed(() => {
-        if (props.item.downloadFileName) {
-            return props.item.downloadFileName
-        }
-        return props.myProps.para.download.fileName
-    }),
+    fileName: props.item.downloadFileName || formProps.para.download.fileName,
     downloadLabel: computed(() => {
-        if (!props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.myProps.para.download.downloadLabelNoSrc
+        if (!formData[props.item.fieldName]) {
+            return formProps.para.download.downloadLabelNoSrc
         }
         if (props.item.hdlGetDownloadLabel) {
-            return props.item.hdlGetDownloadLabel(props.dataBox.fieldsValue, props.item)
+            return props.item.hdlGetDownloadLabel({formData, scopeThis})
         }
-        return props.myProps.para.download.downloadLabel
+        return formProps.para.download.downloadLabel
     }),
-    downloadSrc: computed(() => {
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
-        }
-        return ''
-    })
+    downloadSrc: formData[props.item.fieldName] || ''
 })
 
 const upload = reactive({
-    props: {
-        val: computed(()=>{return {
-            uploadUrl: props.dataBox.upload
-        }}),
-        val_carplate: computed(()=>{return {
-            uploadUrl: props.dataBox.upload_carplate
-        }})
-    },
-    getResult: {
-        hdl: result => {
-            // 可以获取多个文件上传结果
-            console.log('文件上传结果：', result.fileList)
-            if ('limit' in props.item && props.item.limit > 1) {
-                // 接收多个文件
-                // eslint-disable-next-line
-                props.dataBox.fieldsValue[props.item.fieldName] = []
-                result.fileList.forEach((i) => {
-                    // eslint-disable-next-line
-                    props.dataBox.fieldsValue[props.item.fieldName].push(i.src)
-                })
-            } else {
-                // 只接收一个文件
-                // eslint-disable-next-line
-                props.dataBox.fieldsValue[props.item.fieldName] =
-                    result.fileList.length === 0 ? '' : result.fileList[0].src
-            }
-        },
-        hdl_carplate: result => {
-            // 获取车牌识别结果
-            // eslint-disable-next-line
-            props.dataBox.fieldsValue[props.item.fieldName] = result.src ? result.src : ''
-            // eslint-disable-next-line
-            props.dataBox.fieldsValue[props.item.carplate] =
-                result.result && result.result.txt ? result.result.txt : ''
-        }
-    }
+    uploadUrl: formProps.para.uploadUrl,
+    uploadUrl_image: formProps.para.uploadUrl_image,
+    uploadUrl_carplate: formProps.para.uploadUrl_carplate
 })
 
 const style = reactive({
     box: styleModule.input.box,
     text: styleModule.input.text,
     text0: styleModule.input.text0,
-    line: computed(()=>styleModule.line()),
+    line: styleModule.line,
     input: styleModule.input.input,
     input_number: styleModule.input.input_number,
     el_switch: styleModule.input.el_switch,
@@ -585,22 +535,6 @@ const style = reactive({
     video: styleModule.input.video,
     download: computed(()=>styleModule.input.download()),
 })
-
-const hdlGetValue = {
-    ly0d7group(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
-    },
-    ly0d7postal(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
-    },
-    ly0d7size(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : []
-    },
-    ly0d7thumb(result) {
-        props.dataBox.fieldsValue[props.item.fieldName.thumb] = result.value.thumb
-        props.dataBox.fieldsValue[props.item.fieldName.name] = result.value.name
-    },
-}
 </script>
 
 <style scoped lang="scss">

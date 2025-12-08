@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var vueRouter = require('vue-router');
 var vue = require('vue');
+var elementPlus = require('element-plus');
 
 function _mergeNamespaces(n, m) {
 	m.forEach(function (e) {
@@ -21963,20 +21964,21 @@ const {
 
 const router = vueRouter.useRouter();
 const domainPara = 'http://127.0.0.1:443';
-const upload$1 = '/ly0/upload-req/image';
+const upload$1 = '/ly0/upload-req/file';
+const upload_image = '/ly0/upload-req/image';
 const upload_carplate = '/ly0/upload-req/carplate';
 
 // 后端请求
 async function request$1(_ref) {
   let {
-    domain,
-    url,
+    domain = '',
+    url = '',
     // 路由
-    data // 请求数据
+    data = null // 请求数据
   } = _ref;
   try {
     const response = await axios({
-      url: (domain ? domain : '') + (url ? url : ''),
+      url: (domain || '') + (url || ''),
       method: 'post',
       dataType: 'json',
       data: data !== null && data !== void 0 ? data : null
@@ -21988,13 +21990,13 @@ async function request$1(_ref) {
   }
 }
 
-// ly0后端请求
+// ly0后端请求，需要处理session异常
 async function ly0request(_ref2) {
   let {
-    domain,
-    url,
+    domain = '',
+    url = '',
     // 路由
-    data // 请求数据
+    data = null // 请求数据
   } = _ref2;
   try {
     const response = await request$1({
@@ -22006,7 +22008,7 @@ async function ly0request(_ref2) {
     // session 异常
     if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
       console.log('session异常', response.data.sessionStatusMessage);
-      let ly0session = ly0sessionLoad();
+      const ly0session = ly0sessionLoad();
       ly0sessionSave({
         session: {
           usertbl: ly0session && ly0session.session && ly0session.session.usertbl ? ly0session.session.usertbl : 'ly0d0user'
@@ -22028,18 +22030,21 @@ async function ly0request(_ref2) {
 // 存储过程
 async function storpro(_ref3) {
   let {
-    domain,
-    storproName,
+    domain = domainPara,
+    storproName = '',
     // 存储过程名称
-    data,
+    data = null,
     noSession = false // 不进行session验证
   } = _ref3;
   try {
+    if (!storproName) {
+      return null;
+    }
     const result = await ly0request({
-      domain: domain ? domain : domainPara,
+      domain,
       url: '/ly0/storpro/exec',
       data: {
-        noSession: noSession && (noSession === true || noSession === 'true') ? noSession : false,
+        noSession,
         ly0session: ly0sessionLoad(),
         storproBody: {
           storproName,
@@ -22119,6 +22124,7 @@ function ly0sessionLoseWithUsertbl(usertbl) {
 var ly0request$1 = {
   domain: domainPara,
   upload: upload$1,
+  upload_image,
   upload_carplate,
   request: request$1,
   ly0request,
@@ -22132,6 +22138,90 @@ var ly0request$1 = {
 
 var request = {
   ly0: ly0request$1
+};
+
+// 默认值
+
+var ly0default$2 = {
+  myProps: {
+    popup: {
+      visible: false,
+      title: '',
+      width: '800px',
+      top: '15vh'
+    },
+    menu: {
+      mode: 'horizontal',
+      menu: []
+    },
+    cols: [],
+    submit: {
+      switch: false,
+      // true - 提交模式, false - 组件模式
+      watch: false,
+      // 提交监听
+      async handle(_ref) {
+        let {
+          formData,
+          scopeThis
+        } = _ref;
+      },
+      // 异步用户句柄
+      url: '',
+      // 后台提交 - URL地址
+      storpro: '' // 后台提交 - 存储过程
+    },
+    uploadUrl: ly0request$1.domain + ly0request$1.upload,
+    uploadUrl_image: ly0request$1.domain + ly0request$1.upload_image,
+    uploadUrl_carplate: ly0request$1.domain + ly0request$1.upload_carplate,
+    para: {
+      inputWidth: '200px',
+      placeholder: {
+        input: '请输入',
+        select: '请选择',
+        datetime: '请选择时间',
+        date: '请选择日期'
+      },
+      image: {
+        width: '400px',
+        height: '300px'
+      },
+      thumb: {
+        width: '40px',
+        height: '30px'
+      },
+      video: {
+        width: '300px',
+        height: '200px'
+      },
+      richtext: {
+        editorWidth: '500px',
+        // 富文本编辑器宽度
+        size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
+      },
+      download: {
+        // 行内下载
+        fileName: 'new-file',
+        // 下载文件名
+        downloadLabel: '点击这里下载',
+        // 下载标签
+        downloadLabelNoSrc: '没有可供下载的资源' // 下载标签
+      },
+      ly0d7thumb: {
+        thumb: {
+          fieldName: 'thumb',
+          width: '100px',
+          height: '100px'
+        },
+        name: {
+          fieldName: 'name'
+        },
+        number: {
+          fieldName: 'number'
+        }
+      }
+    }
+  }
 };
 
 function box$1(item) {
@@ -22180,14 +22270,14 @@ function box(item) {
 }
 
 // inputType: "text"
-function text(item, myProps) {
+function text(item, formProps) {
   return {
     'white-space': 'pre-line',
     // 保留换行符
     'border-left': '#ababab solid 1px',
     'border-top': '#ababab solid 1px',
     'padding-left': '10px',
-    width: item.inputWidth ? item.inputWidth : myProps.inputWidth
+    width: item.inputWidth ? item.inputWidth : formProps.para.inputWidth
   };
 }
 
@@ -22201,9 +22291,9 @@ function text0(item) {
 }
 
 // inputType: "input", "select", "date-picker"
-function input(item, myProps) {
+function input(item, formProps) {
   return {
-    width: item.inputWidth ? item.inputWidth : myProps.inputWidth,
+    width: item.inputWidth ? item.inputWidth : formProps.para.inputWidth,
     height: '40px'
   };
 }
@@ -22271,40 +22361,40 @@ function button_group(item, groupItem, buttonItem) {
 }
 
 // inputType: "image"
-function image(item, myProps) {
+function image(item, formProps) {
   return {
-    width: item.imageWidth ? item.imageWidth : myProps.imageWidth,
-    height: item.imageHeight ? item.imageHeight : myProps.imageHeight
+    width: item.imageWidth ? item.imageWidth : formProps.para.image.width,
+    height: item.imageHeight ? item.imageHeight : formProps.para.image.height
   };
 }
 
 // inputType: "images"
-function images(item, myProps) {
+function images(item, formProps) {
   return {
     itemBox: {
       display: 'inline-block',
       margin: '10px'
     },
     itemThumb: {
-      width: item.imageWidth ? item.imageWidth : myProps.thumbWidth,
-      height: item.imageHeight ? item.imageHeight : myProps.thumbHeight
+      width: item.imageWidth ? item.imageWidth : formProps.para.thumb.width,
+      height: item.imageHeight ? item.imageHeight : formProps.para.thumb.height
     }
   };
 }
 
 // inputType: "richtext"
-function richtext(item, myProps) {
+function richtext(item, formProps) {
   return {
     // 富文本编辑器宽度
-    width: item.editorWidth ? item.editorWidth : myProps.richtext.editorWidth
+    width: item.editorWidth ? item.editorWidth : formProps.para.richtext.editorWidth
   };
 }
 
 // inputType: "video"
-function video(item, myProps) {
+function video(item, formProps) {
   return {
-    width: item.videoWidth ? item.videoWidth : myProps.videoWidth,
-    height: item.videoHeight ? item.videoHeight : myProps.videoHeight
+    width: item.videoWidth ? item.videoWidth : formProps.para.video.width,
+    height: item.videoHeight ? item.videoHeight : formProps.para.video.height
   };
 }
 
@@ -22339,37 +22429,31 @@ var input$1 = {
 
 
 // 折叠面板
-function collapse() {
-  return {
-    style: {
-      'margin-bottom': '10px'
-    },
-    table: {
-      'text-align': 'center',
-      width: '100%'
-    }
-  };
-}
+const collapse = {
+  style: {
+    'margin-bottom': '10px'
+  },
+  table: {
+    'text-align': 'center',
+    width: '100%'
+  }
+};
 
 // 字段盒子
-function field_box() {
-  return {
-    left: {
-      padding: "10px"
-    },
-    right: {
-      padding: "10px"
-    }
-  };
-}
+const field_box = {
+  left: {
+    padding: "10px"
+  },
+  right: {
+    padding: "10px"
+  }
+};
 
 // 行际分割线
-function line() {
-  return {
-    height: '1px',
-    'background-color': '#bdbdbd'
-  };
-}
+const line = {
+  height: '1px',
+  'background-color': '#bdbdbd'
+};
 
 // 没有field-label, field-value独占一行（field-box）
 function no_field_label(item) {
@@ -22381,30 +22465,26 @@ function no_field_label(item) {
 }
 
 // 表单区域可以分为多个列
-const root_box = () => {
-  return {
-    display: 'flex',
-    'justify-content': 'space-around'
-  };
+const root_box = {
+  display: 'flex',
+  'justify-content': 'space-around'
 };
 
 // 提交区域
-function submit_box() {
-  return {
+const submit_box = {
+  style: {
+    'text-align': 'left'
+  },
+  button: {
     style: {
-      'text-align': 'left'
+      'margin-top': '10px'
     },
-    button: {
-      style: {
-        'margin-top': '10px'
-      },
-      facade: {
-        type: 'danger',
-        plain: true
-      }
+    facade: {
+      type: 'danger',
+      plain: true
     }
-  };
-}
+  }
+};
 var styleModule = {
   collapse,
   field_box,
@@ -22418,10 +22498,14 @@ var styleModule = {
 
 var script$h = {
   __name: 'LabelBox',
-  props: ["scopeThis", "myProps", "dataBox", "item"],
+  props: ["item"],
   setup(__props) {
 
 const props = __props;
+// 表单数据及方法注入
+const formData = vue.inject("formData");
+vue.inject("formProps");
+const scopeThis = vue.inject("scopeThis");
 
 const style = vue.ref({
     box: styleModule.label.box(props.item),
@@ -22430,7 +22514,7 @@ const style = vue.ref({
 
 const hdlClick = () => {
     if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick(props.scopeThis, props.dataBox.fieldsValue, props.item);
+        props.item.hdlLabelClick({formData, scopeThis});
     }
 };
 
@@ -22453,16 +22537,16 @@ return (_ctx, _cache) => {
 
 script$h.__file = "src/form/LabelBox.vue";
 
-const _hoisted_1$e = { key: 12 };
+const _hoisted_1$d = { key: 12 };
 const _hoisted_2$d = { key: 0 };
 const _hoisted_3$6 = { key: 13 };
-const _hoisted_4$5 = { key: 0 };
-const _hoisted_5$4 = { key: 14 };
-const _hoisted_6$4 = { key: 0 };
-const _hoisted_7$4 = { key: 16 };
-const _hoisted_8$3 = ["innerHTML"];
-const _hoisted_9$2 = { key: 17 };
-const _hoisted_10$1 = ["width", "height", "poster"];
+const _hoisted_4$4 = { key: 0 };
+const _hoisted_5$1 = { key: 14 };
+const _hoisted_6 = { key: 0 };
+const _hoisted_7 = { key: 16 };
+const _hoisted_8 = ["innerHTML"];
+const _hoisted_9 = { key: 17 };
+const _hoisted_10 = ["width", "height", "poster"];
 const _hoisted_11 = ["src"];
 const _hoisted_12 = ["src"];
 const _hoisted_13 = ["src"];
@@ -22485,37 +22569,35 @@ const _hoisted_28 = { key: 30 };
 
 var script$g = {
   __name: 'InputBox',
-  props: ["scopeThis", "myProps", "dataBox", "item"],
+  props: ["item"],
   setup(__props) {
 
 const props = __props;
+// 表单数据及方法注入
+const formData = vue.inject("formData");
+const formProps = vue.inject("formProps");
+const scopeThis = vue.inject("scopeThis");
 
 const input = vue.reactive({
-    placeholder: vue.computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.input
-    }),
-    showPassword: vue.computed(()=>{
-        return !!props.item.showPassword
-    }),
+    placeholder: props.item.placeholder || formProps.para.placeholder.input,
+    showPassword: !!props.item.showPassword,
     hdlCannotInput: event => { // 解决偶发不能输入的问题
-        props.dataBox.fieldsValue[props.item.fieldName] = event.target.value;
+        formData[props.item.fieldName] = event.target.value;
     }
 });
 
 const select = vue.reactive({
-    placeholder: vue.computed(() => {
-        return props.item.placeholder ? props.item.placeholder : props.myProps.placeholder.select
-    }),
+    placeholder: props.item.placeholder || formProps.para.placeholder.select,
     items: vue.computed(()=>{
         if (props.item.items) {
             return props.item.items
         } else if (props.item.hdlGetItems) {
-            return props.item.hdlGetItems(props.dataBox.fieldsValue, props.item)
+            return props.item.hdlGetItems({formData, scopeThis})
         }
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange({formData, scopeThis, value});
         }
     }
 });
@@ -22526,12 +22608,12 @@ const datePicker = vue.reactive({
             return props.item.placeholder
         }
         if (props.item.type === 'datetime') {
-            return props.myProps.placeholder.datetime
+            return formProps.para.placeholder.datetime
         }
         if (props.item.type === 'date') {
-            return props.myProps.placeholder.date
+            return formProps.para.placeholder.date
         }
-        return props.myProps.placeholder.datetime
+        return formProps.para.placeholder.datetime
     }),
     format: vue.computed(() => {
         if (props.item.format) {
@@ -22547,7 +22629,7 @@ const datePicker = vue.reactive({
     }),
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange({formData, scopeThis, value});
         }
     }
 });
@@ -22555,7 +22637,7 @@ const datePicker = vue.reactive({
 const ly0switch = vue.reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange({formData, scopeThis, value});
         }
     }
 });
@@ -22563,7 +22645,7 @@ const ly0switch = vue.reactive({
 const radioGroup = vue.reactive({
     hdlChange: value => {
         if (props.item.hdlChange) {
-            props.item.hdlChange(props.scopeThis, props.dataBox.fieldsValue, props.item, value);
+            props.item.hdlChange({formData, scopeThis, value});
         }
     }
 });
@@ -22572,20 +22654,20 @@ const image = vue.reactive({
     getSrc: vue.computed(() => {
         if (
             props.item.imageDelete &&
-            props.dataBox.fieldsValue[props.item.imageDelete] &&
-            (props.dataBox.fieldsValue[props.item.imageDelete] === true ||
-                props.dataBox.fieldsValue[props.item.imageDelete] === 'true') // 图片已删除
+            formData[props.item.imageDelete] &&
+            (formData[props.item.imageDelete] === true ||
+                formData[props.item.imageDelete] === 'true') // 图片已删除
         ) {
-            return ''
+            return ['']
         }
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
+        if (formData[props.item.fieldName]) {
+            return formData[props.item.fieldName]
         }
-        return ''
+        return ['']
     }),
     delete: ()=>{
-        props.dataBox.fieldsValue[props.item.imageDelete] =
-            !props.dataBox.fieldsValue[props.item.imageDelete];
+        formData[props.item.imageDelete] =
+            !formData[props.item.imageDelete];
     }
 });
 
@@ -22593,34 +22675,32 @@ const images = vue.reactive({
     getSrc: (itemImages, indexImages) => {
         if (
             !props.item.imageDelete ||
-            !props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)
+            !formData[props.item.imageDelete].includes(itemImages)
         ) {
             return itemImages
         }
         return ''
     },
     delete: (itemImages, indexImages) => {
-        if (!props.dataBox.fieldsValue[props.item.imageDelete].includes(itemImages)) {
-            props.dataBox.fieldsValue[props.item.imageDelete].push(itemImages);
+        if (!formData[props.item.imageDelete].includes(itemImages)) {
+            formData[props.item.imageDelete].push(itemImages);
             return
         }
         
-        props.dataBox.fieldsValue[props.item.imageDelete] = props.dataBox.fieldsValue[
-            props.item.imageDelete
-            ].filter(i => {
+        formData[props.item.imageDelete] = formData[props.item.imageDelete].filter(i => {
             return i !== itemImages
         });
     },
     show: vue.computed(()=>{
         let result = [];
         if (!props.item.imageDelete) {
-            props.dataBox.fieldsValue[props.item.fieldName].forEach(i => {
+            formData[props.item.fieldName].forEach(i => {
                 result.push(i);
             });
         } else {
-            props.dataBox.fieldsValue[props.item.fieldName]
+            formData[props.item.fieldName]
                 .filter(i => {
-                    return !props.dataBox.fieldsValue[props.item.imageDelete].includes(i)
+                    return !formData[props.item.imageDelete].includes(i)
                 })
                 .forEach(i => {
                     result.push(i);
@@ -22631,112 +22711,69 @@ const images = vue.reactive({
 });
 
 const richtextProps = vue.ref({
-    uploadUrl: props.dataBox.upload
+    uploadUrl: formProps.para.uploadUrl
 });
 
 const video = vue.reactive({
     src: vue.computed(()=>{
         if (
             props.item.videoDelete &&
-            props.dataBox.fieldsValue[props.item.videoDelete] &&
-            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
-                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+            formData[props.item.videoDelete] &&
+            (formData[props.item.videoDelete] === true ||
+                formData[props.item.videoDelete] === 'true') // 图片已删除
         ) {
             return ''
         }
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
+        if (formData[props.item.fieldName]) {
+            return formData[props.item.fieldName]
         }
         return ''
     }),
     poster: vue.computed(()=>{
         if (
             props.item.videoDelete &&
-            props.dataBox.fieldsValue[props.item.videoDelete] &&
-            (props.dataBox.fieldsValue[props.item.videoDelete] === true ||
-                props.dataBox.fieldsValue[props.item.videoDelete] === 'true') // 图片已删除
+            formData[props.item.videoDelete] &&
+            (formData[props.item.videoDelete] === true ||
+                formData[props.item.videoDelete] === 'true') // 图片已删除
         ) {
             return ''
         }
-        if (props.dataBox.fieldsValue[props.item.poster]) {
-            return props.dataBox.fieldsValue[props.item.poster]
+        if (formData[props.item.poster]) {
+            return formData[props.item.poster]
         }
         return ''
     }),
     delete: ()=>{
-        props.dataBox.fieldsValue[props.item.videoDelete] =
-            !props.dataBox.fieldsValue[props.item.videoDelete];
+        formData[props.item.videoDelete] =
+            !formData[props.item.videoDelete];
     },
 });
 
 const download = vue.reactive({
-    fileName: vue.computed(() => {
-        if (props.item.downloadFileName) {
-            return props.item.downloadFileName
-        }
-        return props.myProps.download.fileName
-    }),
+    fileName: props.item.downloadFileName || formProps.para.download.fileName,
     downloadLabel: vue.computed(() => {
-        if (!props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.myProps.download.downloadLabelNoSrc
+        if (!formData[props.item.fieldName]) {
+            return formProps.para.download.downloadLabelNoSrc
         }
         if (props.item.hdlGetDownloadLabel) {
-            return props.item.hdlGetDownloadLabel(props.dataBox.fieldsValue, props.item)
+            return props.item.hdlGetDownloadLabel({formData, scopeThis})
         }
-        return props.myProps.download.downloadLabel
+        return formProps.para.download.downloadLabel
     }),
-    downloadSrc: vue.computed(() => {
-        if (props.dataBox.fieldsValue[props.item.fieldName]) {
-            return props.dataBox.fieldsValue[props.item.fieldName]
-        }
-        return ''
-    })
+    downloadSrc: formData[props.item.fieldName] || ''
 });
 
 const upload = vue.reactive({
-    props: {
-        val: vue.computed(()=>{return {
-            uploadUrl: props.dataBox.upload
-        }}),
-        val_carplate: vue.computed(()=>{return {
-            uploadUrl: props.dataBox.upload_carplate
-        }})
-    },
-    getResult: {
-        hdl: result => {
-            // 可以获取多个文件上传结果
-            console.log('文件上传结果：', result.fileList);
-            if ('limit' in props.item && props.item.limit > 1) {
-                // 接收多个文件
-                // eslint-disable-next-line
-                props.dataBox.fieldsValue[props.item.fieldName] = [];
-                result.fileList.forEach((i) => {
-                    // eslint-disable-next-line
-                    props.dataBox.fieldsValue[props.item.fieldName].push(i.src);
-                });
-            } else {
-                // 只接收一个文件
-                // eslint-disable-next-line
-                props.dataBox.fieldsValue[props.item.fieldName] =
-                    result.fileList.length === 0 ? '' : result.fileList[0].src;
-            }
-        },
-        hdl_carplate: result => {
-            // 获取车牌识别结果
-            // eslint-disable-next-line
-            props.dataBox.fieldsValue[props.item.fieldName] = result.src ? result.src : '';
-            // eslint-disable-next-line
-            props.dataBox.fieldsValue[props.item.carplate] =
-                result.result && result.result.txt ? result.result.txt : '';
-        }
-    }
+    uploadUrl: formProps.para.uploadUrl,
+    uploadUrl_image: formProps.para.uploadUrl_image,
+    uploadUrl_carplate: formProps.para.uploadUrl_carplate
 });
 
 const style = vue.reactive({
     box: styleModule.input.box,
     text: styleModule.input.text,
     text0: styleModule.input.text0,
-    line: vue.computed(()=>styleModule.line()),
+    line: styleModule.line,
     input: styleModule.input.input,
     input_number: styleModule.input.input_number,
     el_switch: styleModule.input.el_switch,
@@ -22747,22 +22784,6 @@ const style = vue.reactive({
     video: styleModule.input.video,
     download: vue.computed(()=>styleModule.input.download()),
 });
-
-const hdlGetValue = {
-    ly0d7group(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7postal(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7size(result) {
-        props.dataBox.fieldsValue[props.item.fieldName] = !!result.value ? result.value : [];
-    },
-    ly0d7thumb(result) {
-        props.dataBox.fieldsValue[props.item.fieldName.thumb] = result.value.thumb;
-        props.dataBox.fieldsValue[props.item.fieldName.name] = result.value.name;
-    },
-};
 
 return (_ctx, _cache) => {
   const _component_el_input = vue.resolveComponent("el-input");
@@ -22800,35 +22821,35 @@ return (_ctx, _cache) => {
       (__props.item.inputType === 'text')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 0,
-            style: vue.normalizeStyle(style.text(__props.item, __props.myProps))
-          }, vue.toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+            style: vue.normalizeStyle(style.text(__props.item, vue.unref(formProps)))
+          }, vue.toDisplayString(vue.unref(formData)[__props.item.fieldName] ? vue.unref(formData)[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (__props.item.inputType === 'text0')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 1,
             style: vue.normalizeStyle(style.text0(__props.item))
-          }, vue.toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+          }, vue.toDisplayString(vue.unref(formData)[__props.item.fieldName] ? vue.unref(formData)[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (!__props.item.inputType)
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 2,
-            style: vue.normalizeStyle(style.text(__props.item, __props.myProps))
-          }, vue.toDisplayString(__props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+            style: vue.normalizeStyle(style.text(__props.item, vue.unref(formProps)))
+          }, vue.toDisplayString(vue.unref(formData)[__props.item.fieldName] ? vue.unref(formData)[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (__props.item.inputType === 'expression')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 3,
-            style: vue.normalizeStyle(style.text(__props.item, __props.myProps))
-          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue, __props.item)
-                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+            style: vue.normalizeStyle(style.text(__props.item, vue.unref(formProps)))
+          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)})
+                ? __props.item.hdlExpression({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)})
                 : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (__props.item.inputType === 'expression0')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 4,
             style: vue.normalizeStyle(style.text0(__props.item))
-          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression(__props.scopeThis, __props.dataBox.fieldsValue, __props.item)
-                ? __props.item.hdlExpression(__props.dataBox.fieldsValue, __props.item)
+          }, vue.toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)})
+                ? __props.item.hdlExpression({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)})
                 : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (__props.item.inputType === 'line')
@@ -22841,10 +22862,10 @@ return (_ctx, _cache) => {
       (__props.item.inputType === 'input')
         ? (vue.openBlock(), vue.createBlock(_component_el_input, {
             key: 6,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            modelValue: vue.unref(formData)[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
             placeholder: input.placeholder,
-            style: vue.normalizeStyle(style.input(__props.item, __props.myProps)),
+            style: vue.normalizeStyle(style.input(__props.item, vue.unref(formProps))),
             onInput: input.hdlCannotInput,
             "show-password": input.showPassword
           }, null, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onInput", "show-password"]))
@@ -22853,11 +22874,11 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createBlock(_component_el_select, {
             key: 7,
             class: "deep-input",
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            modelValue: vue.unref(formData)[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
             placeholder: select.placeholder,
             filterable: "",
-            style: vue.normalizeStyle(style.input(__props.item, __props.myProps)),
+            style: vue.normalizeStyle(style.input(__props.item, vue.unref(formProps))),
             onChange: select.hdlChange
           }, {
             default: vue.withCtx(() => [
@@ -22876,20 +22897,20 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createBlock(_component_el_date_picker, {
             key: 8,
             class: "deep-input",
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            modelValue: vue.unref(formData)[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
             type: __props.item.type ? __props.item.type : 'datetime',
             placeholder: datePicker.placeholder,
             format: datePicker.format,
-            style: vue.normalizeStyle(style.input(__props.item, __props.myProps)),
+            style: vue.normalizeStyle(style.input(__props.item, vue.unref(formProps))),
             onChange: datePicker.hdlChange
           }, null, 8 /* PROPS */, ["modelValue", "type", "placeholder", "format", "style", "onChange"]))
         : vue.createCommentVNode("v-if", true),
       (__props.item.inputType === 'input-number')
         ? (vue.openBlock(), vue.createBlock(_component_el_input_number, {
             key: 9,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            modelValue: vue.unref(formData)[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
             size: style.input_number(__props.item).facade.size,
             min: 'min' in __props.item ? __props.item.min : 1,
             max: 'max' in __props.item ? __props.item.max : 100,
@@ -22900,8 +22921,8 @@ return (_ctx, _cache) => {
       (__props.item.inputType === 'switch')
         ? (vue.openBlock(), vue.createBlock(_component_el_switch, {
             key: 10,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            modelValue: vue.unref(formData)[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
             "active-text": __props.item.activeText,
             "inactive-text": __props.item.inactiveText,
             "active-value": __props.item.activeValue,
@@ -22914,8 +22935,8 @@ return (_ctx, _cache) => {
       (__props.item.inputType === 'radio-group')
         ? (vue.openBlock(), vue.createBlock(_component_el_radio_group, {
             key: 11,
-            modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+            modelValue: vue.unref(formData)[__props.item.fieldName],
+            "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
             disabled: !!__props.item.disabled,
             onChange: radioGroup.hdlChange
           }, {
@@ -22936,7 +22957,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
         : vue.createCommentVNode("v-if", true),
       (__props.item.inputType === 'button-group' && __props.item.box && __props.item.box.length > 0)
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$e, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$d, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(__props.item.box, (item0, index0) => {
               return (vue.openBlock(), vue.createBlock(_component_el_button_group, {
                 key: index0,
@@ -22960,7 +22981,7 @@ return (_ctx, _cache) => {
                           plain: style.button_group(__props.item, item0, item1).button.facade.plain,
                           round: style.button_group(__props.item, item0, item1).button.facade.round,
                           circle: style.button_group(__props.item, item0, item1).button.facade.circle,
-                          onClick: $event => (item1.hdlClick ? item1.hdlClick(__props.scopeThis, __props.dataBox.fieldsValue, __props.item) : null),
+                          onClick: $event => (item1.hdlClick ? item1.hdlClick({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)}) : null),
                           key: index1
                         }, {
                           default: vue.withCtx(() => [
@@ -22986,23 +23007,23 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$6, [
             vue.createElementVNode("div", null, [
               vue.createVNode(_component_el_image, {
-                style: vue.normalizeStyle(style.image(__props.item, __props.myProps)),
-                src: image.getSrc,
-                "preview-src-list": [image.getSrc],
+                style: vue.normalizeStyle(style.image(__props.item, vue.unref(formProps))),
+                src: image.getSrc[0],
+                "preview-src-list": image.getSrc,
                 "preview-teleported": true,
                 "hide-on-click-modal": true
               }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
             ]),
             vue.createCommentVNode(" 设置了图片删除功能，同时图片不为空 "),
-            (!!__props.item.imageDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
-              ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$5, [
+            (!!__props.item.imageDelete && !!vue.unref(formData)[__props.item.fieldName])
+              ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$4, [
                   vue.createVNode(_component_el_button, {
                     size: "small",
-                    icon: !__props.dataBox.fieldsValue[__props.item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
+                    icon: !vue.unref(formData)[__props.item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
                     onClick: image.delete
                   }, {
                     default: vue.withCtx(() => [
-                      vue.createTextVNode(vue.toDisplayString(__props.dataBox.fieldsValue[__props.item.imageDelete] ? '图片已删除，恢复' : '删除'), 1 /* TEXT */)
+                      vue.createTextVNode(vue.toDisplayString(vue.unref(formData)[__props.item.imageDelete] ? '图片已删除，恢复' : '删除'), 1 /* TEXT */)
                     ]),
                     _: 1 /* STABLE */
                   }, 8 /* PROPS */, ["icon", "onClick"])
@@ -23012,28 +23033,28 @@ return (_ctx, _cache) => {
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 多个图片 "),
       (__props.item.inputType === 'images')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$4, [
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(__props.dataBox.fieldsValue[__props.item.fieldName], (itemImages, indexImages) => {
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$1, [
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(formData)[__props.item.fieldName], (itemImages, indexImages) => {
               return (vue.openBlock(), vue.createElementBlock("div", {
                 key: indexImages,
-                style: vue.normalizeStyle(style.images(__props.item, __props.myProps).itemBox)
+                style: vue.normalizeStyle(style.images(__props.item, vue.unref(formProps)).itemBox)
               }, [
                 vue.createElementVNode("div", null, [
                   vue.createVNode(_component_el_image, {
-                    style: vue.normalizeStyle(style.images(__props.item, __props.myProps).itemThumb),
+                    style: vue.normalizeStyle(style.images(__props.item, vue.unref(formProps)).itemThumb),
                     src: images.getSrc(itemImages, indexImages),
                     "preview-src-list": images.show
                   }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
                 ]),
                 (!!__props.item.imageDelete)
-                  ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_6$4, [
+                  ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_6, [
                       vue.createVNode(_component_el_button, {
                         size: "small",
                         icon: "el-icon-delete",
                         onClick: $event => (images.delete(itemImages, indexImages))
                       }, {
                         default: vue.withCtx(() => [
-                          vue.createTextVNode(vue.toDisplayString(__props.dataBox.fieldsValue[__props.item.imageDelete].includes(itemImages) ? '恢复' : '删除'), 1 /* TEXT */)
+                          vue.createTextVNode(vue.toDisplayString(vue.unref(formData)[__props.item.imageDelete].includes(itemImages) ? '恢复' : '删除'), 1 /* TEXT */)
                         ]),
                         _: 2 /* DYNAMIC */
                       }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])
@@ -23047,30 +23068,30 @@ return (_ctx, _cache) => {
       (__props.item.inputType === 'richtext')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 15,
-            style: vue.normalizeStyle(style.richtext(__props.item, __props.myProps))
+            style: vue.normalizeStyle(style.richtext(__props.item, vue.unref(formProps)))
           }, [
             vue.createVNode(_component_ly0Richtext, {
-              modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event)),
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
               myProps: richtextProps.value
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ], 4 /* STYLE */))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 富文本show "),
       (__props.item.inputType === 'richtextShow')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7$4, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7, [
             vue.createElementVNode("div", {
-              innerHTML: __props.dataBox.fieldsValue[__props.item.fieldName]
-            }, null, 8 /* PROPS */, _hoisted_8$3)
+              innerHTML: vue.unref(formData)[__props.item.fieldName]
+            }, null, 8 /* PROPS */, _hoisted_8)
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 视频 "),
       (__props.item.inputType === 'video')
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9$2, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9, [
             vue.createElementVNode("div", null, [
               vue.createElementVNode("video", {
-                width: style.video(__props.item, __props.myProps).width,
-                height: style.video(__props.item, __props.myProps).height,
+                width: style.video(__props.item, vue.unref(formProps)).width,
+                height: style.video(__props.item, vue.unref(formProps)).height,
                 controls: "",
                 poster: video.poster
               }, [
@@ -23089,18 +23110,18 @@ return (_ctx, _cache) => {
                   type: "video/ogg"
                 }, null, 8 /* PROPS */, _hoisted_13),
                 vue.createCommentVNode(" Ogg/Theora/Vorbis - 较旧的开源格式 ")
-              ], 8 /* PROPS */, _hoisted_10$1)
+              ], 8 /* PROPS */, _hoisted_10)
             ]),
             vue.createCommentVNode(" 设置了视频删除功能，同时视频不为空 "),
-            (!!__props.item.videoDelete && !!__props.dataBox.fieldsValue[__props.item.fieldName])
+            (!!__props.item.videoDelete && !!vue.unref(formData)[__props.item.fieldName])
               ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_14, [
                   vue.createVNode(_component_el_button, {
                     size: "small",
-                    icon: !__props.dataBox.fieldsValue[__props.item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
+                    icon: !vue.unref(formData)[__props.item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
                     onClick: video.delete
                   }, {
                     default: vue.withCtx(() => [
-                      vue.createTextVNode(vue.toDisplayString(!!__props.dataBox.fieldsValue[__props.item.videoDelete] ? '视频已删除，恢复' : '删除'), 1 /* TEXT */)
+                      vue.createTextVNode(vue.toDisplayString(!!vue.unref(formData)[__props.item.videoDelete] ? '视频已删除，恢复' : '删除'), 1 /* TEXT */)
                     ]),
                     _: 1 /* STABLE */
                   }, 8 /* PROPS */, ["icon", "onClick"])
@@ -23112,7 +23133,7 @@ return (_ctx, _cache) => {
       vue.createCommentVNode(" 下载 "),
       (__props.item.inputType === 'download')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_15, [
-            (__props.dataBox.fieldsValue[__props.item.fieldName])
+            (vue.unref(formData)[__props.item.fieldName])
               ? (vue.openBlock(), vue.createElementBlock("a", {
                   key: 0,
                   style: vue.normalizeStyle(style.download.style),
@@ -23131,125 +23152,133 @@ return (_ctx, _cache) => {
       (__props.item.inputType === 'upload')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_17, [
             vue.createVNode(_component_ly0Upload, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[7] || (_cache[7] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {uploadUrl: upload.uploadUrl}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 拖拽上传 "),
       (__props.item.inputType === 'upload-drag')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_18, [
             vue.createVNode(_component_ly0Upload_drag, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[8] || (_cache[8] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {uploadUrl: upload.uploadUrl}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 图片列表 "),
       (__props.item.inputType === 'upload-picture')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_19, [
             vue.createVNode(_component_ly0Upload_picture, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[9] || (_cache[9] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {uploadUrl: upload.uploadUrl_image}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 图片墙 "),
       (__props.item.inputType === 'upload-picture-card')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_20, [
             vue.createVNode(_component_ly0Upload_pictureCard, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[10] || (_cache[10] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {uploadUrl: upload.uploadUrl_image}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 头像 "),
       (__props.item.inputType === 'upload-avatar')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_21, [
             vue.createVNode(_component_ly0Upload_avatar, {
-              myProps: upload.props.val,
-              onGetUploadResult: upload.getResult.hdl
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[11] || (_cache[11] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {uploadUrl: upload.uploadUrl_image}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 车牌识别 "),
       (__props.item.inputType === 'upload-carplate')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_22, [
             vue.createVNode(_component_ly0Upload_carplate, {
-              myProps: upload.props.val_carplate,
-              onGetUploadResult: upload.getResult.hdl_carplate
-            }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[12] || (_cache[12] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {uploadUrl: upload.uploadUrl_carplate}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 行政区划 "),
       (__props.item.inputType === 'd3gbt2260')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_23, [
             vue.createVNode(_component_ly0gbt2260, {
-              myProps: {readOnly: __props.item.readOnly},
-              modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[7] || (_cache[7] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event))
-            }, null, 8 /* PROPS */, ["myProps", "modelValue"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[13] || (_cache[13] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {readOnly: __props.item.readOnly}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品分类 "),
       (__props.item.inputType === 'd7group')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_24, [
             vue.createVNode(_component_ly0d7group, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7group
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[14] || (_cache[14] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {readOnly: __props.item.readOnly}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 邮寄地址 "),
       (__props.item.inputType === 'd7postal')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_25, [
             vue.createVNode(_component_ly0d7postal, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7postal
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[15] || (_cache[15] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {readOnly: __props.item.readOnly}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品标价 "),
       (__props.item.inputType === 'd7price')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_26, [
             vue.createVNode(_component_ly0d7price, {
-              myProps: {readOnly: __props.item.readOnly},
-              modelValue: __props.dataBox.fieldsValue[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[8] || (_cache[8] = $event => ((__props.dataBox.fieldsValue[__props.item.fieldName]) = $event))
-            }, null, 8 /* PROPS */, ["myProps", "modelValue"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[16] || (_cache[16] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {readOnly: __props.item.readOnly}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品规格 "),
       (__props.item.inputType === 'd7size')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_27, [
             vue.createVNode(_component_ly0d7size, {
-              myProps: {
-                    value: __props.dataBox.fieldsValue[__props.item.fieldName] ? __props.dataBox.fieldsValue[__props.item.fieldName] : [],
-                    readOnly: __props.item.readOnly,
-                },
-              onGetValue: hdlGetValue.ly0d7size
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+              modelValue: vue.unref(formData)[__props.item.fieldName],
+              "onUpdate:modelValue": _cache[17] || (_cache[17] = $event => ((vue.unref(formData)[__props.item.fieldName]) = $event)),
+              myProps: {readOnly: __props.item.readOnly}
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品缩略图 "),
       (__props.item.inputType === 'd7thumb')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_28, [
             vue.createVNode(_component_ly0d7thumb, {
+              modelValue: vue.unref(formData),
+              "onUpdate:modelValue": _cache[18] || (_cache[18] = $event => (vue.isRef(formData) ? (formData).value = $event : null)),
               myProps: {
-                    value: {
-                        thumb: __props.dataBox.fieldsValue[__props.item.fieldName.thumb],
-                        name: __props.dataBox.fieldsValue[__props.item.fieldName.name],
+                    thumb: {
+                        fieldName: __props.item.thumb.fieldName || vue.unref(formProps).para.ly0d7thumb.thumb.fieldName,
+                        width: __props.item.thumb.width || vue.unref(formProps).para.ly0d7thumb.thumb.width,
+                        height: __props.item.thumb.height || vue.unref(formProps).para.ly0d7thumb.thumb.height
+                    },
+                    name: {
+                        fieldName: __props.item.name.fieldName || vue.unref(formProps).para.ly0d7thumb.name.fieldName,
+                    },
+                    number: {
+                        fieldName: __props.item.number.fieldName || vue.unref(formProps).para.ly0d7thumb.number.fieldName,
                     },
                     readOnly: __props.item.readOnly
-                },
-              onGetValue: hdlGetValue.ly0d7thumb
-            }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+                }
+            }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : vue.createCommentVNode("v-if", true)
     ], 4 /* STYLE */)
@@ -23262,25 +23291,73 @@ return (_ctx, _cache) => {
 script$g.__scopeId = "data-v-a94fa4ba";
 script$g.__file = "src/form/InputBox.vue";
 
-const _hoisted_1$d = { key: 0 };
+const _hoisted_1$c = { key: 0 };
 const _hoisted_2$c = ["colspan"];
 const _hoisted_3$5 = { key: 0 };
-const _hoisted_4$4 = ["colspan"];
+const _hoisted_4$3 = ["colspan"];
 
+// 表单数据及方法注入
 
 var script$f = {
   __name: 'Form',
-  props: ["scopeThis", "myProps", "dataBox"],
   setup(__props) {
 
+const formData = vue.inject("formData");
+const formProps = vue.inject("formProps");
+const scopeThis = vue.inject("scopeThis");
+
 const style = vue.reactive({
-    collapse: vue.computed(() => styleModule.collapse()),
-    field_box: vue.computed(() => styleModule.field_box()),
-    line: vue.computed(() => styleModule.line()),
+    collapse: styleModule.collapse,
+    field_box: styleModule.field_box,
+    line: styleModule.line,
     no_field_label: styleModule.no_field_label,
-    root_box: vue.computed(() => styleModule.root_box()),
-    submit_box: vue.computed(() => styleModule.submit_box())
+    root_box: styleModule.root_box,
+    submit_box: styleModule.submit_box
 });
+
+const hdl = {
+    async submit(){
+        if(formProps.submit.handle){
+            // 执行用户句柄
+            const result = await formProps.submit.handle({
+                formData,
+                scopeThis
+            });
+            if(result.code !== 0){
+                return
+            }
+        }
+        
+        // 后台提交 - URL地址
+        if(formProps.submit.url){
+            const result = await request.ly0.ly0request({
+                url: formProps.submit.url,
+                data: formData
+            });
+            if(result.code !== 0){
+                return
+            }
+        }
+        
+        // 后台提交 - 存储过程
+        if(formProps.submit.storpro){
+            const result = await request.ly0.storpro({
+                storproName: formProps.submit.storpro,
+                data: formData
+            });
+            if(result.code !== 0){
+                return
+            }
+        }
+        
+        // 提交监听
+        formProps.submit.watch = true;
+        if(formProps.popup){
+            // 关闭表单窗口
+            formProps.popup.visible = false;
+        }
+    }
+};
 
 return (_ctx, _cache) => {
   const _component_ly0Menu = vue.resolveComponent("ly0Menu");
@@ -23290,36 +23367,31 @@ return (_ctx, _cache) => {
 
   return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createCommentVNode(" 置顶菜单 "),
-    (__props.myProps.menu && __props.myProps.menu.menu && __props.myProps.menu.menu.length > 0)
+    (vue.unref(formProps).menu && vue.unref(formProps).menu.menu && vue.unref(formProps).menu.menu.length > 0)
       ? (vue.openBlock(), vue.createBlock(_component_ly0Menu, {
           key: 0,
-          scopeThis: __props.scopeThis,
-          myProps: __props.myProps.menu
-        }, null, 8 /* PROPS */, ["scopeThis", "myProps"]))
+          scopeThis: vue.unref(scopeThis),
+          formProps: vue.unref(formProps).menu
+        }, null, 8 /* PROPS */, ["scopeThis", "formProps"]))
       : vue.createCommentVNode("v-if", true),
     vue.createCommentVNode(" 表单区域可以分为多个列 "),
     vue.createElementVNode("div", {
       style: vue.normalizeStyle(style.root_box)
     }, [
-      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(__props.myProps.cols, (item, index) => {
+      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(formProps).cols, (item, index) => {
         return (vue.openBlock(), vue.createElementBlock("div", { key: index }, [
           vue.createElementVNode("table", null, [
             vue.createElementVNode("tbody", null, [
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.items, (item0, index0) => {
                 return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index0 }, [
-                  (item0.hdlVisible ? item0.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue) : true)
-                    ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$d, [
+                  (item0.hdlVisible ? item0.hdlVisible({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)}) : true)
+                    ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$c, [
                         (!!item0.label)
                           ? (vue.openBlock(), vue.createElementBlock("td", {
                               key: 0,
                               style: vue.normalizeStyle(style.field_box.left)
                             }, [
-                              vue.createVNode(script$h, {
-                                scopeThis: __props.scopeThis,
-                                myProps: __props.myProps,
-                                dataBox: __props.dataBox,
-                                item: item0
-                              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
+                              vue.createVNode(script$h, { item: item0 }, null, 8 /* PROPS */, ["item"])
                             ], 4 /* STYLE */))
                           : vue.createCommentVNode("v-if", true),
                         vue.createElementVNode("td", {
@@ -23340,7 +23412,7 @@ return (_ctx, _cache) => {
                                 default: vue.withCtx(() => [
                                   (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item0.items, (item1, index1) => {
                                     return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index1 }, [
-                                      (item1.hdlVisible ? item1.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue) : true)
+                                      (item1.hdlVisible ? item1.hdlVisible({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)}) : true)
                                         ? (vue.openBlock(), vue.createBlock(_component_el_collapse_item, {
                                             key: 0,
                                             title: item1.title,
@@ -23354,7 +23426,7 @@ return (_ctx, _cache) => {
                                                   return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index2 }, [
                                                     (
                                                             item2.hdlVisible
-                                                            ? item2.hdlVisible(__props.scopeThis, __props.dataBox.fieldsValue)
+                                                            ? item2.hdlVisible({formData: vue.unref(formData), scopeThis: vue.unref(scopeThis)})
                                                             : true
                                                         )
                                                       ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_3$5, [
@@ -23363,25 +23435,15 @@ return (_ctx, _cache) => {
                                                                 key: 0,
                                                                 style: vue.normalizeStyle(style.field_box.left)
                                                               }, [
-                                                                vue.createVNode(script$h, {
-                                                                  scopeThis: __props.scopeThis,
-                                                                  myProps: __props.myProps,
-                                                                  dataBox: __props.dataBox,
-                                                                  item: item2
-                                                                }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
+                                                                vue.createVNode(script$h, { item: item2 }, null, 8 /* PROPS */, ["item"])
                                                               ], 4 /* STYLE */))
                                                             : vue.createCommentVNode("v-if", true),
                                                           vue.createElementVNode("td", {
                                                             style: vue.normalizeStyle(style.field_box.right),
                                                             colspan: style.no_field_label(item2)
                                                           }, [
-                                                            vue.createVNode(script$g, {
-                                                              scopeThis: __props.scopeThis,
-                                                              myProps: __props.myProps,
-                                                              dataBox: __props.dataBox,
-                                                              item: item2
-                                                            }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"])
-                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$4)
+                                                            vue.createVNode(script$g, { item: item2 }, null, 8 /* PROPS */, ["item"])
+                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$3)
                                                         ]))
                                                       : vue.createCommentVNode("v-if", true)
                                                   ], 64 /* STABLE_FRAGMENT */))
@@ -23396,13 +23458,8 @@ return (_ctx, _cache) => {
                                 ]),
                                 _: 2 /* DYNAMIC */
                               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
-                            : (vue.openBlock(), vue.createBlock(script$g, {
-                                key: 1,
-                                scopeThis: __props.scopeThis,
-                                myProps: __props.myProps,
-                                dataBox: __props.dataBox,
-                                item: item0
-                              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox", "item"]))
+                            : vue.createCommentVNode("v-if", true),
+                          vue.createVNode(script$g, { item: item0 }, null, 8 /* PROPS */, ["item"])
                         ], 12 /* STYLE, PROPS */, _hoisted_2$c)
                       ]))
                     : vue.createCommentVNode("v-if", true)
@@ -23414,7 +23471,7 @@ return (_ctx, _cache) => {
       }), 128 /* KEYED_FRAGMENT */))
     ], 4 /* STYLE */),
     vue.createCommentVNode(" 提交 "),
-    (__props.dataBox.hdlSubmit)
+    (vue.unref(formProps).submit.switch)
       ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
           vue.createElementVNode("div", {
             style: vue.normalizeStyle(style.line)
@@ -23426,13 +23483,13 @@ return (_ctx, _cache) => {
               type: style.submit_box.button.facade.type,
               plain: style.submit_box.button.facade.plain,
               style: vue.normalizeStyle(style.submit_box.button.style),
-              onClick: _cache[0] || (_cache[0] = $event => (__props.dataBox.hdlSubmit(__props.scopeThis, __props.dataBox.fieldsValue)))
+              onClick: hdl.submit
             }, {
-              default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+              default: vue.withCtx(() => [...(_cache[0] || (_cache[0] = [
                 vue.createTextVNode("提交", -1 /* CACHED */)
               ]))]),
               _: 1 /* STABLE */
-            }, 8 /* PROPS */, ["type", "plain", "style"])
+            }, 8 /* PROPS */, ["type", "plain", "style", "onClick"])
           ], 4 /* STYLE */)
         ], 64 /* STABLE_FRAGMENT */))
       : vue.createCommentVNode("v-if", true)
@@ -23444,102 +23501,80 @@ return (_ctx, _cache) => {
 
 script$f.__file = "src/form/Form.vue";
 
-// 默认值
-
-var ly0default$2 = {
-  myProps: {
-    popup: {
-      visible: false,
-      title: '',
-      width: '800px',
-      top: '15vh'
-    },
-    menu: {
-      mode: 'horizontal',
-      menu: []
-    },
-    inputWidth: '200px',
-    imageWidth: '400px',
-    imageHeight: '300px',
-    thumbWidth: '40px',
-    thumbHeight: '30px',
-    videoWidth: '400px',
-    videoHeight: '300px',
-    placeholder: {
-      input: '请输入',
-      select: '请选择',
-      datetime: '请选择时间',
-      date: '请选择日期'
-    },
-    richtext: {
-      editorWidth: '500px',
-      // 富文本编辑器宽度
-      size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
-    },
-    download: {
-      // 行内下载
-      fileName: 'new-file',
-      // 下载文件名
-      downloadLabel: '点击这里下载',
-      // 下载标签
-      downloadLabelNoSrc: '没有可供下载的资源' // 下载标签
-    },
-    cols: [{
-      items: [{
-        inputType: 'collapse',
-        accordion: false,
-        // 手风琴模式
-        activeNames: '',
-        // 当前活动的面板名称
-        items: []
-      }]
-    }]
-  }};
-
 var script$e = {
   __name: 'index',
-  props: ["scopeThis", "myProps", "dataBox"],
-  setup(__props) {
+  props: {
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
 
 const props = __props;
-const myProps0 = vue.ref(Object.assign({}, ly0default$2.myProps, props.myProps));
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const modelValue_box = vue.reactive(JSON.parse(JSON.stringify(props.modelValue)));
+const myProps_box = vue.reactive(Object.assign({}, ly0default$2.myProps, props.myProps));
+const scopeThis_box = vue.reactive(Object.assign({}, props.scopeThis));
+
+// 表单数据及方法提供
+vue.provide('formData', modelValue_box);
+vue.provide('formProps', myProps_box);
+vue.provide('scopeThis', scopeThis_box);
+
+// 提交模式
+if(myProps_box.submit.switch){
+    vue.watch(
+        myProps_box.submit.watch,
+        (newVal, oldVal) => {
+        if (newVal) {
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", modelValue_box);
+        }
+    });
+}else { // 非提交模式
+    vue.watch(
+        modelValue_box, // 监听 reactive 对象时，默认是深层监听
+        (newVal, oldVal) => {
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", newVal);
+        }
+    );
+}
 
 return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (myProps0.value.popup.visible)
+  return (myProps_box.popup && myProps_box.popup.visible)
     ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
         key: 0,
-        modelValue: myProps0.value.popup.visible,
-        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((myProps0.value.popup.visible) = $event)),
+        modelValue: myProps_box.popup.visible,
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((myProps_box.popup.visible) = $event)),
         "custom-class": "code-template-dialog",
         "close-on-press-escape": true,
         "append-to-body": "",
-        title: myProps0.value.popup.title,
-        width: myProps0.value.popup.width,
-        top: myProps0.value.popup.top,
+        title: myProps_box.popup.title,
+        width: myProps_box.popup.width,
+        top: myProps_box.popup.top,
         "destroy-on-close": true
       }, {
         default: vue.withCtx(() => [
-          (myProps0.value)
-            ? (vue.openBlock(), vue.createBlock(script$f, {
-                key: 0,
-                scopeThis: __props.scopeThis,
-                myProps: myProps0.value,
-                dataBox: __props.dataBox
-              }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox"]))
-            : vue.createCommentVNode("v-if", true)
+          vue.createVNode(script$f)
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (myProps0.value)
-      ? (vue.openBlock(), vue.createBlock(script$f, {
-          key: 1,
-          scopeThis: __props.scopeThis,
-          myProps: myProps0.value,
-          dataBox: __props.dataBox
-        }, null, 8 /* PROPS */, ["scopeThis", "myProps", "dataBox"]))
-      : vue.createCommentVNode("v-if", true)
+    : (vue.openBlock(), vue.createBlock(script$f, { key: 1 }))
 }
 }
 
@@ -40671,7 +40706,6 @@ const QuillEditor = vue.defineComponent({
     },
 });
 
-const _hoisted_1$c = { class: "rich-text-editor-container" };
 /* 以下quill富文本组件的样式库需要在宿主项目的main.js中引入
 import '@vueup/vue-quill/dist/vue-quill.core.css'
 import '@vueup/vue-quill/dist/vue-quill.snow.css' // snow主题
@@ -40812,7 +40846,7 @@ const handleContentUpdate = (content) => {
 };
 
 return (_ctx, _cache) => {
-  return (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$c, [
+  return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(vue.unref(QuillEditor), {
       ref_key: "quillEditor",
       ref: quillEditor,
@@ -40828,7 +40862,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$c.__scopeId = "data-v-02babd36";
 script$c.__file = "src/richtext/index.vue";
 
 var ly0default = {
@@ -40856,117 +40889,118 @@ var ly0default = {
   }
 };
 
-var script$b = {
-        props: ['myProps'], // 注释见default.js中的myProps
-        data(){return {
-            fileList: []
-        }},
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
-            },
-            limit(){
-                return this.myProps0.limit
-            }
-        },
-        methods: {
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
-                let isFileSize = file.size / 1024 < this.myProps0.size;
-
-                if (!isFileType) {
-                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
-                    return false
-                }
-
-                this.$message('正在上传 ...');
-                
-                return true
-            },
-            // eslint-disable-next-line
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-            },
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                this.fileList = fileList;
-
-                // 返回上传结果
-                let fileList0 = [];
-                fileList.forEach(i=>{
-                    fileList0.push({
-                        src: i.response.data.src
-                    });
-                });
-                this.$emit('getUploadResult', {
-                    fileList: fileList0
-                });
-            },
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    this.fileList = fileList;
-
-                    // 返回上传结果
-                    let fileList0 = [];
-                    fileList.forEach(i=>{
-                        fileList0.push({
-                            src: i.response.data.src
-                        });
-                    });
-                    this.$emit('getUploadResult', {
-                        fileList: fileList0
-                    });
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    });
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传文件
-                // 重置文件列表
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            }
-        }
-    };
-
 const _hoisted_1$b = { class: "el-upload__tip" };
 const _hoisted_2$b = {
   key: 0,
   style: {"font-size":"xx-small"}
 };
 
-function render$5(_ctx, _cache, $props, $setup, $data, $options) {
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+
+var script$b = {
+  __name: 'Upload',
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
+
+const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const myProps_box = vue.reactive(Object.assign({}, ly0default, props.myProps));
+const fileList_box = vue.reactive([]);
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item,
+        response: {
+            data: {
+                src: item
+            }
+        }
+    });
+});
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type;
+        const isFileSize = file.size / 1024 < myProps_box.size;
+        
+        if (!isFileType) {
+            elementPlus.ElMessage.error('上传文件的格式只能是 ' + myProps_box.type);
+            return false
+        }
+        if (!isFileSize) {
+            elementPlus.ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
+            return false
+        }
+        elementPlus.ElMessage('正在上传 ...');
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        const arr = [];
+        fileList_box.forEach(i=>{
+            arr.push(i.response.data.src);
+        });
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", arr);
+    },
+    success (response, file, fileList) { // 上传成功
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        if (response.code === 0) {
+            const arr = [];
+            fileList_box.forEach(i=>{
+                arr.push(i.response.data.src);
+            });
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", arr);
+            
+            elementPlus.ElMessage({type: 'info', message: '上传成功'});
+        } else {
+            elementPlus.ElMessage({type: 'error', message: '上传失败'});
+        }
+    },
+    deleteAll () { // 删除全部已上传文件
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", []);
+    }
+};
+
+return (_ctx, _cache) => {
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_el_upload = vue.resolveComponent("el-upload");
 
   return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(_component_el_upload, {
-      action: $options.myProps0.uploadUrl,
-      "file-list": $data.fileList,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
+      action: myProps_box.uploadUrl,
+      "file-list": fileList_box,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
       "list-type": "text",
-      "before-upload": $options.hdlBeforeUpload,
-      "on-preview": $options.hdlPreview,
-      "on-remove": $options.hdlRemove,
-      "on-success": $options.hdlSuccess,
-      limit: $options.limit
+      "before-upload": hdl.beforeUpload,
+      "on-preview": hdl.preview,
+      "on-remove": hdl.remove,
+      "on-success": hdl.success,
+      limit: myProps_box.limit
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("span", _hoisted_1$b, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.limit + "个文件"), 1 /* TEXT */)
+        vue.createElementVNode("span", _hoisted_1$b, " " + vue.toDisplayString(myProps_box.tip ?? "可以上传" + myProps_box.limit + "个文件"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_button, {
@@ -40981,15 +41015,15 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
-    ($data.fileList.length>0)
-      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$b, vue.toDisplayString("已上传"+$data.fileList.length+"个文件"), 1 /* TEXT */))
+    (fileList_box.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$b, vue.toDisplayString("已上传"+fileList_box.length+"个文件"), 1 /* TEXT */))
       : vue.createCommentVNode("v-if", true),
-    ($data.fileList.length>0)
+    (fileList_box.length>0)
       ? (vue.openBlock(), vue.createBlock(_component_el_button, {
           key: 1,
           size: "small",
           style: {"margin-top":"10px"},
-          onClick: $options.hdlDeleteAll
+          onClick: hdl.deleteAll
         }, {
           default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传文件", -1 /* CACHED */)
@@ -40999,113 +41033,126 @@ function render$5(_ctx, _cache, $props, $setup, $data, $options) {
       : vue.createCommentVNode("v-if", true)
   ]))
 }
+}
 
-script$b.render = render$5;
+};
+
 script$b.__file = "src/upload/Upload.vue";
-
-var script$a = {
-        props: ['myProps'], // 注释见default.js中的myProps
-        data(){return {
-            fileList: []
-        }},
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
-            }
-        },
-        methods: {
-            hdlStyleAvatarBox(){
-                return "width:" + this.myProps0.avatar.width + "; " +
-                    "height:" + this.myProps0.avatar.height + "; " +
-                    "position: relative; " +
-                    "overflow: hidden; " +
-                    "cursor: pointer;"
-            },
-            hdlStyleAvatarImage(){
-                return "display: block;" +
-                    "width:" + this.myProps0.avatar.width + "; " +
-                    "height:" + this.myProps0.avatar.height + ";"
-            },
-            hdlStyleAvatarIcon(){
-                return "display: block; " +
-                    "width:" + this.myProps0.avatar.width + "; " +
-                    "height:" + this.myProps0.avatar.height + "; " +
-                    "line-height:" + this.myProps0.avatar.height + "; " +
-                    "font-size: 28px; " +
-                    "color: #8c939d; " +
-                    "text-align: center;"
-            },
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
-                let isFileSize = file.size / 1024 < this.myProps0.size;
-
-                if (!isFileType) {
-                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
-                    return false
-                }
-
-                this.$message('正在上传 ...');
-                return true
-            },
-            // eslint-disable-next-line
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-            },
-            // eslint-disable-next-line
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                // 因为只能上传1个图片，移除即清空
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            },
-            // eslint-disable-next-line
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    // 因为只能上传1个图片，这里需要清空图片列表
-                    this.fileList = [];
-                    this.fileList.push(file);
-
-                    // 返回上传结果
-                    this.$emit('getUploadResult', {
-                        fileList: [{
-                            src: response.data.src
-                        }]
-                    });
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    });
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传文件
-                // 重置文件列表
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            }
-        }
-    };
 
 const _hoisted_1$a = ["src"];
 const _hoisted_2$a = { key: 0 };
 
-function render$4(_ctx, _cache, $props, $setup, $data, $options) {
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+
+var script$a = {
+  __name: 'Upload-avatar',
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
+
+const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const myProps_box = vue.reactive(Object.assign({}, ly0default, props.myProps));
+const fileList_box = vue.reactive([]);
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item,
+        response: {
+            data: {
+                src: item
+            }
+        }
+    });
+});
+
+const style = vue.reactive({
+    avatarBox: {
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+        position: 'relative',
+        overflow: 'hidden',
+        cursor: 'pointer'
+    },
+    avatarImage: {
+        display: 'block',
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+    },
+    avatarIcon: {
+        display: 'block',
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+        "line-height": myProps_box.avatar.height,
+        "font-size": "28px",
+        color: "#8c939d",
+        "text-align": "center"
+    }
+});
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type;
+        const isFileSize = file.size / 1024 < myProps_box.size;
+        
+        if (!isFileType) {
+            elementPlus.ElMessage.error('上传文件的格式只能是 ' + myProps_box.type);
+            return false
+        }
+        if (!isFileSize) {
+            elementPlus.ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
+            return false
+        }
+        elementPlus.ElMessage('正在上传 ...');
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        // 因为只能上传一个图片，移除即清空
+        fileList_box.splice(0, fileList_box.length);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", []);
+    },
+    success (response, file, fileList) { // 上传
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        // 只能上传一个图片
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        if (response.code === 0) {
+            const arr = [];
+            fileList_box.forEach(i=>{
+                arr.push(i.response.data.src);
+            });
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", arr);
+            
+            elementPlus.ElMessage({type: 'info', message: '上传成功'});
+        } else {
+            elementPlus.ElMessage({type: 'error', message: '上传失败'});
+        }
+    },
+    deleteAll () { // 删除全部已上传文件
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", []);
+    }
+};
+
+return (_ctx, _cache) => {
   const _component_Plus = vue.resolveComponent("Plus");
   const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_upload = vue.resolveComponent("el-upload");
@@ -41114,28 +41161,29 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(_component_el_upload, {
       class: "avatar",
-      style: vue.normalizeStyle($options.hdlStyleAvatarBox()),
-      action: $options.myProps0.uploadUrl,
-      "file-list": $data.fileList,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
+      style: vue.normalizeStyle(style.avatarBox),
+      action: myProps_box.uploadUrl,
+      "file-list": fileList_box,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
       "show-file-list": false,
-      "before-upload": $options.hdlBeforeUpload,
-      "on-preview": $options.hdlPreview,
-      "on-remove": $options.hdlRemove,
-      "on-success": $options.hdlSuccess
+      "before-upload": hdl.beforeUpload,
+      "on-preview": hdl.preview,
+      "on-remove": hdl.remove,
+      "on-success": hdl.success,
+      limit: 1
     }, {
       default: vue.withCtx(() => [
-        ($data.fileList.length>0 && $data.fileList[0].response && $data.fileList[0].response.data && $data.fileList[0].response.data.src)
+        (fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src)
           ? (vue.openBlock(), vue.createElementBlock("img", {
               key: 0,
-              src: $data.fileList[0].response.data.src,
+              src: fileList_box[0].response.data.src,
               class: "avatar",
-              style: vue.normalizeStyle($options.hdlStyleAvatarImage())
+              style: vue.normalizeStyle(style.avatarImage)
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$a))
           : (vue.openBlock(), vue.createBlock(_component_el_icon, {
               key: 1,
               class: "avatar-uploader-icon",
-              style: vue.normalizeStyle($options.hdlStyleAvatarIcon())
+              style: vue.normalizeStyle(style.avatarIcon)
             }, {
               default: vue.withCtx(() => [
                 vue.createVNode(_component_Plus)
@@ -41145,13 +41193,13 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
-    ($data.fileList.length>0 && $data.fileList[0].response && $data.fileList[0].response.data && $data.fileList[0].response.data.src)
+    (fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src)
       ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$a, [
           vue.createVNode(_component_el_button, {
             size: "small",
             icon: "el-icon-delete",
             style: {"margin-top":"10px"},
-            onClick: $options.hdlDeleteAll
+            onClick: hdl.deleteAll
           }, {
             default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
               vue.createTextVNode("删除", -1 /* CACHED */)
@@ -41162,113 +41210,115 @@ function render$4(_ctx, _cache, $props, $setup, $data, $options) {
       : vue.createCommentVNode("v-if", true)
   ]))
 }
+}
 
-script$a.render = render$4;
+};
+
 script$a.__scopeId = "data-v-0b647a60";
 script$a.__file = "src/upload/Upload-avatar.vue";
 
-var script$9 = {
-        props: ['myProps'],
-        data(){return {
-            fileList: []
-        }},
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, {uploadUrl: ly0default.carplate.uploadUrl}, this.myProps)
-            }
-        },
-        methods: {
-            hdlStyleAvatarBox(){
-                return "width:" + (this.myProps0.avatar ? this.myProps0.avatar.width : ly0default.carplate.width) + "; " +
-                    "height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + "; " +
-                    "position: relative; " +
-                    "overflow: hidden; " +
-                    "cursor: pointer;"
-            },
-            hdlStyleAvatarImage(){
-                return "display: block;" +
-                    "width:" + (this.myProps0.avatar ? this.myProps0.avatar.width : ly0default.carplate.width) + "; " +
-                    "height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + ";"
-            },
-            hdlStyleAvatarIcon(){
-                return "display: block; " +
-                    "width:" + (this.myProps0.avatar ? this.myProps0.avatar.width : ly0default.carplate.width) + "; " +
-                    "height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + "; " +
-                    "line-height:" + (this.myProps0.avatar ? this.myProps0.avatar.height : ly0default.carplate.height) + "; " +
-                    "font-size: 28px; " +
-                    "color: #8c939d; " +
-                    "text-align: center;"
-            },
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
-                let isFileSize = file.size / 1024 < this.myProps0.size;
-
-                if (!isFileType) {
-                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
-                    return false
-                }
-
-                this.$message('正在上传 ...');
-                return true
-            },
-            // eslint-disable-next-line
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-            },
-            // eslint-disable-next-line
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                // 因为只能上传1个图片，移除即清空
-                this.fileList = [];
-
-                // 返回上传和检测结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            },
-            // eslint-disable-next-line
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    // 因为只能上传1个图片，这里需要清空图片列表
-                    this.fileList = [];
-                    this.fileList.push(file);
-
-                    // 返回上传结果
-                    this.$emit('getUploadResult', {
-                        src: response.data.src,
-                        result: response.data.result
-                    });
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    });
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传文件
-                // 重置文件列表
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            }
-        }
-    };
-
 const _hoisted_1$9 = ["src"];
 const _hoisted_2$9 = { key: 0 };
+const _hoisted_3$4 = { style: {"color":"blue"} };
+const _hoisted_4$2 = { key: 1 };
 
-function render$3(_ctx, _cache, $props, $setup, $data, $options) {
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+
+var script$9 = {
+  __name: 'Upload-carplate',
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
+
+const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const myProps_box = vue.reactive(Object.assign({}, ly0default, {
+    uploadUrl: ly0default.carplate.uploadUrl,
+    avatar: {
+        width: ly0default.carplate.width,
+        height: ly0default.carplate.height
+    }
+}, props.myProps));
+
+const fileList_box = vue.reactive([]);
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.src.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item.src,
+        response: {
+            data: {
+                src: item.src,
+                result: {
+                    txt: item.txt
+                }
+            }
+        }
+    });
+});
+
+const style = vue.reactive({
+    avatarBox: {
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+        position: 'relative',
+        overflow: 'hidden',
+        cursor: 'pointer'
+    },
+    avatarImage: {
+        display: 'block',
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height
+    },
+    avatarIcon: {
+        display: 'block',
+        width: myProps_box.avatar.width,
+        height: myProps_box.avatar.height,
+        'line-height': myProps_box.avatar.height,
+        'font-size': '28px',
+        color: '#8c939d',
+        'text-align': 'center'
+    }
+});
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type;
+        const isFileSize = file.size / 1024 < myProps_box.size;
+        
+        if (!isFileType) {
+            elementPlus.ElMessage.error('上传文件的格式只能是 ' + myProps_box.type);
+            return false
+        }
+        if (!isFileSize) {
+            elementPlus.ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
+            return false
+        }
+        elementPlus.ElMessage('正在上传 ...');
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        // 因为只能上传一个图片，移除即清空
+        fileList_box.splice(0, fileList_box.length);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", []);
+    }};
+
+return (_ctx, _cache) => {
   const _component_Plus = vue.resolveComponent("Plus");
   const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_upload = vue.resolveComponent("el-upload");
@@ -41277,28 +41327,33 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(_component_el_upload, {
       class: "avatar",
-      style: vue.normalizeStyle($options.hdlStyleAvatarBox()),
-      action: $options.myProps0.uploadUrl,
-      "file-list": $data.fileList,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
+      style: vue.normalizeStyle(style.avatarBox),
+      action: myProps_box.uploadUrl,
+      "file-list": fileList_box,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
       "show-file-list": false,
-      "before-upload": $options.hdlBeforeUpload,
-      "on-preview": $options.hdlPreview,
-      "on-remove": $options.hdlRemove,
-      "on-success": $options.hdlSuccess
+      "before-upload": hdl.beforeUpload,
+      "on-preview": hdl.preview,
+      "on-remove": hdl.remove,
+      "on-success": hdl.success
     }, {
       default: vue.withCtx(() => [
-        ($data.fileList.length>0 && $data.fileList[0].response && $data.fileList[0].response.data && $data.fileList[0].response.data.src)
+        (
+                    fileList_box.length>0 && 
+                    fileList_box[0].response && 
+                    fileList_box[0].response.data && 
+                    fileList_box[0].response.data.src
+                )
           ? (vue.openBlock(), vue.createElementBlock("img", {
               key: 0,
-              src: $data.fileList[0].response.data.src,
               class: "avatar",
-              style: vue.normalizeStyle($options.hdlStyleAvatarImage())
+              src: _ctx.fileList[0].response.data.src,
+              style: vue.normalizeStyle(style.avatarImage())
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$9))
           : (vue.openBlock(), vue.createBlock(_component_el_icon, {
               key: 1,
               class: "avatar-uploader-icon",
-              style: vue.normalizeStyle($options.hdlStyleAvatarIcon())
+              style: vue.normalizeStyle(style.avatarIcon)
             }, {
               default: vue.withCtx(() => [
                 vue.createVNode(_component_Plus)
@@ -41308,15 +41363,32 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
-    ($data.fileList.length>0 && $data.fileList[0].response && $data.fileList[0].response.data && $data.fileList[0].response.data.src)
+    (
+                fileList_box.length>0 && 
+                fileList_box[0].response && 
+                fileList_box[0].response.data && 
+                fileList_box[0].response.data.result && 
+                fileList_box[0].response.data.result.txt
+            )
       ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$9, [
+          _cache[1] || (_cache[1] = vue.createElementVNode("span", null, "车牌识别结果：", -1 /* CACHED */)),
+          vue.createElementVNode("span", _hoisted_3$4, vue.toDisplayString(fileList_box[0].response.data.result.txt), 1 /* TEXT */)
+        ]))
+      : vue.createCommentVNode("v-if", true),
+    (
+                fileList_box.length>0 && 
+                fileList_box[0].response && 
+                fileList_box[0].response.data && 
+                fileList_box[0].response.data.src
+            )
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$2, [
           vue.createVNode(_component_el_button, {
             size: "small",
             icon: "el-icon-delete",
             style: {"margin-top":"10px"},
-            onClick: $options.hdlDeleteAll
+            onClick: hdl.deleteAll
           }, {
-            default: vue.withCtx(() => [...(_cache[1] || (_cache[1] = [
+            default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
               vue.createTextVNode("删除", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
@@ -41325,93 +41397,12 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
       : vue.createCommentVNode("v-if", true)
   ]))
 }
+}
 
-script$9.render = render$3;
+};
+
 script$9.__scopeId = "data-v-6fc32e0e";
 script$9.__file = "src/upload/Upload-carplate.vue";
-
-var script$8 = {
-        props: ['myProps'],
-        data(){return {
-            fileList: []
-        }},
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
-            }
-        },
-        methods: {
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
-                let isFileSize = file.size / 1024 < this.myProps0.size;
-
-                if (!isFileType) {
-                    this.$message.error('上传文件的格式只能是 ' + this.myProps0.type);
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传文件的大小不能超过 ' + this.myProps0.size + ' KB');
-                    return false
-                }
-
-                this.$message('正在上传 ...');
-                return true
-            },
-            // eslint-disable-next-line
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-            },
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                this.fileList = fileList;
-
-                // 返回上传结果
-                let fileList0 = [];
-                fileList.forEach(i=>{
-                    fileList0.push({
-                        src: i.response.data.src
-                    });
-                });
-                this.$emit('getUploadResult', {
-                    fileList: fileList0
-                });
-            },
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    this.fileList = fileList;
-
-                    // 返回上传结果
-                    let fileList0 = [];
-                    fileList.forEach(i=>{
-                        fileList0.push({
-                            src: i.response.data.src
-                        });
-                    });
-                    this.$emit('getUploadResult', {
-                        fileList: fileList0
-                    });
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    });
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传文件
-                // 重置文件列表
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            }
-        }
-    };
 
 const _hoisted_1$8 = { class: "el-upload__tip" };
 const _hoisted_2$8 = {
@@ -41419,7 +41410,95 @@ const _hoisted_2$8 = {
   style: {"font-size":"xx-small"}
 };
 
-function render$2(_ctx, _cache, $props, $setup, $data, $options) {
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+
+var script$8 = {
+  __name: 'Upload-drag',
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
+
+const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const myProps_box = vue.reactive(Object.assign({}, ly0default, props.myProps));
+const fileList_box = vue.reactive([]);
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item,
+        response: {
+            data: {
+                src: item
+            }
+        }
+    });
+});
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type;
+        const isFileSize = file.size / 1024 < myProps_box.size;
+        
+        if (!isFileType) {
+            elementPlus.ElMessage.error('上传文件的格式只能是 ' + myProps_box.type);
+            return false
+        }
+        if (!isFileSize) {
+            elementPlus.ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
+            return false
+        }
+        elementPlus.ElMessage('正在上传 ...');
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        const arr = [];
+        fileList_box.forEach(i=>{
+            arr.push(i.response.data.src);
+        });
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", arr);
+    },
+    success (response, file, fileList) { // 上传
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        if (response.code === 0) {
+            const arr = [];
+            fileList_box.forEach(i=>{
+                arr.push(i.response.data.src);
+            });
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", arr);
+            
+            elementPlus.ElMessage({type: 'info', message: '上传成功'});
+        } else {
+            elementPlus.ElMessage({type: 'error', message: '上传失败'});
+        }
+    },
+    deleteAll () { // 删除全部已上传文件
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", []);
+    }
+};
+
+return (_ctx, _cache) => {
   const _component_upload_filled = vue.resolveComponent("upload-filled");
   const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_upload = vue.resolveComponent("el-upload");
@@ -41427,19 +41506,19 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(_component_el_upload, {
-      action: $options.myProps0.uploadUrl,
-      "file-list": $data.fileList,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
+      action: myProps_box.uploadUrl,
+      "file-list": fileList_box,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
       "list-type": "text",
-      "before-upload": $options.hdlBeforeUpload,
-      "on-preview": $options.hdlPreview,
-      "on-remove": $options.hdlRemove,
-      "on-success": $options.hdlSuccess,
-      limit: $options.myProps0.limit,
+      "before-upload": hdl.beforeUpload,
+      "on-preview": hdl.preview,
+      "on-remove": hdl.remove,
+      "on-success": hdl.success,
+      limit: myProps_box.limit,
       drag: ""
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("div", _hoisted_1$8, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个文件"), 1 /* TEXT */)
+        vue.createElementVNode("div", _hoisted_1$8, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个文件"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_icon, { class: "el-icon--upload" }, {
@@ -41455,15 +41534,15 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
-    ($data.fileList.length>0)
-      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$8, vue.toDisplayString("已上传"+$data.fileList.length+"个文件"), 1 /* TEXT */))
+    (fileList_box.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$8, vue.toDisplayString("已上传"+fileList_box.length+"个文件"), 1 /* TEXT */))
       : vue.createCommentVNode("v-if", true),
-    ($data.fileList.length>0)
+    (fileList_box.length>0)
       ? (vue.openBlock(), vue.createBlock(_component_el_button, {
           key: 1,
           size: "small",
           style: {"margin-top":"10px"},
-          onClick: $options.hdlDeleteAll
+          onClick: hdl.deleteAll
         }, {
           default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传文件", -1 /* CACHED */)
@@ -41473,92 +41552,11 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
       : vue.createCommentVNode("v-if", true)
   ]))
 }
+}
 
-script$8.render = render$2;
+};
+
 script$8.__file = "src/upload/Upload-drag.vue";
-
-var script$7 = {
-        props: ['myProps'],
-        data(){return {
-            fileList: []
-        }},
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
-            }
-        },
-        methods: {
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
-                let isFileSize = file.size / 1024 < this.myProps0.size;
-
-                if (!isFileType) {
-                    this.$message.error('上传图片的格式只能是 ' + this.myProps0.type);
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传图片的大小不能超过 ' + this.myProps0.size + ' KB');
-                    return false
-                }
-
-                this.$message('正在上传 ...');
-                return true
-            },
-            // eslint-disable-next-line
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-            },
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                this.fileList = fileList;
-
-                // 返回上传结果
-                let fileList0 = [];
-                fileList.forEach(i=>{
-                    fileList0.push({
-                        src: i.response.data.src
-                    });
-                });
-                this.$emit('getUploadResult', {
-                    fileList: fileList0
-                });
-            },
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    this.fileList = fileList;
-
-                    // 返回上传结果
-                    let fileList0 = [];
-                    fileList.forEach(i=>{
-                        fileList0.push({
-                            src: i.response.data.src
-                        });
-                    });
-                    this.$emit('getUploadResult', {
-                        fileList: fileList0
-                    });
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    });
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传图片
-                // 重置文件列表
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            }
-        }
-    };
 
 const _hoisted_1$7 = { class: "el-upload__tip" };
 const _hoisted_2$7 = {
@@ -41566,24 +41564,112 @@ const _hoisted_2$7 = {
   style: {"font-size":"xx-small"}
 };
 
-function render$1(_ctx, _cache, $props, $setup, $data, $options) {
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+
+var script$7 = {
+  __name: 'Upload-picture',
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
+
+const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const myProps_box = vue.reactive(Object.assign({}, ly0default, props.myProps));
+const fileList_box = vue.reactive([]);
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item,
+        response: {
+            data: {
+                src: item
+            }
+        }
+    });
+});
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type;
+        const isFileSize = file.size / 1024 < myProps_box.size;
+        
+        if (!isFileType) {
+            elementPlus.ElMessage.error('上传文件的格式只能是 ' + myProps_box.type);
+            return false
+        }
+        if (!isFileSize) {
+            elementPlus.ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
+            return false
+        }
+        elementPlus.ElMessage('正在上传 ...');
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        const arr = [];
+        fileList_box.forEach(i=>{
+            arr.push(i.response.data.src);
+        });
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", arr);
+    },
+    success (response, file, fileList) { // 上传
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        if (response.code === 0) {
+            const arr = [];
+            fileList_box.forEach(i=>{
+                arr.push(i.response.data.src);
+            });
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", arr);
+            
+            elementPlus.ElMessage({type: 'info', message: '上传成功'});
+        } else {
+            elementPlus.ElMessage({type: 'error', message: '上传失败'});
+        }
+    },
+    deleteAll () { // 删除全部已上传图片
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", []);
+    }
+};
+
+return (_ctx, _cache) => {
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_el_upload = vue.resolveComponent("el-upload");
 
   return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(_component_el_upload, {
-      action: $options.myProps0.uploadUrl,
-      "file-list": $data.fileList,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (($data.fileList) = $event)),
+      action: myProps_box.uploadUrl,
+      "file-list": fileList_box,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
       "list-type": "picture",
-      "before-upload": $options.hdlBeforeUpload,
-      "on-preview": $options.hdlPreview,
-      "on-remove": $options.hdlRemove,
-      "on-success": $options.hdlSuccess,
-      limit: $options.myProps0.limit
+      "before-upload": hdl.beforeUpload,
+      "on-preview": hdl.preview,
+      "on-remove": hdl.remove,
+      "on-success": hdl.success,
+      limit: myProps_box.limit
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("div", _hoisted_1$7, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个图片"), 1 /* TEXT */)
+        vue.createElementVNode("div", _hoisted_1$7, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_button, {
@@ -41598,15 +41684,15 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
-    ($data.fileList.length>0)
-      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$7, vue.toDisplayString("已上传"+$data.fileList.length+"个图片"), 1 /* TEXT */))
+    (fileList_box.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$7, vue.toDisplayString("已上传"+fileList_box.length+"个图片"), 1 /* TEXT */))
       : vue.createCommentVNode("v-if", true),
-    ($data.fileList.length>0)
+    (fileList_box.length>0)
       ? (vue.openBlock(), vue.createBlock(_component_el_button, {
           key: 1,
           size: "small",
           style: {"margin-top":"10px"},
-          onClick: $options.hdlDeleteAll
+          onClick: hdl.deleteAll
         }, {
           default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传图片", -1 /* CACHED */)
@@ -41616,106 +41702,90 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
       : vue.createCommentVNode("v-if", true)
   ]))
 }
+}
 
-script$7.render = render$1;
+};
+
 script$7.__file = "src/upload/Upload-picture.vue";
-
-var script$6 = {
-        props: ['myProps'],
-        data: function () {
-            return {
-                fileList: [],
-                dialogImageUrl: '',
-                dialogVisible: false
-            }
-        },
-        computed: {
-            myProps0(){
-                return Object.assign({}, ly0default.myProps, this.myProps)
-            }
-        },
-        methods: {
-            hdlBeforeUpload (file) {
-                let isFileType = !this.myProps0.type || file.type === this.myProps0.type;
-                let isFileSize = file.size / 1024 < this.myProps0.size;
-
-                if (!isFileType) {
-                    this.$message.error('上传图片的格式只能是 ' + this.myProps0.type);
-                    return false
-                }
-                if (!isFileSize) {
-                    this.$message.error('上传图片的大小不能超过 ' + this.myProps0.size + ' KB');
-                    return false
-                }
-
-                this.$message('正在上传 ...');
-                return true
-            },
-            hdlPreview (file) { // 点击文件列表中已上传的文件时的钩子
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
-            },
-            hdlRemove (file, fileList) { // 文件列表移除文件时的钩子
-                // 重置文件列表
-                this.fileList = fileList;
-
-                // 返回上传结果
-                let fileList0 = [];
-                fileList.forEach(i=>{
-                    fileList0.push({
-                        src: i.response.data.src
-                    });
-                });
-                this.$emit('getUploadResult', {
-                    fileList: fileList0
-                });
-            },
-            hdlSuccess (response, file, fileList) { // 上传
-                if (response.code === 0) {
-                    // 重置文件列表
-                    this.fileList = fileList;
-
-                    // 返回上传结果
-                    let fileList0 = [];
-                    fileList.forEach(i=>{
-                        fileList0.push({
-                            src: i.response.data.src
-                        });
-                    });
-                    this.$emit('getUploadResult', {
-                        fileList: fileList0
-                    });
-                    this.$message({
-                        type: 'info',
-                        message: '上传成功'
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '上传失败'
-                    });
-                }
-            },
-            hdlDeleteAll () { // 删除全部已上传图片
-                // 重置文件列表
-                this.fileList = [];
-
-                // 返回上传结果
-                this.$emit('getUploadResult', {
-                    fileList: []
-                });
-            }
-        }
-    };
 
 const _hoisted_1$6 = { class: "el-upload__tip" };
 const _hoisted_2$6 = ["src"];
-const _hoisted_3$4 = {
+const _hoisted_3$3 = {
   key: 0,
   style: {"font-size":"xx-small"}
 };
 
-function render(_ctx, _cache, $props, $setup, $data, $options) {
+// 遵循 Vue 3 v-model 规范，使用 modelValue
+
+var script$6 = {
+  __name: 'Upload-picture-card',
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  emits: ['update:modelValue', 'change'],
+  setup(__props, { emit: __emit }) {
+
+const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
+const emit = __emit;
+
+const myProps_box = vue.reactive(Object.assign({}, ly0default, props.myProps));
+const fileList_box = vue.reactive([]);
+props.modelValue.forEach((item, index) => {
+    fileList_box.push({
+        name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
+        url: item,
+        response: {
+            data: {
+                src: item
+            }
+        }
+    });
+});
+
+const dialogImageUrl = vue.ref('');
+const dialogVisible = vue.ref(false);
+
+const hdl = {
+    beforeUpload (file) {
+        const isFileType = !myProps_box.type || file.type === myProps_box.type;
+        const isFileSize = file.size / 1024 < myProps_box.size;
+        
+        if (!isFileType) {
+            elementPlus.ElMessage.error('上传文件的格式只能是 ' + myProps_box.type);
+            return false
+        }
+        if (!isFileSize) {
+            elementPlus.ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
+            return false
+        }
+        elementPlus.ElMessage('正在上传 ...');
+        return true
+    },
+    preview (file) { // 点击文件列表中已上传的文件时的钩子
+        dialogImageUrl.value = file.url;
+        dialogVisible.value = true;
+    },
+    remove (file, fileList) { // 文件列表移除文件时的钩子
+        // 重置文件列表， 注意：通过使用splice保持响应性
+        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        const arr = [];
+        fileList_box.forEach(i=>{
+            arr.push(i.response.data.src);
+        });
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", arr);
+    }};
+
+return (_ctx, _cache) => {
   const _component_Plus = vue.resolveComponent("Plus");
   const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_upload = vue.resolveComponent("el-upload");
@@ -41724,18 +41794,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (vue.openBlock(), vue.createElementBlock("div", null, [
     vue.createVNode(_component_el_upload, {
-      action: $options.myProps0.uploadUrl,
-      "file-list": _ctx.fileList,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((_ctx.fileList) = $event)),
+      action: myProps_box.uploadUrl,
+      "file-list": fileList_box,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
       "list-type": "picture-card",
-      "before-upload": $options.hdlBeforeUpload,
-      "on-preview": $options.hdlPreview,
-      "on-remove": $options.hdlRemove,
-      "on-success": $options.hdlSuccess,
-      limit: $options.myProps0.limit
+      "before-upload": hdl.beforeUpload,
+      "on-preview": hdl.preview,
+      "on-remove": hdl.remove,
+      "on-success": hdl.success,
+      limit: myProps_box.limit
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("div", _hoisted_1$6, " " + vue.toDisplayString($options.myProps0.tip ? $options.myProps0.tip : "可以上传" + $options.myProps0.limit + "个图片"), 1 /* TEXT */)
+        vue.createElementVNode("div", _hoisted_1$6, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_icon, null, {
@@ -41748,27 +41818,27 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
     vue.createVNode(_component_el_dialog, {
-      modelValue: _ctx.dialogVisible,
-      "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((_ctx.dialogVisible) = $event))
+      modelValue: dialogVisible.value,
+      "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((dialogVisible).value = $event))
     }, {
       default: vue.withCtx(() => [
         vue.createElementVNode("img", {
           "w-full": "",
-          src: _ctx.dialogImageUrl,
+          src: dialogImageUrl.value,
           alt: "Preview Image"
         }, null, 8 /* PROPS */, _hoisted_2$6)
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["modelValue"]),
-    (_ctx.fileList.length>0)
-      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$4, vue.toDisplayString("已上传"+_ctx.fileList.length+"个图片"), 1 /* TEXT */))
+    (fileList_box.length>0)
+      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$3, vue.toDisplayString("已上传"+fileList_box.length+"个图片"), 1 /* TEXT */))
       : vue.createCommentVNode("v-if", true),
-    (_ctx.fileList.length>0)
+    (fileList_box.length>0)
       ? (vue.openBlock(), vue.createBlock(_component_el_button, {
           key: 1,
           size: "small",
           style: {"margin-top":"10px"},
-          onClick: $options.hdlDeleteAll
+          onClick: hdl.deleteAll
         }, {
           default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
             vue.createTextVNode("删除全部已上传图片", -1 /* CACHED */)
@@ -41778,8 +41848,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       : vue.createCommentVNode("v-if", true)
   ]))
 }
+}
 
-script$6.render = render;
+};
+
 script$6.__file = "src/upload/Upload-picture-card.vue";
 
 var upload = {
@@ -41805,10 +41877,13 @@ var script$5 = {
         default: () => ''
     },
     myProps: {
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
     }
     
 },
@@ -41819,18 +41894,18 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const value = vue.reactive(Object.assign({
+const modelValue_box = vue.reactive(Object.assign({
     code2: '',
     text2: '',
     code4: '',
     text4: '',
     code6: '',
     text6: '',
-}, {code6: props.modelValue || ''}));
+}, {code6: props.modelValue ?? ''}));
 
 const popup = vue.reactive({
     visible: false,
-    select: {
+    formData: {
         arrCode2: [],
         code2: '',
         arrCode4: [],
@@ -41849,7 +41924,7 @@ vue.watch(() => props.modelValue,
             noSession: true,
             storproName: 'ly0d3.gbt2260code2.init',
         });
-        popup.select.arrCode2 = result2.arrCode2.filter(item => item.code2);
+        popup.formData.arrCode2 = result2.arrCode2.filter(item => item.code2);
         
         const result6 = await request.ly0.storpro({
             noSession: true,
@@ -41859,14 +41934,14 @@ vue.watch(() => props.modelValue,
         
         if(result6.itemCode6){
             // 保持响应式
-            Object.assign(value, result6.itemCode6);
+            Object.assign(modelValue_box, result6.itemCode6);
             
             // 确保按顺序加载级联数据
-            if (value.code2) {
-                await hdlChangeCode2(value.code2);
+            if (modelValue_box.code2) {
+                await hdlChangeCode2(modelValue_box.code2);
             }
-            if (value.code4) {
-                await hdlChangeCode4(value.code4);
+            if (modelValue_box.code4) {
+                await hdlChangeCode4(modelValue_box.code4);
             }
         }
     },
@@ -41878,13 +41953,13 @@ const hdlPopup = async () => {
         return
     }
     
-    popup.select.code2 = value.code2;
-    await hdlChangeCode2(popup.select.code2);
+    popup.formData.code2 = modelValue_box.code2;
+    await hdlChangeCode2(popup.formData.code2);
     
-    popup.select.code4 = value.code4;
-    await hdlChangeCode4(popup.select.code4);
+    popup.formData.code4 = modelValue_box.code4;
+    await hdlChangeCode4(popup.formData.code4);
     
-    popup.select.code6 = value.code6;
+    popup.formData.code6 = modelValue_box.code6;
     popup.visible = true;
 };
 
@@ -41895,10 +41970,10 @@ const hdlChangeCode2 = async value => { // 使用 async 标记
         data: {code2: value},
     });
     
-    popup.select.arrCode4 = result.arrCode4.filter(item => item.code4);
-    popup.select.code4 = '';
-    popup.select.arrCode6 = [];
-    popup.select.code6 = '';
+    popup.formData.arrCode4 = result.arrCode4.filter(item => item.code4);
+    popup.formData.code4 = '';
+    popup.formData.arrCode6 = [];
+    popup.formData.code6 = '';
 };
 
 const hdlChangeCode4 = async value => {
@@ -41908,28 +41983,28 @@ const hdlChangeCode4 = async value => {
         data: {code4: value},
     });
     
-    popup.select.arrCode6 = result.arrCode6.filter(item => item.code6);
-    popup.select.code6 = '';
+    popup.formData.arrCode6 = result.arrCode6.filter(item => item.code6);
+    popup.formData.code6 = '';
 };
 
 const hdlSubmit = () => {
     // ... (安全查找逻辑) ...
-    value.code2 = popup.select.code2;
-    const foundItem2 = popup.select.arrCode2.find(i => i.code2 === value.code2);
-    value.text2 = foundItem2 ? foundItem2.text2 : '';
-    value.code4 = popup.select.code4;
-    const foundItem4 = popup.select.arrCode4.find(i => i.code4 === value.code4);
-    value.text4 = foundItem4 ? foundItem4.text4 : '';
-    value.code6 = popup.select.code6;
-    const foundItem6 = popup.select.arrCode6.find(i => i.code6 === value.code6);
-    value.text6 = foundItem6 ? foundItem6.text6 : '';
+    modelValue_box.code2 = popup.formData.code2;
+    const foundItem2 = popup.formData.arrCode2.find(i => i.code2 === modelValue_box.code2);
+    modelValue_box.text2 = foundItem2 ? foundItem2.text2 : '';
+    modelValue_box.code4 = popup.formData.code4;
+    const foundItem4 = popup.formData.arrCode4.find(i => i.code4 === modelValue_box.code4);
+    modelValue_box.text4 = foundItem4 ? foundItem4.text4 : '';
+    modelValue_box.code6 = popup.formData.code6;
+    const foundItem6 = popup.formData.arrCode6.find(i => i.code6 === modelValue_box.code6);
+    modelValue_box.text6 = foundItem6 ? foundItem6.text6 : '';
     // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-    emit("update:modelValue", value.code6 ?? value.code4 ?? value.code2 ?? '');
+    emit("update:modelValue", modelValue_box.code6 ?? modelValue_box.code4 ?? modelValue_box.code2 ?? '');
     popup.visible = false;
 };
 
 const style = vue.reactive({
-    value: {
+    modelValue_box: {
         code: {
             color: '#6a6a6a',
         },
@@ -41990,39 +42065,39 @@ return (_ctx, _cache) => {
           ]),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
-              style: vue.normalizeStyle(style.value.code)
-            }, vue.toDisplayString('[' + (value.code2 ? value.code2 : '省') + ']'), 5 /* TEXT, STYLE */)
+              style: vue.normalizeStyle(style.modelValue_box.code)
+            }, vue.toDisplayString('[' + (modelValue_box.code2 ? modelValue_box.code2 : '省') + ']'), 5 /* TEXT, STYLE */)
           ]),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
-              style: vue.normalizeStyle(style.value.text)
-            }, vue.toDisplayString(value.text2 ? value.text2 : ''), 5 /* TEXT, STYLE */)
+              style: vue.normalizeStyle(style.modelValue_box.text)
+            }, vue.toDisplayString(modelValue_box.text2 ? modelValue_box.text2 : ''), 5 /* TEXT, STYLE */)
           ])
         ]),
         vue.createElementVNode("tr", null, [
           _cache[4] || (_cache[4] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
-              style: vue.normalizeStyle(style.value.code)
-            }, vue.toDisplayString('[' + (value.code4 ? value.code4 : '市') + ']'), 5 /* TEXT, STYLE */)
+              style: vue.normalizeStyle(style.modelValue_box.code)
+            }, vue.toDisplayString('[' + (modelValue_box.code4 ? modelValue_box.code4 : '市') + ']'), 5 /* TEXT, STYLE */)
           ]),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
-              style: vue.normalizeStyle(style.value.text)
-            }, vue.toDisplayString(value.text4 ? value.text4 : ''), 5 /* TEXT, STYLE */)
+              style: vue.normalizeStyle(style.modelValue_box.text)
+            }, vue.toDisplayString(modelValue_box.text4 ? modelValue_box.text4 : ''), 5 /* TEXT, STYLE */)
           ])
         ]),
         vue.createElementVNode("tr", null, [
           _cache[5] || (_cache[5] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
-              style: vue.normalizeStyle(style.value.code)
-            }, vue.toDisplayString('[' + (value.code6 ? value.code6 : '县') + ']'), 5 /* TEXT, STYLE */)
+              style: vue.normalizeStyle(style.modelValue_box.code)
+            }, vue.toDisplayString('[' + (modelValue_box.code6 ? modelValue_box.code6 : '县') + ']'), 5 /* TEXT, STYLE */)
           ]),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
-              style: vue.normalizeStyle(style.value.text)
-            }, vue.toDisplayString(value.text6 ? value.text6 : ''), 5 /* TEXT, STYLE */)
+              style: vue.normalizeStyle(style.modelValue_box.text)
+            }, vue.toDisplayString(modelValue_box.text6 ? modelValue_box.text6 : ''), 5 /* TEXT, STYLE */)
           ])
         ])
       ])
@@ -42048,15 +42123,15 @@ return (_ctx, _cache) => {
               ]),
               vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_select, {
-                  modelValue: popup.select.code2,
-                  "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.select.code2) = $event)),
+                  modelValue: popup.formData.code2,
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.formData.code2) = $event)),
                   placeholder: "请选择 省",
                   filterable: "",
                   style: vue.normalizeStyle(style.popup.select),
                   onChange: hdlChangeCode2
                 }, {
                   default: vue.withCtx(() => [
-                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.select.arrCode2, (item, index) => {
+                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData.arrCode2, (item, index) => {
                       return (vue.openBlock(), vue.createBlock(_component_el_option, {
                         label: item.text2,
                         value: item.code2,
@@ -42076,15 +42151,15 @@ return (_ctx, _cache) => {
               ]),
               vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_select, {
-                  modelValue: popup.select.code4,
-                  "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((popup.select.code4) = $event)),
+                  modelValue: popup.formData.code4,
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((popup.formData.code4) = $event)),
                   placeholder: "请选择 市",
                   filterable: "",
                   style: vue.normalizeStyle(style.popup.select),
                   onChange: hdlChangeCode4
                 }, {
                   default: vue.withCtx(() => [
-                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.select.arrCode4, (item, index) => {
+                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData.arrCode4, (item, index) => {
                       return (vue.openBlock(), vue.createBlock(_component_el_option, {
                         label: item.text4,
                         value: item.code4,
@@ -42104,14 +42179,14 @@ return (_ctx, _cache) => {
               ]),
               vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_select, {
-                  modelValue: popup.select.code6,
-                  "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((popup.select.code6) = $event)),
+                  modelValue: popup.formData.code6,
+                  "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((popup.formData.code6) = $event)),
                   placeholder: "请选择 县",
                   filterable: "",
                   style: vue.normalizeStyle(style.popup.select)
                 }, {
                   default: vue.withCtx(() => [
-                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.select.arrCode6, (item, index) => {
+                    (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData.arrCode6, (item, index) => {
                       return (vue.openBlock(), vue.createBlock(_component_el_option, {
                         label: item.text6,
                         value: item.code6,
@@ -42154,98 +42229,157 @@ return (_ctx, _cache) => {
 script$5.__file = "src/gbt2260/index.vue";
 
 const _hoisted_1$4 = { key: 0 };
-const _hoisted_2$4 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
-const _hoisted_3$3 = { key: 1 };
-const _hoisted_4$3 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
-const _hoisted_5$3 = {
-  key: 0,
-  class: "value-item"
-};
-const _hoisted_6$3 = { style: {"width":"100%"} };
-const _hoisted_7$3 = { style: {"width":"50px"} };
-const _hoisted_8$2 = { class: "select-submit" };
+const _hoisted_2$4 = { key: 1 };
+const _hoisted_3$2 = { style: {"width":"100%"} };
+const _hoisted_4$1 = { style: {"width":"50px"} };
 
+// 遵循 Vue 3 v-model 规范，使用 modelValue
 
 var script$4 = {
   __name: 'index',
-  props: ["myProps"],
-  emits: ['get-value'],
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+    
+},
+  emits: ['update:modelValue', 'change'],
   setup(__props, { emit: __emit }) {
 
 const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const value = vue.ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
-const popup = vue.ref({
+const modelValue_box = vue.reactive(props.modelValue ?? []);
+const popup = vue.reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    formData: []
 });
 
 const hdl = {
     // 弹出编辑窗口
     popup() {
         if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value));
-            popup.value.visible = true;
+            popup.formData = JSON.parse(JSON.stringify(modelValue));
+            popup.visible = true;
         }
     },
     append() {
-        popup.value.value.push({ value: '' });
+        popup.formData.push({ value: '' });
     },
     delete(index) {
-        popup.value.value.splice(index, 1);
+        popup.formData.splice(index, 1);
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value));
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        });
-        popup.value.visible = false;
-    },
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", submittingValue);
+        popup.visible = false;
+    }
 };
 
+const style = vue.reactive({
+    modelValue_box: {
+        item: {
+            display: 'inline-block',
+            margin: '10px',
+            padding: '10px',
+            'background-color': '#a6a6a6',
+            'border-radius': '5px',
+            color: 'white'
+        }
+    },
+    popup: {
+        item: {
+            display: 'inline-block',
+            margin: '10px',
+            padding: '10px',
+            'background-color': '#a6a6a6',
+            'border-radius': '5px'
+        },
+        input: {
+            width: '200px'
+        },
+        delete: {
+            'margin-left': '10px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+});
+
 return (_ctx, _cache) => {
+  const _component_Edit = vue.resolveComponent("Edit");
+  const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_input = vue.resolveComponent("el-input");
   const _component_Delete = vue.resolveComponent("Delete");
-  const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_Plus = vue.resolveComponent("Plus");
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
   return (vue.openBlock(), vue.createElementBlock("div", {
-    onClick: _cache[1] || (_cache[1] = (...args) => (_ctx.hdlPopup && _ctx.hdlPopup(...args)))
+    onClick: _cache[1] || (_cache[1] = (...args) => (hdl.popup && hdl.popup(...args)))
   }, [
     vue.createElementVNode("table", null, [
       vue.createElementVNode("tbody", null, [
-        (!value.value || value.value.length === 0)
+        (!modelValue_box || modelValue_box.length === 0)
           ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$4, [
               vue.createElementVNode("td", null, [
                 (!__props.myProps.readOnly)
-                  ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_2$4))
+                  ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                      key: 0,
+                      class: "edit-icon",
+                      size: 16,
+                      color: "blue"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createVNode(_component_Edit)
+                      ]),
+                      _: 1 /* STABLE */
+                    }))
                   : vue.createCommentVNode("v-if", true)
               ]),
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未分类]", -1 /* CACHED */))
             ]))
-          : (vue.openBlock(), vue.createElementBlock("tr", _hoisted_3$3, [
+          : (vue.openBlock(), vue.createElementBlock("tr", _hoisted_2$4, [
               vue.createElementVNode("td", null, [
                 (!__props.myProps.readOnly)
-                  ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_4$3))
+                  ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                      key: 0,
+                      class: "edit-icon",
+                      size: 16,
+                      color: "blue"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createVNode(_component_Edit)
+                      ]),
+                      _: 1 /* STABLE */
+                    }))
                   : vue.createCommentVNode("v-if", true)
               ]),
               vue.createElementVNode("td", null, [
-                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(value.value, (item, index) => {
+                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(modelValue_box, (item, index) => {
                   return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
                     (!!item)
-                      ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_5$3, vue.toDisplayString(item), 1 /* TEXT */))
+                      ? (vue.openBlock(), vue.createElementBlock("div", {
+                          key: 0,
+                          style: vue.normalizeStyle(style.modelValue_box.item)
+                        }, vue.toDisplayString(item), 5 /* TEXT, STYLE */))
                       : vue.createCommentVNode("v-if", true)
                   ], 64 /* STABLE_FRAGMENT */))
                 }), 256 /* UNKEYED_FRAGMENT */))
@@ -42254,8 +42388,8 @@ return (_ctx, _cache) => {
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
-      modelValue: popup.value.visible,
-      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.value.visible) = $event)),
+      modelValue: popup.visible,
+      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.visible) = $event)),
       "custom-class": 'code-template-dialog',
       "close-on-press-escape": true,
       "append-to-body": "",
@@ -42264,22 +42398,22 @@ return (_ctx, _cache) => {
       "destroy-on-close": true
     }, {
       default: vue.withCtx(() => [
-        vue.createElementVNode("table", _hoisted_6$3, [
+        vue.createElementVNode("table", _hoisted_3$2, [
           vue.createElementVNode("tbody", null, [
             vue.createElementVNode("tr", null, [
               vue.createElementVNode("td", null, [
-                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.value, (item, index) => {
+                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData, (item, index) => {
                   return (vue.openBlock(), vue.createElementBlock("div", {
                     key: index,
-                    class: "popup-value-item"
+                    style: vue.normalizeStyle(style.popup.item)
                   }, [
                     vue.createVNode(_component_el_input, {
-                      class: "input",
-                      modelValue: popup.value.value[index],
-                      "onUpdate:modelValue": $event => ((popup.value.value[index]) = $event)
-                    }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"]),
+                      style: vue.normalizeStyle(style.popup.input),
+                      modelValue: popup.value[index],
+                      "onUpdate:modelValue": $event => ((popup.value[index]) = $event)
+                    }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"]),
                     vue.createVNode(_component_el_button, {
-                      class: "delete",
+                      style: vue.normalizeStyle(style.popup.delete),
                       type: "danger",
                       circle: "",
                       size: "small",
@@ -42294,15 +42428,15 @@ return (_ctx, _cache) => {
                         })
                       ]),
                       _: 1 /* STABLE */
-                    }, 8 /* PROPS */, ["onClick"])
-                  ]))
+                    }, 8 /* PROPS */, ["style", "onClick"])
+                  ], 4 /* STYLE */))
                 }), 128 /* KEYED_FRAGMENT */))
               ]),
               _cache[3] || (_cache[3] = vue.createElementVNode("td", null, null, -1 /* CACHED */))
             ]),
             vue.createElementVNode("tr", null, [
               _cache[4] || (_cache[4] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
-              vue.createElementVNode("td", _hoisted_7$3, [
+              vue.createElementVNode("td", _hoisted_4$1, [
                 vue.createVNode(_component_el_button, {
                   type: "primary",
                   circle: "",
@@ -42324,8 +42458,10 @@ return (_ctx, _cache) => {
             ])
           ])
         ]),
-        _cache[6] || (_cache[6] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
-        vue.createElementVNode("div", _hoisted_8$2, [
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.line)
+        }, null, 4 /* STYLE */),
+        vue.createElementVNode("div", null, [
           vue.createVNode(_component_el_button, {
             type: "danger",
             plain: "",
@@ -42350,51 +42486,51 @@ script$4.__scopeId = "data-v-8e9aa4f6";
 script$4.__file = "src/ly0d7group/index.vue";
 
 const _hoisted_1$3 = { key: 0 };
-const _hoisted_2$3 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
-const _hoisted_3$2 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
-const _hoisted_4$2 = { class: "item-value" };
-const _hoisted_5$2 = { class: "item-value" };
-const _hoisted_6$2 = { class: "item-value" };
-const _hoisted_7$2 = { class: "item-value" };
-const _hoisted_8$1 = { style: {"width":"100%"} };
-const _hoisted_9$1 = { class: "select-submit" };
+const _hoisted_2$3 = { style: {"width":"100%"} };
 
+// 遵循 Vue 3 v-model 规范，使用 modelValue
 
 var script$3 = {
   __name: 'index',
-  props: ["myProps"],
-  emits: ['get-value'],
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+    
+},
+  emits: ['update:modelValue', 'change'],
   setup(__props, { emit: __emit }) {
 
 const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const value = vue.ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
-const popup = vue.ref({
+const modelValue_box = vue.reactive(props.modelValue ?? []);
+const popup = vue.reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    formData: []
 });
 
 const hdl = {
-    ly0d3gbt2260GetValue(result) {
-        popup.value.value[result._id].gbt2260code = result.code6;
-    },
     popup() {
         if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value));
-            popup.value.visible = true;
+            popup.formData = JSON.parse(JSON.stringify(modelValue_box));
+            popup.visible = true;
         }
     },
     append() {
-        popup.value.value.push({
+        popup.formData.push({
             gbt2260code: '',
             address: '',
             tel: '',
@@ -42402,12 +42538,12 @@ const hdl = {
         });
     },
     delete(index) {
-        popup.value.value.splice(index, 1);
+        popup.formData.splice(index, 1);
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value));
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
         let arrPromise = [];
-        value.value.forEach(i => {
+        submittingValue.forEach(i => {
             arrPromise.push(
                 request.ly0.storpro({
                     noSession: true,
@@ -42418,23 +42554,54 @@ const hdl = {
         });
         Promise.all(arrPromise).then(result => {
             result.forEach((item, index) => {
-                value.value[index].gbt2260text =
+                submittingValue[index].gbt2260text =
                     item.itemCode6.text2 + '-' + item.itemCode6.text4 + '-' + item.itemCode6.text6;
             });
-            emit("get-value", {
-                value: JSON.parse(JSON.stringify(popup.value.value)),
-                _id: props.myProps._id ?? null
-            });
-            popup.value.visible = false;
+            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+            emit("update:modelValue", submittingValue);
+            popup.visible = false;
         });
-    },
-    
+    }
 };
 
+const style = vue.reactive({
+    modelValue_box: {
+        label: {
+            'text-align': 'right',
+            'padding-right': '10px',
+            'color': '#919191'
+        },
+        value: {
+            color: 'blue'
+        }
+    },
+    popup: {
+        address: {
+            width: '300px'
+        },
+        tel: {
+            width: '200px'
+        },
+        name: {
+            width: '200px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+});
+
 return (_ctx, _cache) => {
+  const _component_Edit = vue.resolveComponent("Edit");
+  const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_ly0d3gbt2260 = vue.resolveComponent("ly0d3gbt2260");
   const _component_el_input = vue.resolveComponent("el-input");
+  const _component_Delete = vue.resolveComponent("Delete");
   const _component_el_button = vue.resolveComponent("el-button");
+  const _component_Plus = vue.resolveComponent("Plus");
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
   return (vue.openBlock(), vue.createElementBlock("div", {
@@ -42442,41 +42609,77 @@ return (_ctx, _cache) => {
   }, [
     vue.createElementVNode("table", null, [
       vue.createElementVNode("tbody", null, [
-        (!value.value || value.value.length === 0)
+        (!modelValue_box || modelValue_box.length === 0)
           ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$3, [
               vue.createElementVNode("td", null, [
                 (!__props.myProps.readOnly)
-                  ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_2$3))
+                  ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                      key: 0,
+                      class: "edit-icon",
+                      size: 16,
+                      color: "blue"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createVNode(_component_Edit)
+                      ]),
+                      _: 1 /* STABLE */
+                    }))
                   : vue.createCommentVNode("v-if", true)
               ]),
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未设置更多邮寄地址]", -1 /* CACHED */))
             ]))
           : vue.createCommentVNode("v-if", true),
-        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(value.value, (item, index) => {
+        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(modelValue_box, (item, index) => {
           return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
             vue.createElementVNode("td", null, [
               (!__props.myProps.readOnly && index === 0)
-                ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_3$2))
+                ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                    key: 0,
+                    class: "edit-icon",
+                    size: 16,
+                    color: "blue"
+                  }, {
+                    default: vue.withCtx(() => [
+                      vue.createVNode(_component_Edit)
+                    ]),
+                    _: 1 /* STABLE */
+                  }))
                 : vue.createCommentVNode("v-if", true)
             ]),
             vue.createElementVNode("td", null, [
               vue.createElementVNode("table", null, [
                 vue.createElementVNode("tbody", null, [
                   vue.createElementVNode("tr", null, [
-                    _cache[3] || (_cache[3] = vue.createElementVNode("td", { class: "item-label" }, "国内行政区划", -1 /* CACHED */)),
-                    vue.createElementVNode("td", _hoisted_4$2, vue.toDisplayString(item.gbt2260text), 1 /* TEXT */)
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.label)
+                    }, "国内行政区划", 4 /* STYLE */),
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.value)
+                    }, vue.toDisplayString(item.gbt2260text), 5 /* TEXT, STYLE */)
                   ]),
                   vue.createElementVNode("tr", null, [
-                    _cache[4] || (_cache[4] = vue.createElementVNode("td", { class: "item-label" }, "详细地址", -1 /* CACHED */)),
-                    vue.createElementVNode("td", _hoisted_5$2, vue.toDisplayString(item.address), 1 /* TEXT */)
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.label)
+                    }, "详细地址", 4 /* STYLE */),
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.value)
+                    }, vue.toDisplayString(item.address), 5 /* TEXT, STYLE */)
                   ]),
                   vue.createElementVNode("tr", null, [
-                    _cache[5] || (_cache[5] = vue.createElementVNode("td", { class: "item-label" }, "联系电话", -1 /* CACHED */)),
-                    vue.createElementVNode("td", _hoisted_6$2, vue.toDisplayString(item.tel), 1 /* TEXT */)
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.label)
+                    }, "联系电话", 4 /* STYLE */),
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.value)
+                    }, vue.toDisplayString(item.tel), 5 /* TEXT, STYLE */)
                   ]),
                   vue.createElementVNode("tr", null, [
-                    _cache[6] || (_cache[6] = vue.createElementVNode("td", { class: "item-label" }, "联系人", -1 /* CACHED */)),
-                    vue.createElementVNode("td", _hoisted_7$2, vue.toDisplayString(item.name), 1 /* TEXT */)
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.label)
+                    }, "联系人", 4 /* STYLE */),
+                    vue.createElementVNode("td", {
+                      style: vue.normalizeStyle(style.modelValue_box.value)
+                    }, vue.toDisplayString(item.name), 5 /* TEXT, STYLE */)
                   ])
                 ])
               ])
@@ -42486,8 +42689,8 @@ return (_ctx, _cache) => {
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
-      modelValue: popup.value.visible,
-      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.value.visible) = $event)),
+      modelValue: popup.visible,
+      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.visible) = $event)),
       "custom-class": 'code-template-dialog',
       "close-on-press-escape": true,
       "append-to-body": "",
@@ -42496,83 +42699,101 @@ return (_ctx, _cache) => {
       "destroy-on-close": true
     }, {
       default: vue.withCtx(() => [
-        vue.createElementVNode("table", _hoisted_8$1, [
+        vue.createElementVNode("table", _hoisted_2$3, [
           vue.createElementVNode("tbody", null, [
-            _cache[11] || (_cache[11] = vue.createElementVNode("tr", null, [
+            _cache[4] || (_cache[4] = vue.createElementVNode("tr", null, [
               vue.createElementVNode("th", null, "国内行政区划"),
               vue.createElementVNode("th", null, "详细地址"),
               vue.createElementVNode("th", null, "联系电话"),
               vue.createElementVNode("th", null, "联系人"),
               vue.createElementVNode("th")
             ], -1 /* CACHED */)),
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.value, (item, index) => {
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData, (item, index) => {
               return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
                 vue.createCommentVNode(" 左对齐，使用<td> "),
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_ly0d3gbt2260, {
-                    myProps: { value: item.gbt2260code, _id: index },
-                    onGetValue: hdl.ly0d3gbt2260GetValue
-                  }, null, 8 /* PROPS */, ["myProps", "onGetValue"])
+                    modelValue: item.gbt2260code,
+                    "onUpdate:modelValue": $event => ((item.gbt2260code) = $event),
+                    myProps: { readonly: true }
+                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
                 ]),
                 vue.createCommentVNode(" 居中对齐，使用<th> "),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    class: "input-address",
+                    style: vue.normalizeStyle(style.popup.address),
                     modelValue: item.address,
                     "onUpdate:modelValue": $event => ((item.address) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    class: "input-tel",
+                    style: vue.normalizeStyle(style.popup.tel),
                     modelValue: item.tel,
                     "onUpdate:modelValue": $event => ((item.tel) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    class: "input-name",
+                    style: vue.normalizeStyle(style.popup.name),
                     modelValue: item.name,
                     "onUpdate:modelValue": $event => ((item.name) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_button, {
                     type: "danger",
-                    icon: "el-icon-delete",
                     circle: "",
                     size: "small",
                     onClick: $event => (hdl.delete(index))
-                  }, null, 8 /* PROPS */, ["onClick"])
+                  }, {
+                    default: vue.withCtx(() => [
+                      vue.createVNode(_component_el_icon, null, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_Delete)
+                        ]),
+                        _: 1 /* STABLE */
+                      })
+                    ]),
+                    _: 1 /* STABLE */
+                  }, 8 /* PROPS */, ["onClick"])
                 ])
               ]))
             }), 128 /* KEYED_FRAGMENT */)),
             vue.createElementVNode("tr", null, [
-              _cache[7] || (_cache[7] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              _cache[8] || (_cache[8] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              _cache[9] || (_cache[9] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              _cache[10] || (_cache[10] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              vue.createElementVNode("th", null, [
+              _cache[3] || (_cache[3] = vue.createElementVNode("td", { colspan: "4" }, null, -1 /* CACHED */)),
+              vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_button, {
                   type: "primary",
-                  icon: "el-icon-plus",
                   circle: "",
                   size: "small",
                   style: {"margin-top":"20px"},
                   onClick: hdl.append
-                }, null, 8 /* PROPS */, ["onClick"])
+                }, {
+                  default: vue.withCtx(() => [
+                    vue.createVNode(_component_el_icon, null, {
+                      default: vue.withCtx(() => [
+                        vue.createVNode(_component_Plus)
+                      ]),
+                      _: 1 /* STABLE */
+                    })
+                  ]),
+                  _: 1 /* STABLE */
+                }, 8 /* PROPS */, ["onClick"])
               ])
             ])
           ])
         ]),
-        _cache[13] || (_cache[13] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
-        vue.createElementVNode("div", _hoisted_9$1, [
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.line)
+        }, null, 4 /* STYLE */),
+        vue.createElementVNode("div", null, [
           vue.createVNode(_component_el_button, {
             type: "danger",
             plain: "",
             onClick: hdl.submit
           }, {
-            default: vue.withCtx(() => [...(_cache[12] || (_cache[12] = [
+            default: vue.withCtx(() => [...(_cache[5] || (_cache[5] = [
               vue.createTextVNode("确认", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
@@ -42608,10 +42829,13 @@ var script$2 = {
         default: () => []
     },
     myProps: {
-        readOnly: {
-            type: Boolean,
-            default: false
-        }
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
     }
     
 },
@@ -42622,12 +42846,10 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const value = vue.computed(() => props.modelValue || []);
-const nameEmpty = vue.ref('[未设置标价名称]');
-
-const popup = vue.ref({
+const modelValue_box = vue.reactive(props.modelValue ?? []);
+const popup = vue.reactive({
     visible: false,
-    value: []
+    formData: []
 });
 
 const hdl = {
@@ -42635,16 +42857,16 @@ const hdl = {
         if (props.myProps.readOnly) {
             return
         }
-        const copiedValue = JSON.parse(JSON.stringify(value.value));
-        popup.value.value = copiedValue.map(item => ({
+        const copiedValue = JSON.parse(JSON.stringify(modelValue_box));
+        popup.formData = copiedValue.map(item => ({
             ...item,
             // 价格从“分”转换为“元”
             price: item.price / 100
         }));
-        popup.value.visible = true;
+        popup.visible = true;
     },
     append() {
-        popup.value.value.push({
+        popup.formData.push({
             name: '',
             price: 0, // 初始价格为 0 元
             member: false,
@@ -42653,22 +42875,22 @@ const hdl = {
         });
     },
     delete(index) {
-        popup.value.value.splice(index, 1);
+        popup.formData.splice(index, 1);
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.value.value));
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
         submittingValue.forEach(item => {
             // 确保 price 是数字，然后转为“分”
             item.price = Math.floor(Number(item.price) * 100);
         });
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", submittingValue);
-        popup.value.visible = false;
+        popup.visible = false;
     },
 };
 
 const style = vue.reactive({
-    value: {
+    modelValue_box: {
         name: {},
         name_empty: {
             color: '#919191'
@@ -42691,7 +42913,7 @@ const style = vue.reactive({
             'margin-left': '10px'
         }
     },
-    input: {
+    popup: {
         name: {
             width: '200px',
             'margin-bottom': '10px'
@@ -42727,7 +42949,7 @@ return (_ctx, _cache) => {
   }, [
     vue.createElementVNode("table", null, [
       vue.createElementVNode("tbody", null, [
-        (!value.value || value.value.length === 0)
+        (!modelValue_box || modelValue_box.length === 0)
           ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$2, [
               vue.createElementVNode("td", null, [
                 (!__props.myProps.readOnly)
@@ -42747,7 +42969,7 @@ return (_ctx, _cache) => {
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未标价]", -1 /* CACHED */))
             ]))
           : vue.createCommentVNode("v-if", true),
-        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(value.value, (item, index) => {
+        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(modelValue_box, (item, index) => {
           return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
             vue.createElementVNode("td", null, [
               (!__props.myProps.readOnly && index === 0)
@@ -42768,19 +42990,19 @@ return (_ctx, _cache) => {
               (!!item.name)
                 ? (vue.openBlock(), vue.createElementBlock("span", {
                     key: 0,
-                    style: vue.normalizeStyle(style.value.name)
+                    style: vue.normalizeStyle(style.modelValue_box.name)
                   }, vue.toDisplayString(item.name), 5 /* TEXT, STYLE */))
                 : (vue.openBlock(), vue.createElementBlock("span", {
                     key: 1,
-                    style: vue.normalizeStyle(style.value.name_empty)
-                  }, vue.toDisplayString(nameEmpty.value), 5 /* TEXT, STYLE */)),
+                    style: vue.normalizeStyle(style.modelValue_box.name_empty)
+                  }, "[未设置标价名称]", 4 /* STYLE */)),
               vue.createElementVNode("span", {
-                style: vue.normalizeStyle(style.value.price)
+                style: vue.normalizeStyle(style.modelValue_box.price)
               }, "￥" + vue.toDisplayString((item.price / 100).toFixed(2)), 5 /* TEXT, STYLE */),
               (!!item.member)
                 ? (vue.openBlock(), vue.createElementBlock("img", {
                     key: 2,
-                    style: vue.normalizeStyle(style.value.member),
+                    style: vue.normalizeStyle(style.modelValue_box.member),
                     src: _imports_0$1,
                     alt: "会员"
                   }, null, 4 /* STYLE */))
@@ -42788,13 +43010,13 @@ return (_ctx, _cache) => {
               (!!item.hot)
                 ? (vue.openBlock(), vue.createElementBlock("img", {
                     key: 3,
-                    style: vue.normalizeStyle(style.value.hot),
+                    style: vue.normalizeStyle(style.modelValue_box.hot),
                     src: _imports_1,
                     alt: "热点"
                   }, null, 4 /* STYLE */))
                 : vue.createCommentVNode("v-if", true),
               vue.createElementVNode("span", {
-                style: vue.normalizeStyle(style.value.note)
+                style: vue.normalizeStyle(style.modelValue_box.note)
               }, vue.toDisplayString(item.note || ''), 5 /* TEXT, STYLE */)
             ])
           ]))
@@ -42802,8 +43024,8 @@ return (_ctx, _cache) => {
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
-      modelValue: popup.value.visible,
-      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.value.visible) = $event)),
+      modelValue: popup.visible,
+      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.visible) = $event)),
       "custom-class": 'code-template-dialog',
       "close-on-press-escape": true,
       "append-to-body": "",
@@ -42822,18 +43044,18 @@ return (_ctx, _cache) => {
               vue.createElementVNode("th", null, "备注"),
               vue.createElementVNode("th")
             ], -1 /* CACHED */)),
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.value, (item, index) => {
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData, (item, index) => {
               return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    style: vue.normalizeStyle(style.input.name),
+                    style: vue.normalizeStyle(style.popup.name),
                     modelValue: item.name,
                     "onUpdate:modelValue": $event => ((item.name) = $event)
                   }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input_number, {
-                    style: vue.normalizeStyle(style.input.price),
+                    style: vue.normalizeStyle(style.popup.price),
                     modelValue: item.price,
                     "onUpdate:modelValue": $event => ((item.price) = $event),
                     min: 0,
@@ -42863,7 +43085,7 @@ return (_ctx, _cache) => {
                 ]),
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    style: vue.normalizeStyle(style.input.note),
+                    style: vue.normalizeStyle(style.popup.note),
                     modelValue: item.note,
                     "onUpdate:modelValue": $event => ((item.note) = $event)
                   }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
@@ -42942,89 +43164,110 @@ script$2.__file = "src/ly0d7price/index.vue";
 var _imports_0 = "data:image/png;base64,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";
 
 const _hoisted_1$1 = { key: 0 };
-const _hoisted_2$1 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
-const _hoisted_3$1 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
-const _hoisted_4$1 = {
-  key: 0,
-  class: "value-name"
-};
-const _hoisted_5$1 = {
-  key: 1,
-  class: "value-name-empty"
-};
-const _hoisted_6$1 = {
-  key: 2,
-  class: "value-size"
-};
-const _hoisted_7$1 = {
-  key: 3,
-  class: "value-size-empty"
-};
-const _hoisted_8 = {
-  key: 4,
-  class: "value-new",
-  src: _imports_0
-};
-const _hoisted_9 = { style: {"width":"100%"} };
-const _hoisted_10 = { class: "select-submit" };
+const _hoisted_2$1 = { key: 0 };
+const _hoisted_3$1 = { style: {"width":"100%"} };
 
+// 遵循 Vue 3 v-model 规范，使用 modelValue
 
 var script$1 = {
   __name: 'index',
-  props: ["myProps"],
-  emits: ['get-value'],
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+},
+  emits: ['update:modelValue', 'change'],
   setup(__props, { emit: __emit }) {
 
 const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const value = vue.ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : []);
-const popup = vue.ref({
+const modelValue_box = vue.reactive(props.modelValue ?? []);
+const popup = vue.reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
+    formData: []
 });
-const nameEmpty = vue.ref('[未设置规格名称]');
-const sizeEmpty = vue.ref('[未设置规格内容]');
 
 const hdl = {
     popup() {
         if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value));
-            popup.value.visible = true;
+            popup.formData = JSON.parse(JSON.stringify(modelValue_box));
+            popup.visible = true;
         }
     },
     append() {
-        popup.value.value.push({
+        popup.formData.push({
             name: '',
             size: '',
             new: false,
         });
     },
     delete(index) {
-        popup.value.value.splice(index, 1);
+        popup.formData.splice(index, 1);
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value));
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        });
-        popup.value.visible = false;
-    },
+        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", submittingValue);
+        popup.visible = false;
+    }
 };
 
+const style = vue.reactive({
+    modelValue_box: {
+        nameEmpty: {
+            color: '#919191'
+        },
+        size: {
+            'margin-left': '10px',
+            color: 'blue'
+        },
+        sizeEmpty: {
+            color: '#919191'
+        },
+        new: {
+            'margin-left': '10px',
+            width: '32px',
+            height: '32px'
+        }
+    },
+    popup: {
+        name: {
+            width: '200px',
+            'margin-bottom': '10px',
+        },
+        size: {
+            width: '300px'
+        }
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+});
+
 return (_ctx, _cache) => {
+  const _component_Edit = vue.resolveComponent("Edit");
+  const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_input = vue.resolveComponent("el-input");
   const _component_el_switch = vue.resolveComponent("el-switch");
+  const _component_Delete = vue.resolveComponent("Delete");
   const _component_el_button = vue.resolveComponent("el-button");
+  const _component_Plus = vue.resolveComponent("Plus");
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
   return (vue.openBlock(), vue.createElementBlock("div", {
@@ -43032,32 +43275,65 @@ return (_ctx, _cache) => {
   }, [
     vue.createElementVNode("table", null, [
       vue.createElementVNode("tbody", null, [
-        (!value.value || value.value.length === 0)
+        (!modelValue_box || modelValue_box.length === 0)
           ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$1, [
               vue.createElementVNode("td", null, [
                 (!__props.myProps.readOnly)
-                  ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_2$1))
+                  ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                      key: 0,
+                      class: "edit-icon",
+                      size: 16,
+                      color: "blue"
+                    }, {
+                      default: vue.withCtx(() => [
+                        vue.createVNode(_component_Edit)
+                      ]),
+                      _: 1 /* STABLE */
+                    }))
                   : vue.createCommentVNode("v-if", true)
               ]),
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未设置规格]", -1 /* CACHED */))
             ]))
           : vue.createCommentVNode("v-if", true),
-        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(value.value, (item, index) => {
+        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.value, (item, index) => {
           return (vue.openBlock(), vue.createElementBlock("tr", null, [
             vue.createElementVNode("td", null, [
               (!__props.myProps.readOnly && index === 0)
-                ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_3$1))
+                ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                    key: 0,
+                    class: "edit-icon",
+                    size: 16,
+                    color: "blue"
+                  }, {
+                    default: vue.withCtx(() => [
+                      vue.createVNode(_component_Edit)
+                    ]),
+                    _: 1 /* STABLE */
+                  }))
                 : vue.createCommentVNode("v-if", true)
             ]),
             vue.createElementVNode("td", null, [
               (!!item.name)
-                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_4$1, vue.toDisplayString(item.name), 1 /* TEXT */))
-                : (vue.openBlock(), vue.createElementBlock("span", _hoisted_5$1, vue.toDisplayString(nameEmpty.value), 1 /* TEXT */)),
+                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_2$1, vue.toDisplayString(item.name), 1 /* TEXT */))
+                : (vue.openBlock(), vue.createElementBlock("span", {
+                    key: 1,
+                    style: vue.normalizeStyle(style.modelValue_box.nameEmpty)
+                  }, "[未设置规格名称]", 4 /* STYLE */)),
               (!!item.size)
-                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_6$1, vue.toDisplayString(item.size), 1 /* TEXT */))
-                : (vue.openBlock(), vue.createElementBlock("span", _hoisted_7$1, vue.toDisplayString(sizeEmpty.value), 1 /* TEXT */)),
+                ? (vue.openBlock(), vue.createElementBlock("span", {
+                    key: 2,
+                    style: vue.normalizeStyle(style.modelValue_box.size)
+                  }, vue.toDisplayString(item.size), 5 /* TEXT, STYLE */))
+                : (vue.openBlock(), vue.createElementBlock("span", {
+                    key: 3,
+                    style: vue.normalizeStyle(style.modelValue_box.sizeEmpty)
+                  }, "[未设置规格内容]", 4 /* STYLE */)),
               (!!item.new)
-                ? (vue.openBlock(), vue.createElementBlock("img", _hoisted_8))
+                ? (vue.openBlock(), vue.createElementBlock("img", {
+                    key: 4,
+                    style: vue.normalizeStyle(style.modelValue_box.new),
+                    src: _imports_0
+                  }, null, 4 /* STYLE */))
                 : vue.createCommentVNode("v-if", true)
             ])
           ]))
@@ -43065,8 +43341,8 @@ return (_ctx, _cache) => {
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
-      modelValue: popup.value.visible,
-      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.value.visible) = $event)),
+      modelValue: popup.visible,
+      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((popup.visible) = $event)),
       "custom-class": 'code-template-dialog',
       "close-on-press-escape": true,
       "append-to-body": "",
@@ -43075,31 +43351,31 @@ return (_ctx, _cache) => {
       "destroy-on-close": true
     }, {
       default: vue.withCtx(() => [
-        vue.createElementVNode("table", _hoisted_9, [
+        vue.createElementVNode("table", _hoisted_3$1, [
           vue.createElementVNode("tbody", null, [
-            _cache[6] || (_cache[6] = vue.createElementVNode("tr", null, [
+            _cache[4] || (_cache[4] = vue.createElementVNode("tr", null, [
               vue.createElementVNode("th", null, "规格名称"),
               vue.createElementVNode("th", null, "规格内容"),
               vue.createElementVNode("th", null, "上新标注"),
               vue.createElementVNode("th")
             ], -1 /* CACHED */)),
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.value.value, (item, index) => {
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData, (item, index) => {
               return (vue.openBlock(), vue.createElementBlock("tr", null, [
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
                     class: "input-name",
                     modelValue: item.name,
                     "onUpdate:modelValue": $event => ((item.name) = $event)
                   }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
                 ]),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
                     class: "input-size",
                     modelValue: item.size,
                     "onUpdate:modelValue": $event => ((item.size) = $event)
                   }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
                 ]),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_switch, {
                     modelValue: item.new,
                     "onUpdate:modelValue": $event => ((item.new) = $event),
@@ -43109,42 +43385,60 @@ return (_ctx, _cache) => {
                     "inactive-value": false
                   }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
                 ]),
-                vue.createElementVNode("th", null, [
+                vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_button, {
                     type: "danger",
-                    icon: "el-icon-delete",
                     circle: "",
                     size: "small",
                     onClick: $event => (hdl.delete(index))
-                  }, null, 8 /* PROPS */, ["onClick"])
+                  }, {
+                    default: vue.withCtx(() => [
+                      vue.createVNode(_component_el_icon, null, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_Delete)
+                        ]),
+                        _: 1 /* STABLE */
+                      })
+                    ]),
+                    _: 1 /* STABLE */
+                  }, 8 /* PROPS */, ["onClick"])
                 ])
               ]))
             }), 256 /* UNKEYED_FRAGMENT */)),
             vue.createElementVNode("tr", null, [
-              _cache[3] || (_cache[3] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              _cache[4] || (_cache[4] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              _cache[5] || (_cache[5] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-              vue.createElementVNode("th", null, [
+              _cache[3] || (_cache[3] = vue.createElementVNode("td", { colspan: "3" }, null, -1 /* CACHED */)),
+              vue.createElementVNode("td", null, [
                 vue.createVNode(_component_el_button, {
                   type: "primary",
-                  icon: "el-icon-plus",
                   circle: "",
                   size: "small",
                   style: {"margin-top":"20px"},
                   onClick: hdl.append
-                }, null, 8 /* PROPS */, ["onClick"])
+                }, {
+                  default: vue.withCtx(() => [
+                    vue.createVNode(_component_el_icon, null, {
+                      default: vue.withCtx(() => [
+                        vue.createVNode(_component_Plus)
+                      ]),
+                      _: 1 /* STABLE */
+                    })
+                  ]),
+                  _: 1 /* STABLE */
+                }, 8 /* PROPS */, ["onClick"])
               ])
             ])
           ])
         ]),
-        _cache[8] || (_cache[8] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
-        vue.createElementVNode("div", _hoisted_10, [
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.line)
+        }, null, 4 /* STYLE */),
+        vue.createElementVNode("div", null, [
           vue.createVNode(_component_el_button, {
             type: "danger",
             plain: "",
             onClick: hdl.submit
           }, {
-            default: vue.withCtx(() => [...(_cache[7] || (_cache[7] = [
+            default: vue.withCtx(() => [...(_cache[5] || (_cache[5] = [
               vue.createTextVNode("确认", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
@@ -43162,107 +43456,104 @@ return (_ctx, _cache) => {
 script$1.__scopeId = "data-v-7c91545e";
 script$1.__file = "src/ly0d7size/index.vue";
 
-const _hoisted_1 = {
-  key: 0,
-  class: "el-icon-edit",
-  style: {"color":"blue"}
-};
+const _hoisted_1 = { key: 0 };
 const _hoisted_2 = {
-  key: 0,
-  class: "value-number"
-};
-const _hoisted_3 = {
   key: 1,
-  class: "value-number-empty"
+  style: {"color":"#919191"}
 };
+const _hoisted_3 = { key: 0 };
 const _hoisted_4 = {
-  key: 0,
-  class: "value-number"
-};
-const _hoisted_5 = {
   key: 1,
-  class: "value-number-empty"
+  style: {"color":"#919191"}
 };
-const _hoisted_6 = { style: {"width":"100%"} };
-const _hoisted_7 = { class: "select-submit" };
+const _hoisted_5 = { style: {"width":"100%"} };
 
+// 遵循 Vue 3 v-model 规范，使用 modelValue
 
 var script = {
   __name: 'index',
-  props: ["myProps"],
-  emits: ['get-value'],
+  props: {
+    // modelValue: 外部 v-model 绑定的值
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    myProps: {
+        type: Object,
+        default: () => ({
+            readOnly: {
+                type: Boolean,
+                default: false
+            }
+        })
+    }
+    
+},
+  emits: ['update:modelValue', 'change'],
   setup(__props, { emit: __emit }) {
 
 const props = __props;
+// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const value = vue.ref(props.myProps.value ? JSON.parse(JSON.stringify(props.myProps.value)) : {
-    number: '',
-    name: '',
-    thumb: '',
-});
-const popup = vue.ref({
+const modelValue_box = vue.reactive(props.modelValue ?? {});
+const popup = vue.reactive({
     visible: false,
-    value: JSON.parse(JSON.stringify(value.value))
-});
-const size = vue.ref({
-    width: '100px',
-    height: '100px',
-});
-const style = vue.computed(()=>()=>{
-    return {
-        width:
-            props.myProps.thumb.size && props.myProps.thumb.size.width
-                ? props.myProps.thumb.size.width
-                : size.value.width,
-        height:
-            props.myProps.thumb.size && props.myProps.thumb.size.height
-                ? props.myProps.thumb.size.height
-                : size.value.height
+    formData: {
+        thumb: '',
+        name: '',
+        number: '',
     }
 });
 
-const upload = {
-    props: vue.computed(()=>()=>{
-        return {
-            uploadUrl: props.myProps.thumb.uploadUrl,
-            avatar: {
-                width:
-                    props.myProps.thumb.size && props.myProps.thumb.size.width
-                        ? props.myProps.thumb.size.width
-                        : props.size.width,
-                height:
-                    props.myProps.thumb.size && props.myProps.thumb.size.height
-                        ? props.myProps.thumb.size.height
-                        : size.value.height,
-            },
-        }
-    }),
-    getResult(result) {
-        // 可以获取多个文件上传结果
-        popup.value.value.thumb = result.fileList.length === 0 ? '' : result.fileList[0].src;
-    },
-};
+const upload = vue.reactive({
+    props: {
+        uploadUrl: props.myProps.thumb.uploadUrl || ly0request$1.upload,
+        avatar: {
+            width: props.myProps.thumb.width || '100px',
+            height: props.myProps.thumb.height || '100px'
+        },
+    }
+});
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.value.value = JSON.parse(JSON.stringify(value.value));
-            popup.value.visible = true;
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = {
+            thumb: modelValue_box[props.myProps.thumb.fieldName],
+            number: modelValue_box[props.myProps.number.fieldName],
+            name: modelValue_box[props.myProps.name.fieldName],
+        };
+        popup.visible = true;
     },
     submit() {
-        value.value = JSON.parse(JSON.stringify(popup.value.value));
-        emit("get-value", {
-            value: JSON.parse(JSON.stringify(popup.value.value)),
-            _id: props.myProps._id ?? null
-        });
-        popup.value.visible = false;
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        Object.assign(modelValue_box, popup.formData);
+        emit("update:modelValue", modelValue_box);
+        popup.visible = false;
     },
 };
 
+const style = {
+    thumb: {
+        width: props.myProps.thumb.width || '100px',
+        height: props.myProps.thumb.height || '100px'
+    },
+    line: {
+        height: '1px',
+        'background-color': '#6a6a6a',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+};
+
+
 return (_ctx, _cache) => {
   const _component_el_image = vue.resolveComponent("el-image");
+  const _component_Edit = vue.resolveComponent("Edit");
+  const _component_el_icon = vue.resolveComponent("el-icon");
   const _component_el_collapse_item = vue.resolveComponent("el-collapse-item");
   const _component_el_collapse = vue.resolveComponent("el-collapse");
   const _component_ly0Upload_avatar = vue.resolveComponent("ly0Upload_avatar");
@@ -43274,12 +43565,12 @@ return (_ctx, _cache) => {
     vue.createElementVNode("table", null, [
       vue.createElementVNode("tbody", null, [
         vue.createElementVNode("tr", null, [
-          _cache[4] || (_cache[4] = vue.createElementVNode("th", null, null, -1 /* CACHED */)),
-          vue.createElementVNode("th", null, [
+          _cache[5] || (_cache[5] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
+          vue.createElementVNode("td", null, [
             vue.createVNode(_component_el_image, {
-              style: vue.normalizeStyle(style.value),
-              src: value.value.thumb,
-              "preview-src-list": [value.value.thumb],
+              style: vue.normalizeStyle(style.thumb),
+              src: modelValue_box[__props.myProps.thumb.fieldName][0],
+              "preview-src-list": modelValue_box[__props.myProps.thumb.fieldName],
               "preview-teleported": true,
               "hide-on-click-modal": true
             }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
@@ -43288,106 +43579,121 @@ return (_ctx, _cache) => {
         vue.createElementVNode("tr", {
           onClick: _cache[0] || (_cache[0] = (...args) => (hdl.popup && hdl.popup(...args)))
         }, [
-          vue.createElementVNode("th", null, [
+          vue.createElementVNode("td", null, [
             (!__props.myProps.readOnly)
-              ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_1))
+              ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                  key: 0,
+                  class: "edit-icon",
+                  size: 16,
+                  color: "blue"
+                }, {
+                  default: vue.withCtx(() => [
+                    vue.createVNode(_component_Edit)
+                  ]),
+                  _: 1 /* STABLE */
+                }))
               : vue.createCommentVNode("v-if", true)
           ]),
-          vue.createElementVNode("th", null, [
+          vue.createElementVNode("td", null, [
             vue.createElementVNode("div", null, [
-              (!!value.value.number)
-                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_2, vue.toDisplayString(value.value.number), 1 /* TEXT */))
-                : (vue.openBlock(), vue.createElementBlock("span", _hoisted_3, "[未设置商品编号]"))
+              (!!modelValue_box[__props.myProps.number.fieldName])
+                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_1, vue.toDisplayString(modelValue_box[__props.myProps.number.fieldName]), 1 /* TEXT */))
+                : (vue.openBlock(), vue.createElementBlock("span", _hoisted_2, "[未设置商品编号]"))
             ]),
             vue.createElementVNode("div", null, [
-              (!!value.value.name)
-                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_4, vue.toDisplayString(value.value.name), 1 /* TEXT */))
-                : (vue.openBlock(), vue.createElementBlock("span", _hoisted_5, "[未设置商品名称]"))
+              (!!modelValue_box[__props.myProps.name.fieldName])
+                ? (vue.openBlock(), vue.createElementBlock("span", _hoisted_3, vue.toDisplayString(modelValue_box[__props.myProps.name.fieldName]), 1 /* TEXT */))
+                : (vue.openBlock(), vue.createElementBlock("span", _hoisted_4, "[未设置商品名称]"))
             ])
           ])
         ])
       ])
     ]),
-    vue.createVNode(_component_el_dialog, {
-      modelValue: popup.value.visible,
-      "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((popup.value.visible) = $event)),
-      "custom-class": 'code-template-dialog',
-      "close-on-press-escape": true,
-      "append-to-body": "",
-      title: "商品编号、名称及缩略图",
-      width: "800px",
-      "destroy-on-close": true
-    }, {
-      default: vue.withCtx(() => [
-        vue.createElementVNode("table", _hoisted_6, [
-          vue.createElementVNode("tbody", null, [
-            vue.createElementVNode("tr", null, [
-              vue.createElementVNode("th", null, [
-                vue.createVNode(_component_el_collapse, null, {
-                  default: vue.withCtx(() => [
-                    vue.createVNode(_component_el_collapse_item, { title: "原图" }, {
+    (!__props.myProps.readOnly)
+      ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
+          key: 0,
+          modelValue: popup.visible,
+          "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((popup.visible) = $event)),
+          "custom-class": 'code-template-dialog',
+          "close-on-press-escape": true,
+          "append-to-body": "",
+          title: "商品编号、名称及缩略图",
+          width: "800px",
+          "destroy-on-close": true
+        }, {
+          default: vue.withCtx(() => [
+            vue.createElementVNode("table", _hoisted_5, [
+              vue.createElementVNode("tbody", null, [
+                vue.createElementVNode("tr", null, [
+                  vue.createElementVNode("td", null, [
+                    vue.createVNode(_component_el_collapse, null, {
                       default: vue.withCtx(() => [
-                        vue.createVNode(_component_el_image, {
-                          style: vue.normalizeStyle(style.value),
-                          src: value.value.thumb,
-                          "preview-src-list": [popup.value.value.thumb]
-                        }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
+                        vue.createVNode(_component_el_collapse_item, { title: "原图" }, {
+                          default: vue.withCtx(() => [
+                            vue.createVNode(_component_el_image, {
+                              style: vue.normalizeStyle(style.thumb),
+                              src: popup.formData.thumb[0],
+                              "preview-src-list": popup.formData.thumb
+                            }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
+                          ]),
+                          _: 1 /* STABLE */
+                        })
                       ]),
                       _: 1 /* STABLE */
                     })
-                  ]),
-                  _: 1 /* STABLE */
-                })
-              ])
-            ]),
-            vue.createElementVNode("tr", null, [
-              vue.createElementVNode("th", null, [
-                _cache[5] || (_cache[5] = vue.createElementVNode("div", { style: {"margin-top":"10px","margin-bottom":"10px"} }, "上传新图", -1 /* CACHED */)),
-                vue.createVNode(_component_ly0Upload_avatar, {
-                  myProps: upload.props,
-                  onGetUploadResult: upload.getResult
-                }, null, 8 /* PROPS */, ["myProps", "onGetUploadResult"])
-              ])
-            ]),
-            vue.createElementVNode("tr", null, [
-              vue.createElementVNode("th", null, [
-                _cache[6] || (_cache[6] = vue.createElementVNode("div", { style: {"margin-top":"10px","margin-bottom":"10px"} }, "商品编号", -1 /* CACHED */)),
-                vue.createElementVNode("div", null, [
-                  vue.createVNode(_component_el_input, {
-                    class: "input-number",
-                    modelValue: popup.value.value.number,
-                    "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((popup.value.value.number) = $event))
-                  }, null, 8 /* PROPS */, ["modelValue"])
+                  ])
                 ]),
-                _cache[7] || (_cache[7] = vue.createElementVNode("div", { style: {"margin-top":"10px","margin-bottom":"10px"} }, "商品名称", -1 /* CACHED */)),
-                vue.createElementVNode("div", null, [
-                  vue.createVNode(_component_el_input, {
-                    class: "input-number",
-                    modelValue: popup.value.value.name,
-                    "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((popup.value.value.name) = $event)),
-                    style: {"width":"400px"}
-                  }, null, 8 /* PROPS */, ["modelValue"])
+                vue.createElementVNode("tr", null, [
+                  vue.createElementVNode("td", null, [
+                    _cache[6] || (_cache[6] = vue.createElementVNode("div", { style: {"margin-top":"10px","margin-bottom":"10px"} }, "上传新图", -1 /* CACHED */)),
+                    vue.createVNode(_component_ly0Upload_avatar, {
+                      modelValue: popup.formData.thumb,
+                      "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((popup.formData.thumb) = $event)),
+                      myProps: upload.props
+                    }, null, 8 /* PROPS */, ["modelValue", "myProps"])
+                  ])
+                ]),
+                vue.createElementVNode("tr", null, [
+                  vue.createElementVNode("th", null, [
+                    _cache[7] || (_cache[7] = vue.createElementVNode("div", { style: {"margin-top":"10px","margin-bottom":"10px"} }, "商品编号", -1 /* CACHED */)),
+                    vue.createElementVNode("div", null, [
+                      vue.createVNode(_component_el_input, {
+                        style: {"width":"200px"},
+                        modelValue: popup.formData.number,
+                        "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((popup.formData.number) = $event))
+                      }, null, 8 /* PROPS */, ["modelValue"])
+                    ]),
+                    _cache[8] || (_cache[8] = vue.createElementVNode("div", { style: {"margin-top":"10px","margin-bottom":"10px"} }, "商品名称", -1 /* CACHED */)),
+                    vue.createElementVNode("div", null, [
+                      vue.createVNode(_component_el_input, {
+                        style: {"width":"400px"},
+                        modelValue: popup.formData.name,
+                        "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((popup.formData.name) = $event))
+                      }, null, 8 /* PROPS */, ["modelValue"])
+                    ])
+                  ])
                 ])
               ])
+            ]),
+            vue.createElementVNode("div", {
+              style: vue.normalizeStyle(style.line)
+            }, null, 4 /* STYLE */),
+            vue.createElementVNode("div", null, [
+              vue.createVNode(_component_el_button, {
+                type: "danger",
+                plain: "",
+                onClick: hdl.submit
+              }, {
+                default: vue.withCtx(() => [...(_cache[9] || (_cache[9] = [
+                  vue.createTextVNode("确认", -1 /* CACHED */)
+                ]))]),
+                _: 1 /* STABLE */
+              }, 8 /* PROPS */, ["onClick"])
             ])
-          ])
-        ]),
-        _cache[9] || (_cache[9] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
-        vue.createElementVNode("div", _hoisted_7, [
-          vue.createVNode(_component_el_button, {
-            type: "danger",
-            plain: "",
-            onClick: hdl.submit
-          }, {
-            default: vue.withCtx(() => [...(_cache[8] || (_cache[8] = [
-              vue.createTextVNode("确认", -1 /* CACHED */)
-            ]))]),
-            _: 1 /* STABLE */
-          }, 8 /* PROPS */, ["onClick"])
-        ])
-      ]),
-      _: 1 /* STABLE */
-    }, 8 /* PROPS */, ["modelValue"])
+          ]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["modelValue"]))
+      : vue.createCommentVNode("v-if", true)
   ]))
 }
 }

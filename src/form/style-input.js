@@ -13,13 +13,13 @@ function box(item){
 }
 
 // inputType: "text"
-function text(item, myProps){
+function text(item, formProps){
     return {
         'white-space': 'pre-line', // 保留换行符
         'border-left': '#ababab solid 1px',
         'border-top': '#ababab solid 1px',
         'padding-left': '10px',
-        width: item.inputWidth ? item.inputWidth : myProps.para.inputWidth
+        width: item.inputWidth ? item.inputWidth : formProps.para.inputWidth
     }
 }
 
@@ -32,9 +32,9 @@ function text0(item){
 }
 
 // inputType: "input", "select", "date-picker"
-function input(item, myProps){
+function input(item, formProps){
     return {
-        width: item.inputWidth ? item.inputWidth : myProps.para.inputWidth,
+        width: item.inputWidth ? item.inputWidth : formProps.para.inputWidth,
         height: '40px'
     }
 }
@@ -99,40 +99,40 @@ function button_group(item, groupItem, buttonItem){
 }
 
 // inputType: "image"
-function image(item, myProps){
+function image(item, formProps){
     return {
-        width: item.imageWidth ? item.imageWidth : myProps.para.image.width,
-        height: item.imageHeight ? item.imageHeight : myProps.para.image.height,
+        width: item.imageWidth ? item.imageWidth : formProps.para.image.width,
+        height: item.imageHeight ? item.imageHeight : formProps.para.image.height,
     }
 }
 
 // inputType: "images"
-function images(item, myProps){
+function images(item, formProps){
     return {
         itemBox: {
             display: 'inline-block',
             margin: '10px'
         },
         itemThumb: {
-            width: item.imageWidth ? item.imageWidth : myProps.para.thumb.width,
-            height: item.imageHeight ? item.imageHeight : myProps.para.thumb.height,
+            width: item.imageWidth ? item.imageWidth : formProps.para.thumb.width,
+            height: item.imageHeight ? item.imageHeight : formProps.para.thumb.height,
         }
     }
 }
 
 // inputType: "richtext"
-function richtext(item, myProps){
+function richtext(item, formProps){
     return {
         // 富文本编辑器宽度
-        width: item.editorWidth ? item.editorWidth : myProps.para.richtext.editorWidth,
+        width: item.editorWidth ? item.editorWidth : formProps.para.richtext.editorWidth,
     }
 }
 
 // inputType: "video"
-function video(item, myProps){
+function video(item, formProps){
     return {
-        width: item.videoWidth ? item.videoWidth : myProps.videoWidth,
-        height: item.videoHeight ? item.videoHeight : myProps.videoHeight,
+        width: item.videoWidth ? item.videoWidth : formProps.para.video.width,
+        height: item.videoHeight ? item.videoHeight : formProps.para.video.height,
     }
 }
 
