@@ -2,11 +2,11 @@
     <table>
         <tbody>
             <tr v-if="!modelValue_box || modelValue_box.length === 0">
-                <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                 <td>[未设置规格]</td>
             </tr>
             <tr v-for="(item, index) in value">
-                <td><el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
                 <td>
                     <span v-if="!!item.name">{{ item.name }}</span>
                     <span v-else :style="style.modelValue_box.nameEmpty">[未设置规格名称]</span>
@@ -77,10 +77,6 @@
 </div></template>
 
 <style lang="scss" scoped>
-.edit-icon {
-    vertical-align: middle;
-    margin-right: 5px;
-}
 </style>
 
 <script setup>
@@ -114,10 +110,11 @@ const popup = reactive({
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.formData = JSON.parse(JSON.stringify(modelValue_box))
-            popup.visible = true
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box))
+        popup.visible = true
     },
     append() {
         popup.formData.push({
@@ -130,7 +127,8 @@ const hdl = {
         popup.formData.splice(index, 1)
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData)
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", submittingValue)
         popup.visible = false

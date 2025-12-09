@@ -23246,7 +23246,7 @@ return (_ctx, _cache) => {
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 行政区划 "),
-      (vue.unref(propsItem_box).inputType === 'd3gbt2260')
+      (vue.unref(propsItem_box).inputType === 'ly0gbt2260')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_23, [
             vue.createVNode(_component_ly0gbt2260, {
               modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
@@ -23256,7 +23256,7 @@ return (_ctx, _cache) => {
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品分类 "),
-      (vue.unref(propsItem_box).inputType === 'd7group')
+      (vue.unref(propsItem_box).inputType === 'ly0d7group')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_24, [
             vue.createVNode(_component_ly0d7group, {
               modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
@@ -23266,7 +23266,7 @@ return (_ctx, _cache) => {
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 邮寄地址 "),
-      (vue.unref(propsItem_box).inputType === 'd7postal')
+      (vue.unref(propsItem_box).inputType === 'ly0d7postal')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_25, [
             vue.createVNode(_component_ly0d7postal, {
               modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
@@ -23276,7 +23276,7 @@ return (_ctx, _cache) => {
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品标价 "),
-      (vue.unref(propsItem_box).inputType === 'd7price')
+      (vue.unref(propsItem_box).inputType === 'ly0d7price')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_26, [
             vue.createVNode(_component_ly0d7price, {
               modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
@@ -23286,7 +23286,7 @@ return (_ctx, _cache) => {
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品规格 "),
-      (vue.unref(propsItem_box).inputType === 'd7size')
+      (vue.unref(propsItem_box).inputType === 'ly0d7size')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_27, [
             vue.createVNode(_component_ly0d7size, {
               modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
@@ -23296,7 +23296,7 @@ return (_ctx, _cache) => {
           ]))
         : vue.createCommentVNode("v-if", true),
       vue.createCommentVNode(" 商品缩略图 "),
-      (vue.unref(propsItem_box).inputType === 'd7thumb')
+      (vue.unref(propsItem_box).inputType === 'ly0d7thumb')
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_28, [
             vue.createVNode(_component_ly0d7thumb, {
               modelValue: vue.unref(formData_box),
@@ -41999,69 +41999,70 @@ vue.watch(() => props.modelValue,
             
             // 确保按顺序加载级联数据
             if (modelValue_box.code2) {
-                await hdlChangeCode2(modelValue_box.code2);
+                await hdl.changeCode2(modelValue_box.code2);
             }
             if (modelValue_box.code4) {
-                await hdlChangeCode4(modelValue_box.code4);
+                await hdl.changeCode4(modelValue_box.code4);
             }
         }
     },
     { immediate: true }
 );
 
-const hdlPopup = async () => {
-    if (props.myProps.readOnly) {
-        return
+const hdl = {
+    popup: async () => {
+        if (props.myProps.readOnly) {
+            return
+        }
+        
+        popup.formData.code2 = modelValue_box.code2;
+        await hdl.changeCode2(popup.formData.code2);
+        
+        popup.formData.code4 = modelValue_box.code4;
+        await hdl.changeCode4(popup.formData.code4);
+        
+        popup.formData.code6 = modelValue_box.code6;
+        popup.visible = true;
+    },
+    
+    changeCode2: async value => { // 使用 async 标记
+        const result = await request.ly0.storpro({
+            noSession: true,
+            storproName: 'ly0d3.gbt2260code4.code2',
+            data: {code2: value},
+        });
+        
+        popup.formData.arrCode4 = result.arrCode4.filter(item => item.code4);
+        popup.formData.code4 = '';
+        popup.formData.arrCode6 = [];
+        popup.formData.code6 = '';
+    },
+    
+    changeCode4: async value => {
+        const result = await request.ly0.storpro({
+            noSession: true,
+            storproName: 'ly0d3.gbt2260code6.code4',
+            data: {code4: value},
+        });
+        
+        popup.formData.arrCode6 = result.arrCode6.filter(item => item.code6);
+        popup.formData.code6 = '';
+    },
+    
+    submit: () => {
+        modelValue_box.code2 = popup.formData.code2;
+        const foundItem2 = popup.formData.arrCode2.find(i => i.code2 === modelValue_box.code2);
+        modelValue_box.text2 = foundItem2 ? foundItem2.text2 : '';
+        modelValue_box.code4 = popup.formData.code4;
+        const foundItem4 = popup.formData.arrCode4.find(i => i.code4 === modelValue_box.code4);
+        modelValue_box.text4 = foundItem4 ? foundItem4.text4 : '';
+        modelValue_box.code6 = popup.formData.code6;
+        const foundItem6 = popup.formData.arrCode6.find(i => i.code6 === modelValue_box.code6);
+        modelValue_box.text6 = foundItem6 ? foundItem6.text6 : '';
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", modelValue_box.code6 ?? modelValue_box.code4 ?? modelValue_box.code2 ?? '');
+        popup.visible = false;
     }
-    
-    popup.formData.code2 = modelValue_box.code2;
-    await hdlChangeCode2(popup.formData.code2);
-    
-    popup.formData.code4 = modelValue_box.code4;
-    await hdlChangeCode4(popup.formData.code4);
-    
-    popup.formData.code6 = modelValue_box.code6;
-    popup.visible = true;
-};
-
-const hdlChangeCode2 = async value => { // 使用 async 标记
-    const result = await request.ly0.storpro({
-        noSession: true,
-        storproName: 'ly0d3.gbt2260code4.code2',
-        data: {code2: value},
-    });
-    
-    popup.formData.arrCode4 = result.arrCode4.filter(item => item.code4);
-    popup.formData.code4 = '';
-    popup.formData.arrCode6 = [];
-    popup.formData.code6 = '';
-};
-
-const hdlChangeCode4 = async value => {
-    const result = await request.ly0.storpro({
-        noSession: true,
-        storproName: 'ly0d3.gbt2260code6.code4',
-        data: {code4: value},
-    });
-    
-    popup.formData.arrCode6 = result.arrCode6.filter(item => item.code6);
-    popup.formData.code6 = '';
-};
-
-const hdlSubmit = () => {
-    // ... (安全查找逻辑) ...
-    modelValue_box.code2 = popup.formData.code2;
-    const foundItem2 = popup.formData.arrCode2.find(i => i.code2 === modelValue_box.code2);
-    modelValue_box.text2 = foundItem2 ? foundItem2.text2 : '';
-    modelValue_box.code4 = popup.formData.code4;
-    const foundItem4 = popup.formData.arrCode4.find(i => i.code4 === modelValue_box.code4);
-    modelValue_box.text4 = foundItem4 ? foundItem4.text4 : '';
-    modelValue_box.code6 = popup.formData.code6;
-    const foundItem6 = popup.formData.arrCode6.find(i => i.code6 === modelValue_box.code6);
-    modelValue_box.text6 = foundItem6 ? foundItem6.text6 : '';
-    // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-    emit("update:modelValue", modelValue_box.code6 ?? modelValue_box.code4 ?? modelValue_box.code2 ?? '');
-    popup.visible = false;
 };
 
 const style = vue.reactive({
@@ -42107,7 +42108,9 @@ return (_ctx, _cache) => {
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (vue.openBlock(), vue.createElementBlock("div", { onClick: hdlPopup }, [
+  return (vue.openBlock(), vue.createElementBlock("div", {
+    onClick: _cache[4] || (_cache[4] = (...args) => (hdl.popup && hdl.popup(...args)))
+  }, [
     vue.createElementVNode("table", null, [
       vue.createElementVNode("tbody", null, [
         vue.createElementVNode("tr", null, [
@@ -42136,7 +42139,7 @@ return (_ctx, _cache) => {
           ])
         ]),
         vue.createElementVNode("tr", null, [
-          _cache[4] || (_cache[4] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
+          _cache[5] || (_cache[5] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
               style: vue.normalizeStyle(style.modelValue_box.code)
@@ -42149,7 +42152,7 @@ return (_ctx, _cache) => {
           ])
         ]),
         vue.createElementVNode("tr", null, [
-          _cache[5] || (_cache[5] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
+          _cache[6] || (_cache[6] = vue.createElementVNode("td", null, null, -1 /* CACHED */)),
           vue.createElementVNode("td", null, [
             vue.createElementVNode("span", {
               style: vue.normalizeStyle(style.modelValue_box.code)
@@ -42189,7 +42192,7 @@ return (_ctx, _cache) => {
                   placeholder: "请选择 省",
                   filterable: "",
                   style: vue.normalizeStyle(style.popup.select),
-                  onChange: hdlChangeCode2
+                  onChange: hdl.changeCode2
                 }, {
                   default: vue.withCtx(() => [
                     (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData.arrCode2, (item, index) => {
@@ -42201,7 +42204,7 @@ return (_ctx, _cache) => {
                     }), 128 /* KEYED_FRAGMENT */))
                   ]),
                   _: 1 /* STABLE */
-                }, 8 /* PROPS */, ["modelValue", "style"])
+                }, 8 /* PROPS */, ["modelValue", "style", "onChange"])
               ])
             ]),
             vue.createElementVNode("tr", null, [
@@ -42217,7 +42220,7 @@ return (_ctx, _cache) => {
                   placeholder: "请选择 市",
                   filterable: "",
                   style: vue.normalizeStyle(style.popup.select),
-                  onChange: hdlChangeCode4
+                  onChange: hdl.changeCode4
                 }, {
                   default: vue.withCtx(() => [
                     (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(popup.formData.arrCode4, (item, index) => {
@@ -42229,7 +42232,7 @@ return (_ctx, _cache) => {
                     }), 128 /* KEYED_FRAGMENT */))
                   ]),
                   _: 1 /* STABLE */
-                }, 8 /* PROPS */, ["modelValue", "style"])
+                }, 8 /* PROPS */, ["modelValue", "style", "onChange"])
               ])
             ]),
             vue.createElementVNode("tr", null, [
@@ -42270,13 +42273,13 @@ return (_ctx, _cache) => {
           vue.createVNode(_component_el_button, {
             type: "danger",
             plain: "",
-            onClick: hdlSubmit
+            onClick: hdl.submit
           }, {
-            default: vue.withCtx(() => [...(_cache[6] || (_cache[6] = [
+            default: vue.withCtx(() => [...(_cache[7] || (_cache[7] = [
               vue.createTextVNode("确认", -1 /* CACHED */)
             ]))]),
             _: 1 /* STABLE */
-          })
+          }, 8 /* PROPS */, ["onClick"])
         ], 4 /* STYLE */)
       ]),
       _: 1 /* STABLE */
@@ -42331,10 +42334,11 @@ const popup = vue.reactive({
 const hdl = {
     // 弹出编辑窗口
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.formData = JSON.parse(JSON.stringify(modelValue));
-            popup.visible = true;
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box));
+        popup.visible = true;
     },
     append() {
         popup.formData.push({ value: '' });
@@ -42343,7 +42347,8 @@ const hdl = {
         popup.formData.splice(index, 1);
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", submittingValue);
         popup.visible = false;
@@ -42404,7 +42409,6 @@ return (_ctx, _cache) => {
                 (!__props.myProps.readOnly)
                   ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                       key: 0,
-                      class: "edit-icon",
                       size: 16,
                       color: "blue"
                     }, {
@@ -42422,7 +42426,6 @@ return (_ctx, _cache) => {
                 (!__props.myProps.readOnly)
                   ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                       key: 0,
-                      class: "edit-icon",
                       size: 16,
                       color: "blue"
                     }, {
@@ -42543,7 +42546,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$4.__scopeId = "data-v-8e9aa4f6";
 script$4.__file = "src/ly0d7group/index.vue";
 
 const _hoisted_1$3 = { key: 0 };
@@ -42568,7 +42570,6 @@ var script$3 = {
             }
         })
     }
-    
 },
   emits: ['update:modelValue', 'change'],
   setup(__props, { emit: __emit }) {
@@ -42585,10 +42586,11 @@ const popup = vue.reactive({
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.formData = JSON.parse(JSON.stringify(modelValue_box));
-            popup.visible = true;
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box));
+        popup.visible = true;
     },
     append() {
         popup.formData.push({
@@ -42602,9 +42604,10 @@ const hdl = {
         popup.formData.splice(index, 1);
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         let arrPromise = [];
-        submittingValue.forEach(i => {
+        modelValue_box.forEach(i => {
             arrPromise.push(
                 request.ly0.storpro({
                     noSession: true,
@@ -42615,11 +42618,11 @@ const hdl = {
         });
         Promise.all(arrPromise).then(result => {
             result.forEach((item, index) => {
-                submittingValue[index].gbt2260text =
+                modelValue_box[index].gbt2260text =
                     item.itemCode6.text2 + '-' + item.itemCode6.text4 + '-' + item.itemCode6.text6;
             });
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-            emit("update:modelValue", submittingValue);
+            emit("update:modelValue", modelValue_box);
             popup.visible = false;
         });
     }
@@ -42658,7 +42661,7 @@ const style = vue.reactive({
 return (_ctx, _cache) => {
   const _component_Edit = vue.resolveComponent("Edit");
   const _component_el_icon = vue.resolveComponent("el-icon");
-  const _component_ly0d3gbt2260 = vue.resolveComponent("ly0d3gbt2260");
+  const _component_ly0gbt2260 = vue.resolveComponent("ly0gbt2260");
   const _component_el_input = vue.resolveComponent("el-input");
   const _component_Delete = vue.resolveComponent("Delete");
   const _component_el_button = vue.resolveComponent("el-button");
@@ -42676,7 +42679,6 @@ return (_ctx, _cache) => {
                 (!__props.myProps.readOnly)
                   ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                       key: 0,
-                      class: "edit-icon",
                       size: 16,
                       color: "blue"
                     }, {
@@ -42696,7 +42698,6 @@ return (_ctx, _cache) => {
               (!__props.myProps.readOnly && index === 0)
                 ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                     key: 0,
-                    class: "edit-icon",
                     size: 16,
                     color: "blue"
                   }, {
@@ -42773,7 +42774,7 @@ return (_ctx, _cache) => {
               return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
                 vue.createCommentVNode(" 左对齐，使用<td> "),
                 vue.createElementVNode("td", null, [
-                  vue.createVNode(_component_ly0d3gbt2260, {
+                  vue.createVNode(_component_ly0gbt2260, {
                     modelValue: item.gbt2260code,
                     "onUpdate:modelValue": $event => ((item.gbt2260code) = $event),
                     myProps: { readonly: true }
@@ -42869,7 +42870,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$3.__scopeId = "data-v-5dad54db";
 script$3.__file = "src/ly0d7postal/index.vue";
 
 var _imports_0$1 = "data:image/png;base64,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";
@@ -42918,12 +42918,11 @@ const hdl = {
         if (props.myProps.readOnly) {
             return
         }
-        const copiedValue = JSON.parse(JSON.stringify(modelValue_box));
-        popup.formData = copiedValue.map(item => ({
-            ...item,
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box));
+        popup.formData.forEach(i => {
             // 价格从“分”转换为“元”
-            price: item.price / 100
-        }));
+            i.price = i.price / 100;
+        });
         popup.visible = true;
     },
     append() {
@@ -42939,13 +42938,14 @@ const hdl = {
         popup.formData.splice(index, 1);
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
-        submittingValue.forEach(item => {
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
+        modelValue_box.forEach(i => {
             // 确保 price 是数字，然后转为“分”
-            item.price = Math.floor(Number(item.price) * 100);
+            i.price = Math.floor(Number(i.price) * 100);
         });
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue);
+        emit("update:modelValue", modelValue_box);
         popup.visible = false;
     },
 };
@@ -43016,7 +43016,6 @@ return (_ctx, _cache) => {
                 (!__props.myProps.readOnly)
                   ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                       key: 0,
-                      class: "edit-icon",
                       size: 16,
                       color: "blue"
                     }, {
@@ -43036,7 +43035,6 @@ return (_ctx, _cache) => {
               (!__props.myProps.readOnly && index === 0)
                 ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                     key: 0,
-                    class: "edit-icon",
                     size: 16,
                     color: "blue"
                   }, {
@@ -43219,7 +43217,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$2.__scopeId = "data-v-5a05f3cf";
 script$2.__file = "src/ly0d7price/index.vue";
 
 var _imports_0 = "data:image/png;base64,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";
@@ -43263,10 +43260,11 @@ const popup = vue.reactive({
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.formData = JSON.parse(JSON.stringify(modelValue_box));
-            popup.visible = true;
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box));
+        popup.visible = true;
     },
     append() {
         popup.formData.push({
@@ -43279,7 +43277,8 @@ const hdl = {
         popup.formData.splice(index, 1);
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData));
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", submittingValue);
         popup.visible = false;
@@ -43342,7 +43341,6 @@ return (_ctx, _cache) => {
                 (!__props.myProps.readOnly)
                   ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                       key: 0,
-                      class: "edit-icon",
                       size: 16,
                       color: "blue"
                     }, {
@@ -43362,7 +43360,6 @@ return (_ctx, _cache) => {
               (!__props.myProps.readOnly && index === 0)
                 ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                     key: 0,
-                    class: "edit-icon",
                     size: 16,
                     color: "blue"
                   }, {
@@ -43514,7 +43511,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$1.__scopeId = "data-v-7c91545e";
 script$1.__file = "src/ly0d7size/index.vue";
 
 const _hoisted_1 = { key: 0 };
@@ -43590,8 +43586,9 @@ const hdl = {
         popup.visible = true;
     },
     submit() {
-        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         Object.assign(modelValue_box, popup.formData);
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", modelValue_box);
         popup.visible = false;
     },
@@ -43644,7 +43641,6 @@ return (_ctx, _cache) => {
             (!__props.myProps.readOnly)
               ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
                   key: 0,
-                  class: "edit-icon",
                   size: 16,
                   color: "blue"
                 }, {
@@ -43761,7 +43757,6 @@ return (_ctx, _cache) => {
 
 };
 
-script.__scopeId = "data-v-a99f2fc8";
 script.__file = "src/ly0d7thumb/index.vue";
 
 var index = {

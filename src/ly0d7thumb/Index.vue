@@ -15,7 +15,7 @@
                     </td>
                 </tr>
                 <tr @click="hdl.popup">
-                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>
                         <div>
                             <span v-if="!!modelValue_box[myProps.number.fieldName]">{{ modelValue_box[myProps.number.fieldName] }}</span>
@@ -82,10 +82,6 @@
 </template>
 
 <style lang="scss" scoped>
-.edit-icon {
-    vertical-align: middle;
-    margin-right: 5px;
-}
 </style>
 
 <script setup>
@@ -146,8 +142,9 @@ const hdl = {
         popup.visible = true
     },
     submit() {
-        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         Object.assign(modelValue_box, popup.formData)
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", modelValue_box)
         popup.visible = false
     },

@@ -3,11 +3,11 @@
         <table>
             <tbody>
                 <tr v-if="!modelValue_box || modelValue_box.length === 0">
-                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未标价]</td>
                 </tr>
                 <tr v-for="(item, index) in modelValue_box" :key="index">
-                    <td><el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>
                         <span v-if="!!item.name" :style="style.modelValue_box.name">{{ item.name }}</span>
                         <span v-else :style="style.modelValue_box.name_empty">[未设置标价名称]</span>
@@ -98,10 +98,6 @@
 </template>
 
 <style lang="scss" scoped>
-.edit-icon {
-    vertical-align: middle;
-    margin-right: 5px;
-}
 </style>
 
 <script setup>
@@ -139,12 +135,11 @@ const hdl = {
         if (props.myProps.readOnly) {
             return
         }
-        const copiedValue = JSON.parse(JSON.stringify(modelValue_box))
-        popup.formData = copiedValue.map(item => ({
-            ...item,
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box))
+        popup.formData.forEach(i => {
             // 价格从“分”转换为“元”
-            price: item.price / 100
-        }))
+            i.price = i.price / 100
+        })
         popup.visible = true
     },
     append() {
@@ -160,13 +155,14 @@ const hdl = {
         popup.formData.splice(index, 1)
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
-        submittingValue.forEach(item => {
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData)
+        modelValue_box.forEach(i => {
             // 确保 price 是数字，然后转为“分”
-            item.price = Math.floor(Number(item.price) * 100)
+            i.price = Math.floor(Number(i.price) * 100)
         })
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue)
+        emit("update:modelValue", modelValue_box)
         popup.visible = false
     },
 }

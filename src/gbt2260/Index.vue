@@ -1,12 +1,10 @@
 <template>
-    <div @click="hdlPopup">
+    <div @click="hdl.popup">
         <table>
             <tbody>
                 <tr>
                     <td>
-                        <el-icon v-if="!myProps.readOnly" style="color: blue">
-                            <edit />
-                        </el-icon>
+                        <el-icon v-if="!myProps.readOnly" style="color: blue"><edit /></el-icon>
                     </td>
                     <td>
                         <span :style="style.modelValue_box.code">{{ '[' + (modelValue_box.code2 ? modelValue_box.code2 : '省') + ']' }}</span>
@@ -54,7 +52,7 @@
                                 placeholder="请选择 省"
                                 filterable
                                 :style="style.popup.select"
-                                @change="hdlChangeCode2"
+                                @change="hdl.changeCode2"
                             >
                                 <el-option
                                     v-for="(item, index) in popup.formData.arrCode2"
@@ -73,7 +71,7 @@
                                 placeholder="请选择 市"
                                 filterable
                                 :style="style.popup.select"
-                                @change="hdlChangeCode4"
+                                @change="hdl.changeCode4"
                             >
                                 <el-option
                                     v-for="(item, index) in popup.formData.arrCode4"
@@ -106,7 +104,7 @@
             </table>
             <div :style="style.line"></div>
             <div :style="style.popup.submit">
-                <el-button type="danger" plain @click="hdlSubmit">确认</el-button>
+                <el-button type="danger" plain @click="hdl.submit">确认</el-button>
             </div>
         </el-dialog>
     </div>
@@ -184,69 +182,70 @@ watch(() => props.modelValue,
             
             // 确保按顺序加载级联数据
             if (modelValue_box.code2) {
-                await hdlChangeCode2(modelValue_box.code2)
+                await hdl.changeCode2(modelValue_box.code2)
             }
             if (modelValue_box.code4) {
-                await hdlChangeCode4(modelValue_box.code4)
+                await hdl.changeCode4(modelValue_box.code4)
             }
         }
     },
     { immediate: true }
 );
 
-const hdlPopup = async () => {
-    if (props.myProps.readOnly) {
-        return
+const hdl = {
+    popup: async () => {
+        if (props.myProps.readOnly) {
+            return
+        }
+        
+        popup.formData.code2 = modelValue_box.code2
+        await hdl.changeCode2(popup.formData.code2)
+        
+        popup.formData.code4 = modelValue_box.code4
+        await hdl.changeCode4(popup.formData.code4)
+        
+        popup.formData.code6 = modelValue_box.code6
+        popup.visible = true
+    },
+    
+    changeCode2: async value => { // 使用 async 标记
+        const result = await ly0request.ly0.storpro({
+            noSession: true,
+            storproName: 'ly0d3.gbt2260code4.code2',
+            data: {code2: value},
+        })
+        
+        popup.formData.arrCode4 = result.arrCode4.filter(item => item.code4)
+        popup.formData.code4 = ''
+        popup.formData.arrCode6 = []
+        popup.formData.code6 = ''
+    },
+    
+    changeCode4: async value => {
+        const result = await ly0request.ly0.storpro({
+            noSession: true,
+            storproName: 'ly0d3.gbt2260code6.code4',
+            data: {code4: value},
+        })
+        
+        popup.formData.arrCode6 = result.arrCode6.filter(item => item.code6)
+        popup.formData.code6 = ''
+    },
+    
+    submit: () => {
+        modelValue_box.code2 = popup.formData.code2
+        const foundItem2 = popup.formData.arrCode2.find(i => i.code2 === modelValue_box.code2)
+        modelValue_box.text2 = foundItem2 ? foundItem2.text2 : ''
+        modelValue_box.code4 = popup.formData.code4
+        const foundItem4 = popup.formData.arrCode4.find(i => i.code4 === modelValue_box.code4)
+        modelValue_box.text4 = foundItem4 ? foundItem4.text4 : ''
+        modelValue_box.code6 = popup.formData.code6
+        const foundItem6 = popup.formData.arrCode6.find(i => i.code6 === modelValue_box.code6)
+        modelValue_box.text6 = foundItem6 ? foundItem6.text6 : ''
+        // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
+        emit("update:modelValue", modelValue_box.code6 ?? modelValue_box.code4 ?? modelValue_box.code2 ?? '')
+        popup.visible = false
     }
-    
-    popup.formData.code2 = modelValue_box.code2
-    await hdlChangeCode2(popup.formData.code2)
-    
-    popup.formData.code4 = modelValue_box.code4
-    await hdlChangeCode4(popup.formData.code4)
-    
-    popup.formData.code6 = modelValue_box.code6
-    popup.visible = true
-}
-
-const hdlChangeCode2 = async value => { // 使用 async 标记
-    const result = await ly0request.ly0.storpro({
-        noSession: true,
-        storproName: 'ly0d3.gbt2260code4.code2',
-        data: {code2: value},
-    })
-    
-    popup.formData.arrCode4 = result.arrCode4.filter(item => item.code4)
-    popup.formData.code4 = ''
-    popup.formData.arrCode6 = []
-    popup.formData.code6 = ''
-}
-
-const hdlChangeCode4 = async value => {
-    const result = await ly0request.ly0.storpro({
-        noSession: true,
-        storproName: 'ly0d3.gbt2260code6.code4',
-        data: {code4: value},
-    })
-    
-    popup.formData.arrCode6 = result.arrCode6.filter(item => item.code6)
-    popup.formData.code6 = ''
-}
-
-const hdlSubmit = () => {
-    // ... (安全查找逻辑) ...
-    modelValue_box.code2 = popup.formData.code2
-    const foundItem2 = popup.formData.arrCode2.find(i => i.code2 === modelValue_box.code2)
-    modelValue_box.text2 = foundItem2 ? foundItem2.text2 : ''
-    modelValue_box.code4 = popup.formData.code4
-    const foundItem4 = popup.formData.arrCode4.find(i => i.code4 === modelValue_box.code4)
-    modelValue_box.text4 = foundItem4 ? foundItem4.text4 : ''
-    modelValue_box.code6 = popup.formData.code6
-    const foundItem6 = popup.formData.arrCode6.find(i => i.code6 === modelValue_box.code6)
-    modelValue_box.text6 = foundItem6 ? foundItem6.text6 : ''
-    // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-    emit("update:modelValue", modelValue_box.code6 ?? modelValue_box.code4 ?? modelValue_box.code2 ?? '')
-    popup.visible = false
 }
 
 const style = reactive({

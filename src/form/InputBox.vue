@@ -261,7 +261,7 @@
         </div>
     
         <!-- 行政区划 -->
-        <div v-if="propsItem_box.inputType === 'd3gbt2260'">
+        <div v-if="propsItem_box.inputType === 'ly0gbt2260'">
             <ly0gbt2260
                 v-model="formData_box[propsItem_box.fieldName]"
                 :myProps="{readOnly: propsItem_box.readOnly}"
@@ -269,35 +269,35 @@
         </div>
     
         <!-- 商品分类 -->
-        <div v-if="propsItem_box.inputType === 'd7group'">
+        <div v-if="propsItem_box.inputType === 'ly0d7group'">
             <ly0d7group
                 v-model="formData_box[propsItem_box.fieldName]"
                 :myProps="{readOnly: propsItem_box.readOnly}"
             ></ly0d7group>
         </div>
         <!-- 邮寄地址 -->
-        <div v-if="propsItem_box.inputType === 'd7postal'">
+        <div v-if="propsItem_box.inputType === 'ly0d7postal'">
             <ly0d7postal
                 v-model="formData_box[propsItem_box.fieldName]"
                 :myProps="{readOnly: propsItem_box.readOnly}"
             ></ly0d7postal>
         </div>
         <!-- 商品标价 -->
-        <div v-if="propsItem_box.inputType === 'd7price'">
+        <div v-if="propsItem_box.inputType === 'ly0d7price'">
             <ly0d7price
                 v-model="formData_box[propsItem_box.fieldName]"
                 :myProps="{readOnly: propsItem_box.readOnly}"
             ></ly0d7price>
         </div>
         <!-- 商品规格 -->
-        <div v-if="propsItem_box.inputType === 'd7size'">
+        <div v-if="propsItem_box.inputType === 'ly0d7size'">
             <ly0d7size
                 v-model="formData_box[propsItem_box.fieldName]"
                 :myProps="{readOnly: propsItem_box.readOnly}"
             ></ly0d7size>
         </div>
         <!-- 商品缩略图 -->
-        <div v-if="propsItem_box.inputType === 'd7thumb'">
+        <div v-if="propsItem_box.inputType === 'ly0d7thumb'">
             <ly0d7thumb
                 v-model="formData_box"
                 :myProps="{

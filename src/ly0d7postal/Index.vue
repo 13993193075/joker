@@ -3,11 +3,11 @@
         <table>
             <tbody>
                 <tr v-if="!modelValue_box || modelValue_box.length === 0">
-                    <td><el-icon v-if="!myProps.readOnly" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未设置更多邮寄地址]</td>
                 </tr>
                 <tr v-for="(item, index) in modelValue_box" :key="index">
-                    <td><el-icon v-if="!myProps.readOnly && index === 0" class="edit-icon" :size="16" color="blue"><Edit /></el-icon></td>
+                    <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>
                         <table>
                             <tbody>
@@ -54,10 +54,10 @@
                 <tr v-for="(item, index) in popup.formData" :key="index">
                     <!-- 左对齐，使用<td> -->
                     <td>
-                        <ly0d3gbt2260
+                        <ly0gbt2260
                             v-model="item.gbt2260code"
                             :myProps="{ readonly: true }"
-                        ></ly0d3gbt2260>
+                        ></ly0gbt2260>
                     </td>
                     <!-- 居中对齐，使用<th> -->
                     <td>
@@ -101,14 +101,10 @@
 </template>
 
 <style lang="scss" scoped>
-.edit-icon {
-    vertical-align: middle;
-    margin-right: 5px;
-}
 </style>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {reactive} from "vue";
 import ly0request from '../request/index.js'
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
@@ -127,7 +123,6 @@ const props = defineProps({
             }
         })
     }
-    
 });
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -140,10 +135,11 @@ const popup = reactive({
 
 const hdl = {
     popup() {
-        if (!props.myProps.readOnly) {
-            popup.formData = JSON.parse(JSON.stringify(modelValue_box))
-            popup.visible = true
+        if (props.myProps.readOnly) {
+            return
         }
+        popup.formData = JSON.parse(JSON.stringify(modelValue_box))
+        popup.visible = true
     },
     append() {
         popup.formData.push({
@@ -157,9 +153,10 @@ const hdl = {
         popup.formData.splice(index, 1)
     },
     submit() {
-        const submittingValue = JSON.parse(JSON.stringify(popup.formData))
+        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
+        modelValue_box.splice(0, modelValue_box.length, ...popup.formData)
         let arrPromise = []
-        submittingValue.forEach(i => {
+        modelValue_box.forEach(i => {
             arrPromise.push(
                 ly0request.ly0.storpro({
                     noSession: true,
@@ -170,11 +167,11 @@ const hdl = {
         })
         Promise.all(arrPromise).then(result => {
             result.forEach((item, index) => {
-                submittingValue[index].gbt2260text =
+                modelValue_box[index].gbt2260text =
                     item.itemCode6.text2 + '-' + item.itemCode6.text4 + '-' + item.itemCode6.text6
             })
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-            emit("update:modelValue", submittingValue)
+            emit("update:modelValue", modelValue_box)
             popup.visible = false
         })
     }
