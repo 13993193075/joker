@@ -43,10 +43,11 @@ const props = defineProps({
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = defineEmits(['update:modelValue', 'change'])
 
-const myProps_box = reactive(Object.assign({}, ly0default, props.myProps))
-const fileList_box = reactive([])
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps))
+// 在这里，const ... reactive不能用于双向绑定：v-model:file-list="fileList_box"
+const fileList_box = ref([])
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item,
         response: {
@@ -77,9 +78,9 @@ const hdl = {
     },
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)))
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)))
         const arr = []
-        fileList_box.forEach(i=>{
+        fileList_box.value.forEach(i=>{
             arr.push(i.response.data.src)
         })
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -87,10 +88,10 @@ const hdl = {
     },
     success (response, file, fileList) { // 上传成功
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)))
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)))
         if (response.code === 0) {
             const arr = []
-            fileList_box.forEach(i=>{
+            fileList_box.value.forEach(i=>{
                 arr.push(i.response.data.src)
             })
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -103,7 +104,7 @@ const hdl = {
     },
     deleteAll () { // 删除全部已上传文件
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length)
+        fileList_box.value.splice(0, fileList_box.value.length)
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", [])
     }

@@ -2,29 +2,47 @@
     <!-- label-box -->
     <div :style="style.box" @click="hdlClick">
         <span :style="style.label">
-            {{item.label}}
+            {{propsItem_box.label}}
         </span>
     </div>
 </template>
 
 <script setup>
-import {ref, inject} from "vue";
+import {ref, reactive, watch} from "vue";
 import styleModule from './style.js'
 
-const props = defineProps(["item"]);
-// 表单数据及方法注入
-const formData = inject("formData")
-const formProps = inject("formProps")
-const scopeThis = inject("scopeThis")
+const props = defineProps({
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    },
+    item: {
+        type: Object,
+        default: () => ({})
+    }
+})
+
+// props属性包装，使得页面和js使用相同的命名
+let formData_box = props.modelValue
+const scopeThis_box = props.scopeThis
+const propsItem_box = props.item
 
 const style = ref({
-    box: styleModule.label.box(props.item),
-    label: styleModule.label.label(props.item),
+    box: styleModule.label.box(propsItem_box),
+    label: styleModule.label.label(propsItem_box),
 })
 
 const hdlClick = () => {
-    if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick({formData, scopeThis});
+    if(propsItem_box.hdlLabelClick){
+        propsItem_box.hdlLabelClick({formData: formData_box, scopeThis: scopeThis_box});
     }
 }
 </script>

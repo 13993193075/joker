@@ -1,21 +1,21 @@
 <template>
     <el-menu
-        :mode="myProps0.mode"
-        :default-active="myProps0.defaultActive"
+        :mode="myProps_box.mode"
+        :default-active="myProps_box.defaultActive"
         @open="handleOpen"
         @close="handleClose"
         @select="handleSelect"
-        :background-color="myProps0.backgroundColor"
-        :text-color="myProps0.textColor"
-        :active-text-color="myProps0.activeTextColor"
+        :background-color="myProps_box.backgroundColor"
+        :text-color="myProps_box.textColor"
+        :active-text-color="myProps_box.activeTextColor"
         menu-trigger="hover"
-        :style="'--el-menu-horizontal-height: ' + myProps0.horizontalHeight + '; ' +
-            myProps0.styleBase + ' ' +
-            myProps0.style"
+        :style="'--el-menu-horizontal-height: ' + myProps_box.horizontalHeight + '; ' +
+            myProps_box.styleBase + ' ' +
+            myProps_box.style"
     >
         <!-- 第1层 -->
         <template
-            v-for="(item, index) in myProps.menu"
+            v-for="(item, index) in myProps_box.menu"
             :key="item.index ? item.index : String(index)"
         >
             <el-menu-item
@@ -25,7 +25,7 @@
                     'disabled' in item
                     ? item.disabled
                     : 'hdlDisabled' in item
-                        ? item.hdlDisabled(scopeThis, item, index)
+                        ? item.hdlDisabled(scopeThis_box, item, index)
                         : false
                 "
             >{{ item.title }}</el-menu-item>
@@ -43,7 +43,7 @@
                             'disabled' in item0
                             ? item0.disabled
                             : 'hdlDisabled' in item0
-                                ? item0.hdlDisabled(scopeThis, item0, index0)
+                                ? item0.hdlDisabled(scopeThis_box, item0, index0)
                                 : false
                         "
                     >{{ item0.title }}</el-menu-item>
@@ -72,7 +72,7 @@
                                     'disabled' in item1
                                     ? item1.disabled
                                     : 'hdlDisabled' in item1
-                                        ? item1.hdlDisabled(scopeThis, item1, index1)
+                                        ? item1.hdlDisabled(scopeThis_box, item1, index1)
                                         : false
                                 "
                             >{{ item1.title }}</el-menu-item>
@@ -105,7 +105,7 @@
                                             'disabled' in item2
                                             ? item2.disabled
                                             : 'hdlDisabled' in item2
-                                                ? item2.hdlDisabled(scopeThis, item2, index2)
+                                                ? item2.hdlDisabled(scopeThis_box, item2, index2)
                                                 : false
                                         "
                                     >{{ item2.title }}</el-menu-item>
@@ -137,7 +137,7 @@
                                                     'disabled' in item3
                                                     ? item3.disabled
                                                     : 'hdlDisabled' in item3
-                                                        ? item3.hdlDisabled(scopeThis, item3, index3)
+                                                        ? item3.hdlDisabled(scopeThis_box, item3, index3)
                                                         : false
                                                 "
                                             >{{ item3.title }}</el-menu-item>
@@ -156,11 +156,12 @@
 <style lang="scss" scoped></style>
 
 <script setup>
-import {ref, computed} from "vue";
+import {reactive} from "vue";
 import ly0default from './default.js'
 
-const props = defineProps(["scopeThis", "myProps"]);
-const myProps0 = ref(Object.assign({}, ly0default.myProps, props.myProps))
+const props = defineProps(["myProps", "scopeThis"]);
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps))
+const scopeThis_box = reactive(props.scopeThis)
 
 const handleRun = (
     index, // 目标索引
@@ -175,7 +176,7 @@ const handleRun = (
         // 节点存在自定义索引
         if (!!menu[i].index && index === menu[i].index) {
             if (menu[i].handle) {
-                menu[i].handle(props.scopeThis, index)
+                menu[i].handle(scopeThis_box, index)
             }
             result = true
             break
@@ -183,7 +184,7 @@ const handleRun = (
         // 节点不存在自定义索引
         if (index === index0) {
             if (menu[i].handle) {
-                menu[i].handle(props.scopeThis, index)
+                menu[i].handle(scopeThis_box, index)
             }
             result = true
             break
@@ -200,7 +201,7 @@ const handleRun = (
 }
 
 const handleSelect = key=>{
-    handleRun(key, props.myProps.menu, '')
+    handleRun(key, myProps_box.menu, '')
 }
 
 const handleOpen = key=>{}

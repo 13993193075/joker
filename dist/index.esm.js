@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router';
-import { inject, ref, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, reactive, computed, resolveComponent, createBlock, unref, withCtx, renderList, createTextVNode, createVNode, isRef, provide, watch, defineComponent, h, onMounted, onBeforeUnmount, nextTick as nextTick$1 } from 'vue';
+import { ref, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, unref, reactive, computed, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, isRef, defineComponent, h, onMounted, onBeforeUnmount, watch, nextTick as nextTick$1 } from 'vue';
 import { ElMessage } from 'element-plus';
 
 function _mergeNamespaces(n, m) {
@@ -22494,23 +22494,41 @@ var styleModule = {
 
 var script$h = {
   __name: 'LabelBox',
-  props: ["item"],
+  props: {
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    },
+    item: {
+        type: Object,
+        default: () => ({})
+    }
+},
   setup(__props) {
 
 const props = __props;
-// 表单数据及方法注入
-const formData = inject("formData");
-inject("formProps");
-const scopeThis = inject("scopeThis");
+
+// props属性包装，使得页面和js使用相同的命名
+let formData_box = props.modelValue;
+const scopeThis_box = props.scopeThis;
+const propsItem_box = props.item;
 
 const style = ref({
-    box: styleModule.label.box(props.item),
-    label: styleModule.label.label(props.item),
+    box: styleModule.label.box(propsItem_box),
+    label: styleModule.label.label(propsItem_box),
 });
 
 const hdlClick = () => {
-    if(props.item.hdlLabelClick){
-        props.item.hdlLabelClick({formData, scopeThis});
+    if(propsItem_box.hdlLabelClick){
+        propsItem_box.hdlLabelClick({formData: formData_box, scopeThis: scopeThis_box});
     }
 };
 
@@ -22523,7 +22541,7 @@ return (_ctx, _cache) => {
     }, [
       createElementVNode("span", {
         style: normalizeStyle(style.value.label)
-      }, toDisplayString(__props.item.label), 5 /* TEXT, STYLE */)
+      }, toDisplayString(unref(propsItem_box).label), 5 /* TEXT, STYLE */)
     ], 4 /* STYLE */)
   ], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */))
 }
@@ -22565,83 +22583,102 @@ const _hoisted_28 = { key: 30 };
 
 var script$g = {
   __name: 'InputBox',
-  props: ["item"],
+  props: {
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    },
+    item: {
+        type: Object,
+        default: () => ({})
+    }
+},
   setup(__props) {
 
 const props = __props;
-// 表单数据及方法注入
-const formData = inject("formData");
-const formProps = inject("formProps");
-const scopeThis = inject("scopeThis");
+
+// props属性包装，继承了顶层组件的响应性，页面和js可以使用相同的命名
+let formData_box = props.modelValue;
+const formProps_box = props.myProps;
+const scopeThis_box = props.scopeThis;
+const propsItem_box = props.item;
 
 const input = reactive({
-    placeholder: props.item.placeholder || formProps.para.placeholder.input,
-    showPassword: !!props.item.showPassword,
-    hdlCannotInput: event => { // 解决偶发不能输入的问题
-        formData[props.item.fieldName] = event.target.value;
+    placeholder: propsItem_box.placeholder || formProps_box.para.placeholder.input,
+    showPassword: !!propsItem_box.showPassword,
+    hdlCannotInput: value => { // 解决偶发不能输入的问题
+        formData_box[propsItem_box.fieldName] = value;
     }
 });
 
 const select = reactive({
-    placeholder: props.item.placeholder || formProps.para.placeholder.select,
+    placeholder: propsItem_box.placeholder || formProps_box.para.placeholder.select,
     items: computed(()=>{
-        if (props.item.items) {
-            return props.item.items
-        } else if (props.item.hdlGetItems) {
-            return props.item.hdlGetItems({formData, scopeThis})
+        if (propsItem_box.items) {
+            return propsItem_box.items
+        } else if (propsItem_box.hdlGetItems) {
+            return propsItem_box.hdlGetItems({formData: formData_box, scopeThis: scopeThis_box})
         }
     }),
     hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange({formData, scopeThis, value});
+        if (propsItem_box.hdlChange) {
+            propsItem_box.hdlChange({formData: formData_box, scopeThis: scopeThis_box, value});
         }
     }
 });
 
 const datePicker = reactive({
     placeholder: computed(()=> {
-        if (props.item.placeholder) {
-            return props.item.placeholder
+        if (propsItem_box.placeholder) {
+            return propsItem_box.placeholder
         }
-        if (props.item.type === 'datetime') {
-            return formProps.para.placeholder.datetime
+        if (propsItem_box.type === 'datetime') {
+            return formProps_box.para.placeholder.datetime
         }
-        if (props.item.type === 'date') {
-            return formProps.para.placeholder.date
+        if (propsItem_box.type === 'date') {
+            return formProps_box.para.placeholder.date
         }
-        return formProps.para.placeholder.datetime
+        return formProps_box.para.placeholder.datetime
     }),
     format: computed(() => {
-        if (props.item.format) {
-            return props.item.format
+        if (propsItem_box.format) {
+            return propsItem_box.format
         }
-        if (props.item.type === 'datetime') {
+        if (propsItem_box.type === 'datetime') {
             return 'YYYY/MM/DD HH:mm'
         }
-        if (props.item.type === 'date') {
+        if (propsItem_box.type === 'date') {
             return 'YYYY/MM/DD'
         }
         return 'YYYY/MM/DD HH:mm'
     }),
     hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange({formData, scopeThis, value});
+        if (propsItem_box.hdlChange) {
+            propsItem_box.hdlChange({formData: formData_box, scopeThis: scopeThis_box, value});
         }
     }
 });
 
 const ly0switch = reactive({
     hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange({formData, scopeThis, value});
+        if (propsItem_box.hdlChange) {
+            propsItem_box.hdlChange({formData: formData_box, scopeThis: scopeThis_box, value});
         }
     }
 });
 
 const radioGroup = reactive({
     hdlChange: value => {
-        if (props.item.hdlChange) {
-            props.item.hdlChange({formData, scopeThis, value});
+        if (propsItem_box.hdlChange) {
+            propsItem_box.hdlChange({formData: formData_box, scopeThis: scopeThis_box, value});
         }
     }
 });
@@ -22649,54 +22686,54 @@ const radioGroup = reactive({
 const image = reactive({
     getSrc: computed(() => {
         if (
-            props.item.imageDelete &&
-            formData[props.item.imageDelete] &&
-            (formData[props.item.imageDelete] === true ||
-                formData[props.item.imageDelete] === 'true') // 图片已删除
+            propsItem_box.imageDelete &&
+            formData_box[propsItem_box.imageDelete] &&
+            (formData_box[propsItem_box.imageDelete] === true ||
+                formData_box[propsItem_box.imageDelete] === 'true') // 图片已删除
         ) {
             return ['']
         }
-        if (formData[props.item.fieldName]) {
-            return formData[props.item.fieldName]
+        if (formData_box[propsItem_box.fieldName]) {
+            return formData_box[propsItem_box.fieldName]
         }
         return ['']
     }),
     delete: ()=>{
-        formData[props.item.imageDelete] =
-            !formData[props.item.imageDelete];
+        formData_box[propsItem_box.imageDelete] =
+            !formData_box[propsItem_box.imageDelete];
     }
 });
 
 const images = reactive({
     getSrc: (itemImages, indexImages) => {
         if (
-            !props.item.imageDelete ||
-            !formData[props.item.imageDelete].includes(itemImages)
+            !propsItem_box.imageDelete ||
+            !formData_box[propsItem_box.imageDelete].includes(itemImages)
         ) {
             return itemImages
         }
         return ''
     },
     delete: (itemImages, indexImages) => {
-        if (!formData[props.item.imageDelete].includes(itemImages)) {
-            formData[props.item.imageDelete].push(itemImages);
+        if (!formData_box[propsItem_box.imageDelete].includes(itemImages)) {
+            formData_box[propsItem_box.imageDelete].push(itemImages);
             return
         }
         
-        formData[props.item.imageDelete] = formData[props.item.imageDelete].filter(i => {
+        formData_box[propsItem_box.imageDelete] = formData_box[propsItem_box.imageDelete].filter(i => {
             return i !== itemImages
         });
     },
     show: computed(()=>{
         let result = [];
-        if (!props.item.imageDelete) {
-            formData[props.item.fieldName].forEach(i => {
+        if (!propsItem_box.imageDelete) {
+            formData_box[propsItem_box.fieldName].forEach(i => {
                 result.push(i);
             });
         } else {
-            formData[props.item.fieldName]
+            formData_box[propsItem_box.fieldName]
                 .filter(i => {
-                    return !formData[props.item.imageDelete].includes(i)
+                    return !formData_box[propsItem_box.imageDelete].includes(i)
                 })
                 .forEach(i => {
                     result.push(i);
@@ -22707,62 +22744,62 @@ const images = reactive({
 });
 
 const richtextProps = ref({
-    uploadUrl: formProps.para.uploadUrl
+    uploadUrl: formProps_box.para.uploadUrl
 });
 
 const video = reactive({
     src: computed(()=>{
         if (
-            props.item.videoDelete &&
-            formData[props.item.videoDelete] &&
-            (formData[props.item.videoDelete] === true ||
-                formData[props.item.videoDelete] === 'true') // 图片已删除
+            propsItem_box.videoDelete &&
+            formData_box[propsItem_box.videoDelete] &&
+            (formData_box[propsItem_box.videoDelete] === true ||
+                formData_box[propsItem_box.videoDelete] === 'true') // 图片已删除
         ) {
             return ''
         }
-        if (formData[props.item.fieldName]) {
-            return formData[props.item.fieldName]
+        if (formData_box[propsItem_box.fieldName]) {
+            return formData_box[propsItem_box.fieldName]
         }
         return ''
     }),
     poster: computed(()=>{
         if (
-            props.item.videoDelete &&
-            formData[props.item.videoDelete] &&
-            (formData[props.item.videoDelete] === true ||
-                formData[props.item.videoDelete] === 'true') // 图片已删除
+            propsItem_box.videoDelete &&
+            formData_box[propsItem_box.videoDelete] &&
+            (formData_box[propsItem_box.videoDelete] === true ||
+                formData_box[propsItem_box.videoDelete] === 'true') // 图片已删除
         ) {
             return ''
         }
-        if (formData[props.item.poster]) {
-            return formData[props.item.poster]
+        if (formData_box[propsItem_box.poster]) {
+            return formData_box[propsItem_box.poster]
         }
         return ''
     }),
     delete: ()=>{
-        formData[props.item.videoDelete] =
-            !formData[props.item.videoDelete];
+        formData_box[propsItem_box.videoDelete] =
+            !formData_box[propsItem_box.videoDelete];
     },
 });
 
 const download = reactive({
-    fileName: props.item.downloadFileName || formProps.para.download.fileName,
+    fileName: propsItem_box.downloadFileName || formProps_box.para.download.fileName,
     downloadLabel: computed(() => {
-        if (!formData[props.item.fieldName]) {
-            return formProps.para.download.downloadLabelNoSrc
+        if (!formData_box[propsItem_box.fieldName]) {
+            return formProps_box.para.download.downloadLabelNoSrc
         }
-        if (props.item.hdlGetDownloadLabel) {
-            return props.item.hdlGetDownloadLabel({formData, scopeThis})
+        if (propsItem_box.hdlGetDownloadLabel) {
+            return propsItem_box.hdlGetDownloadLabel({formData: formData_box, scopeThis: scopeThis_box})
         }
-        return formProps.para.download.downloadLabel
+        return formProps_box.para.download.downloadLabel
     }),
-    downloadSrc: formData[props.item.fieldName] || ''
+    downloadSrc: formData_box[propsItem_box.fieldName] || ''
 });
 
 const upload = reactive({
-    uploadUrl: formProps.para.uploadUrl,
-    uploadUrl_image: formProps.para.uploadUrl_image,
-    uploadUrl_carplate: formProps.para.uploadUrl_carplate
+    uploadUrl: formProps_box.para.uploadUrl,
+    uploadUrl_image: formProps_box.para.uploadUrl_image,
+    uploadUrl_carplate: formProps_box.para.uploadUrl_carplate
 });
 
 const style = reactive({
@@ -22811,77 +22848,77 @@ return (_ctx, _cache) => {
   return (openBlock(), createElementBlock(Fragment, null, [
     createCommentVNode(" input-box "),
     createElementVNode("div", {
-      style: normalizeStyle(style.box(__props.item))
+      style: normalizeStyle(style.box(unref(propsItem_box)))
     }, [
       createCommentVNode(" 只读 "),
-      (__props.item.inputType === 'text')
+      (unref(propsItem_box).inputType === 'text')
         ? (openBlock(), createElementBlock("div", {
             key: 0,
-            style: normalizeStyle(style.text(__props.item, unref(formProps)))
-          }, toDisplayString(unref(formData)[__props.item.fieldName] ? unref(formData)[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+            style: normalizeStyle(style.text(unref(propsItem_box), unref(formProps_box)))
+          }, toDisplayString(unref(formData_box)[unref(propsItem_box).fieldName] ? unref(formData_box)[unref(propsItem_box).fieldName] : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'text0')
+      (unref(propsItem_box).inputType === 'text0')
         ? (openBlock(), createElementBlock("div", {
             key: 1,
-            style: normalizeStyle(style.text0(__props.item))
-          }, toDisplayString(unref(formData)[__props.item.fieldName] ? unref(formData)[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+            style: normalizeStyle(style.text0(unref(propsItem_box)))
+          }, toDisplayString(unref(formData_box)[unref(propsItem_box).fieldName] ? unref(formData_box)[unref(propsItem_box).fieldName] : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
-      (!__props.item.inputType)
+      (!unref(propsItem_box).inputType)
         ? (openBlock(), createElementBlock("div", {
             key: 2,
-            style: normalizeStyle(style.text(__props.item, unref(formProps)))
-          }, toDisplayString(unref(formData)[__props.item.fieldName] ? unref(formData)[__props.item.fieldName] : ' '), 5 /* TEXT, STYLE */))
+            style: normalizeStyle(style.text(unref(propsItem_box), unref(formProps_box)))
+          }, toDisplayString(unref(formData_box)[unref(propsItem_box).fieldName] ? unref(formData_box)[unref(propsItem_box).fieldName] : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'expression')
+      (unref(propsItem_box).inputType === 'expression')
         ? (openBlock(), createElementBlock("div", {
             key: 3,
-            style: normalizeStyle(style.text(__props.item, unref(formProps)))
-          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression({formData: unref(formData), scopeThis: unref(scopeThis)})
-                ? __props.item.hdlExpression({formData: unref(formData), scopeThis: unref(scopeThis)})
+            style: normalizeStyle(style.text(unref(propsItem_box), unref(formProps_box)))
+          }, toDisplayString(unref(propsItem_box).hdlExpression && unref(propsItem_box).hdlExpression({formData: unref(formData_box), scopeThis: __props.scopeThis})
+                ? unref(propsItem_box).hdlExpression({formData: unref(formData_box), scopeThis: unref(scopeThis_box)})
                 : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'expression0')
+      (unref(propsItem_box).inputType === 'expression0')
         ? (openBlock(), createElementBlock("div", {
             key: 4,
-            style: normalizeStyle(style.text0(__props.item))
-          }, toDisplayString(__props.item.hdlExpression && __props.item.hdlExpression({formData: unref(formData), scopeThis: unref(scopeThis)})
-                ? __props.item.hdlExpression({formData: unref(formData), scopeThis: unref(scopeThis)})
+            style: normalizeStyle(style.text0(unref(propsItem_box)))
+          }, toDisplayString(unref(propsItem_box).hdlExpression && unref(propsItem_box).hdlExpression({formData: unref(formData_box), scopeThis: unref(scopeThis_box)})
+                ? unref(propsItem_box).hdlExpression({formData: unref(formData_box), scopeThis: unref(scopeThis_box)})
                 : ' '), 5 /* TEXT, STYLE */))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'line')
+      (unref(propsItem_box).inputType === 'line')
         ? (openBlock(), createElementBlock("div", {
             key: 5,
             style: normalizeStyle(style.line)
           }, null, 4 /* STYLE */))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 修改数据 "),
-      (__props.item.inputType === 'input')
+      (unref(propsItem_box).inputType === 'input')
         ? (openBlock(), createBlock(_component_el_input, {
             key: 6,
-            modelValue: unref(formData)[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+            modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
             placeholder: input.placeholder,
-            style: normalizeStyle(style.input(__props.item, unref(formProps))),
+            style: normalizeStyle(style.input(unref(propsItem_box), unref(formProps_box))),
             onInput: input.hdlCannotInput,
             "show-password": input.showPassword
           }, null, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onInput", "show-password"]))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'select')
+      (unref(propsItem_box).inputType === 'select')
         ? (openBlock(), createBlock(_component_el_select, {
             key: 7,
             class: "deep-input",
-            modelValue: unref(formData)[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+            modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+            "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
             placeholder: select.placeholder,
             filterable: "",
-            style: normalizeStyle(style.input(__props.item, unref(formProps))),
+            style: normalizeStyle(style.input(unref(propsItem_box), unref(formProps_box))),
             onChange: select.hdlChange
           }, {
             default: withCtx(() => [
               (openBlock(true), createElementBlock(Fragment, null, renderList(select.items, (item0, index0) => {
                 return (openBlock(), createBlock(_component_el_option, {
-                  label: item0[__props.item.item_fieldLabel],
-                  value: item0[__props.item.item_fieldValue],
+                  label: item0[unref(propsItem_box).item_fieldLabel],
+                  value: item0[unref(propsItem_box).item_fieldValue],
                   key: index0
                 }, null, 8 /* PROPS */, ["label", "value"]))
               }), 128 /* KEYED_FRAGMENT */))
@@ -22889,61 +22926,61 @@ return (_ctx, _cache) => {
             _: 1 /* STABLE */
           }, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onChange"]))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'date-picker')
+      (unref(propsItem_box).inputType === 'date-picker')
         ? (openBlock(), createBlock(_component_el_date_picker, {
             key: 8,
             class: "deep-input",
-            modelValue: unref(formData)[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-            type: __props.item.type ? __props.item.type : 'datetime',
+            modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+            "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+            type: unref(propsItem_box).type ? unref(propsItem_box).type : 'datetime',
             placeholder: datePicker.placeholder,
             format: datePicker.format,
-            style: normalizeStyle(style.input(__props.item, unref(formProps))),
+            style: normalizeStyle(style.input(unref(propsItem_box), unref(formProps_box))),
             onChange: datePicker.hdlChange
           }, null, 8 /* PROPS */, ["modelValue", "type", "placeholder", "format", "style", "onChange"]))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'input-number')
+      (unref(propsItem_box).inputType === 'input-number')
         ? (openBlock(), createBlock(_component_el_input_number, {
             key: 9,
-            modelValue: unref(formData)[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-            size: style.input_number(__props.item).facade.size,
-            min: 'min' in __props.item ? __props.item.min : 1,
-            max: 'max' in __props.item ? __props.item.max : 100,
-            step: 'step' in __props.item ? __props.item.step : 1,
-            "step-strictly": 'step_strictly' in __props.item ? __props.item.step_strictly : true
+            modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+            size: style.input_number(unref(propsItem_box)).facade.size,
+            min: 'min' in unref(propsItem_box) ? unref(propsItem_box).min : 1,
+            max: 'max' in unref(propsItem_box) ? unref(propsItem_box).max : 100,
+            step: 'step' in unref(propsItem_box) ? unref(propsItem_box).step : 1,
+            "step-strictly": 'step_strictly' in unref(propsItem_box) ? unref(propsItem_box).step_strictly : true
           }, null, 8 /* PROPS */, ["modelValue", "size", "min", "max", "step", "step-strictly"]))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'switch')
+      (unref(propsItem_box).inputType === 'switch')
         ? (openBlock(), createBlock(_component_el_switch, {
             key: 10,
-            modelValue: unref(formData)[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-            "active-text": __props.item.activeText,
-            "inactive-text": __props.item.inactiveText,
-            "active-value": __props.item.activeValue,
-            "inactive-value": __props.item.inactiveValue,
-            "active-color": style.el_switch(__props.item).facade.active_color,
-            disabled: !!('disabled' in __props.item && (__props.item.disabled === true || __props.item.disabled === 'true')),
+            modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+            "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+            "active-text": unref(propsItem_box).activeText,
+            "inactive-text": unref(propsItem_box).inactiveText,
+            "active-value": unref(propsItem_box).activeValue,
+            "inactive-value": unref(propsItem_box).inactiveValue,
+            "active-color": style.el_switch(unref(propsItem_box)).facade.active_color,
+            disabled: !!('disabled' in unref(propsItem_box) && (unref(propsItem_box).disabled === true || unref(propsItem_box).disabled === 'true')),
             onChange: ly0switch.hdlChange
           }, null, 8 /* PROPS */, ["modelValue", "active-text", "inactive-text", "active-value", "inactive-value", "active-color", "disabled", "onChange"]))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'radio-group')
+      (unref(propsItem_box).inputType === 'radio-group')
         ? (openBlock(), createBlock(_component_el_radio_group, {
             key: 11,
-            modelValue: unref(formData)[__props.item.fieldName],
-            "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-            disabled: !!__props.item.disabled,
+            modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+            "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+            disabled: !!unref(propsItem_box).disabled,
             onChange: radioGroup.hdlChange
           }, {
             default: withCtx(() => [
-              (openBlock(true), createElementBlock(Fragment, null, renderList(__props.item.items, (item0, index0) => {
+              (openBlock(true), createElementBlock(Fragment, null, renderList(unref(propsItem_box).items, (item0, index0) => {
                 return (openBlock(), createBlock(_component_el_radio, {
                   key: index0,
-                  label: item0[__props.item.item_fieldValue]
+                  label: item0[unref(propsItem_box).item_fieldValue]
                 }, {
                   default: withCtx(() => [
-                    createTextVNode(toDisplayString(item0[__props.item.item_fieldLabel]), 1 /* TEXT */)
+                    createTextVNode(toDisplayString(item0[unref(propsItem_box).item_fieldLabel]), 1 /* TEXT */)
                   ]),
                   _: 2 /* DYNAMIC */
                 }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["label"]))
@@ -22952,9 +22989,9 @@ return (_ctx, _cache) => {
             _: 1 /* STABLE */
           }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
         : createCommentVNode("v-if", true),
-      (__props.item.inputType === 'button-group' && __props.item.box && __props.item.box.length > 0)
+      (unref(propsItem_box).inputType === 'button-group' && unref(propsItem_box).box && unref(propsItem_box).box.length > 0)
         ? (openBlock(), createElementBlock("div", _hoisted_1$d, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(__props.item.box, (item0, index0) => {
+            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(propsItem_box).box, (item0, index0) => {
               return (openBlock(), createBlock(_component_el_button_group, {
                 key: index0,
                 style: normalizeStyle(style.button_group().group.style)
@@ -22970,14 +23007,14 @@ return (_ctx, _cache) => {
                     }, {
                       default: withCtx(() => [
                         (openBlock(), createBlock(_component_el_button, {
-                          style: normalizeStyle(style.button_group(__props.item, item0, item1).button.style),
-                          icon: style.button_group(__props.item, item0, item1).button.icon,
-                          type: style.button_group(__props.item, item0, item1).button.facade.type,
-                          size: style.button_group(__props.item, item0, item1).button.facade.size,
-                          plain: style.button_group(__props.item, item0, item1).button.facade.plain,
-                          round: style.button_group(__props.item, item0, item1).button.facade.round,
-                          circle: style.button_group(__props.item, item0, item1).button.facade.circle,
-                          onClick: $event => (item1.hdlClick ? item1.hdlClick({formData: unref(formData), scopeThis: unref(scopeThis)}) : null),
+                          style: normalizeStyle(style.button_group(unref(propsItem_box), item0, item1).button.style),
+                          icon: style.button_group(unref(propsItem_box), item0, item1).button.icon,
+                          type: style.button_group(unref(propsItem_box), item0, item1).button.facade.type,
+                          size: style.button_group(unref(propsItem_box), item0, item1).button.facade.size,
+                          plain: style.button_group(unref(propsItem_box), item0, item1).button.facade.plain,
+                          round: style.button_group(unref(propsItem_box), item0, item1).button.facade.round,
+                          circle: style.button_group(unref(propsItem_box), item0, item1).button.facade.circle,
+                          onClick: $event => (item1.hdlClick ? item1.hdlClick({formData: unref(formData_box), scopeThis: unref(scopeThis_box)}) : null),
                           key: index1
                         }, {
                           default: withCtx(() => [
@@ -22999,11 +23036,11 @@ return (_ctx, _cache) => {
         : createCommentVNode("v-if", true),
       createCommentVNode(" 图片&富文本&视频 "),
       createCommentVNode(" 图片 "),
-      (__props.item.inputType === 'image')
+      (unref(propsItem_box).inputType === 'image')
         ? (openBlock(), createElementBlock("div", _hoisted_3$6, [
             createElementVNode("div", null, [
               createVNode(_component_el_image, {
-                style: normalizeStyle(style.image(__props.item, unref(formProps))),
+                style: normalizeStyle(style.image(unref(propsItem_box), unref(formProps_box))),
                 src: image.getSrc[0],
                 "preview-src-list": image.getSrc,
                 "preview-teleported": true,
@@ -23011,15 +23048,15 @@ return (_ctx, _cache) => {
               }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
             ]),
             createCommentVNode(" 设置了图片删除功能，同时图片不为空 "),
-            (!!__props.item.imageDelete && !!unref(formData)[__props.item.fieldName])
+            (!!unref(propsItem_box).imageDelete && !!unref(formData_box)[unref(propsItem_box).fieldName])
               ? (openBlock(), createElementBlock("div", _hoisted_4$4, [
                   createVNode(_component_el_button, {
                     size: "small",
-                    icon: !unref(formData)[__props.item.imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
+                    icon: !unref(formData_box)[unref(propsItem_box).imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
                     onClick: image.delete
                   }, {
                     default: withCtx(() => [
-                      createTextVNode(toDisplayString(unref(formData)[__props.item.imageDelete] ? '图片已删除，恢复' : '删除'), 1 /* TEXT */)
+                      createTextVNode(toDisplayString(unref(formData_box)[unref(propsItem_box).imageDelete] ? '图片已删除，恢复' : '删除'), 1 /* TEXT */)
                     ]),
                     _: 1 /* STABLE */
                   }, 8 /* PROPS */, ["icon", "onClick"])
@@ -23028,21 +23065,21 @@ return (_ctx, _cache) => {
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 多个图片 "),
-      (__props.item.inputType === 'images')
+      (unref(propsItem_box).inputType === 'images')
         ? (openBlock(), createElementBlock("div", _hoisted_5$1, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(formData)[__props.item.fieldName], (itemImages, indexImages) => {
+            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(formData_box)[unref(propsItem_box).fieldName], (itemImages, indexImages) => {
               return (openBlock(), createElementBlock("div", {
                 key: indexImages,
-                style: normalizeStyle(style.images(__props.item, unref(formProps)).itemBox)
+                style: normalizeStyle(style.images(unref(propsItem_box), unref(formProps_box)).itemBox)
               }, [
                 createElementVNode("div", null, [
                   createVNode(_component_el_image, {
-                    style: normalizeStyle(style.images(__props.item, unref(formProps)).itemThumb),
+                    style: normalizeStyle(style.images(unref(propsItem_box), unref(formProps_box)).itemThumb),
                     src: images.getSrc(itemImages, indexImages),
                     "preview-src-list": images.show
                   }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
                 ]),
-                (!!__props.item.imageDelete)
+                (!!unref(propsItem_box).imageDelete)
                   ? (openBlock(), createElementBlock("div", _hoisted_6, [
                       createVNode(_component_el_button, {
                         size: "small",
@@ -23050,7 +23087,7 @@ return (_ctx, _cache) => {
                         onClick: $event => (images.delete(itemImages, indexImages))
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString(unref(formData)[__props.item.imageDelete].includes(itemImages) ? '恢复' : '删除'), 1 /* TEXT */)
+                          createTextVNode(toDisplayString(unref(formData_box)[unref(propsItem_box).imageDelete].includes(itemImages) ? '恢复' : '删除'), 1 /* TEXT */)
                         ]),
                         _: 2 /* DYNAMIC */
                       }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])
@@ -23061,33 +23098,33 @@ return (_ctx, _cache) => {
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 富文本 "),
-      (__props.item.inputType === 'richtext')
+      (unref(propsItem_box).inputType === 'richtext')
         ? (openBlock(), createElementBlock("div", {
             key: 15,
-            style: normalizeStyle(style.richtext(__props.item, unref(formProps)))
+            style: normalizeStyle(style.richtext(unref(propsItem_box), unref(formProps_box)))
           }, [
             createVNode(_component_ly0Richtext, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: richtextProps.value
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ], 4 /* STYLE */))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 富文本show "),
-      (__props.item.inputType === 'richtextShow')
+      (unref(propsItem_box).inputType === 'richtextShow')
         ? (openBlock(), createElementBlock("div", _hoisted_7, [
             createElementVNode("div", {
-              innerHTML: unref(formData)[__props.item.fieldName]
+              innerHTML: unref(formData_box)[unref(propsItem_box).fieldName]
             }, null, 8 /* PROPS */, _hoisted_8)
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 视频 "),
-      (__props.item.inputType === 'video')
+      (unref(propsItem_box).inputType === 'video')
         ? (openBlock(), createElementBlock("div", _hoisted_9, [
             createElementVNode("div", null, [
               createElementVNode("video", {
-                width: style.video(__props.item, unref(formProps)).width,
-                height: style.video(__props.item, unref(formProps)).height,
+                width: style.video(unref(propsItem_box), unref(formProps_box)).width,
+                height: style.video(unref(propsItem_box), unref(formProps_box)).height,
                 controls: "",
                 poster: video.poster
               }, [
@@ -23109,15 +23146,15 @@ return (_ctx, _cache) => {
               ], 8 /* PROPS */, _hoisted_10)
             ]),
             createCommentVNode(" 设置了视频删除功能，同时视频不为空 "),
-            (!!__props.item.videoDelete && !!unref(formData)[__props.item.fieldName])
+            (!!unref(propsItem_box).videoDelete && !!unref(formData_box)[unref(propsItem_box).fieldName])
               ? (openBlock(), createElementBlock("div", _hoisted_14, [
                   createVNode(_component_el_button, {
                     size: "small",
-                    icon: !unref(formData)[__props.item.videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
+                    icon: !unref(formData_box)[unref(propsItem_box).videoDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
                     onClick: video.delete
                   }, {
                     default: withCtx(() => [
-                      createTextVNode(toDisplayString(!!unref(formData)[__props.item.videoDelete] ? '视频已删除，恢复' : '删除'), 1 /* TEXT */)
+                      createTextVNode(toDisplayString(!!unref(formData_box)[unref(propsItem_box).videoDelete] ? '视频已删除，恢复' : '删除'), 1 /* TEXT */)
                     ]),
                     _: 1 /* STABLE */
                   }, 8 /* PROPS */, ["icon", "onClick"])
@@ -23127,9 +23164,9 @@ return (_ctx, _cache) => {
         : createCommentVNode("v-if", true),
       createCommentVNode(" 上传及下载 "),
       createCommentVNode(" 下载 "),
-      (__props.item.inputType === 'download')
+      (unref(propsItem_box).inputType === 'download')
         ? (openBlock(), createElementBlock("div", _hoisted_15, [
-            (unref(formData)[__props.item.fieldName])
+            (unref(formData_box)[unref(propsItem_box).fieldName])
               ? (openBlock(), createElementBlock("a", {
                   key: 0,
                   style: normalizeStyle(style.download.style),
@@ -23145,134 +23182,134 @@ return (_ctx, _cache) => {
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 上传多个文件 "),
-      (__props.item.inputType === 'upload')
+      (unref(propsItem_box).inputType === 'upload')
         ? (openBlock(), createElementBlock("div", _hoisted_17, [
             createVNode(_component_ly0Upload, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[7] || (_cache[7] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[7] || (_cache[7] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: {uploadUrl: upload.uploadUrl}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 拖拽上传 "),
-      (__props.item.inputType === 'upload-drag')
+      (unref(propsItem_box).inputType === 'upload-drag')
         ? (openBlock(), createElementBlock("div", _hoisted_18, [
             createVNode(_component_ly0Upload_drag, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[8] || (_cache[8] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[8] || (_cache[8] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: {uploadUrl: upload.uploadUrl}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 图片列表 "),
-      (__props.item.inputType === 'upload-picture')
+      (unref(propsItem_box).inputType === 'upload-picture')
         ? (openBlock(), createElementBlock("div", _hoisted_19, [
             createVNode(_component_ly0Upload_picture, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[9] || (_cache[9] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[9] || (_cache[9] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: {uploadUrl: upload.uploadUrl_image}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 图片墙 "),
-      (__props.item.inputType === 'upload-picture-card')
+      (unref(propsItem_box).inputType === 'upload-picture-card')
         ? (openBlock(), createElementBlock("div", _hoisted_20, [
             createVNode(_component_ly0Upload_pictureCard, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[10] || (_cache[10] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[10] || (_cache[10] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: {uploadUrl: upload.uploadUrl_image}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 头像 "),
-      (__props.item.inputType === 'upload-avatar')
+      (unref(propsItem_box).inputType === 'upload-avatar')
         ? (openBlock(), createElementBlock("div", _hoisted_21, [
             createVNode(_component_ly0Upload_avatar, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[11] || (_cache[11] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[11] || (_cache[11] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: {uploadUrl: upload.uploadUrl_image}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 车牌识别 "),
-      (__props.item.inputType === 'upload-carplate')
+      (unref(propsItem_box).inputType === 'upload-carplate')
         ? (openBlock(), createElementBlock("div", _hoisted_22, [
             createVNode(_component_ly0Upload_carplate, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[12] || (_cache[12] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[12] || (_cache[12] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
               myProps: {uploadUrl: upload.uploadUrl_carplate}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 行政区划 "),
-      (__props.item.inputType === 'd3gbt2260')
+      (unref(propsItem_box).inputType === 'd3gbt2260')
         ? (openBlock(), createElementBlock("div", _hoisted_23, [
             createVNode(_component_ly0gbt2260, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[13] || (_cache[13] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-              myProps: {readOnly: __props.item.readOnly}
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[13] || (_cache[13] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+              myProps: {readOnly: unref(propsItem_box).readOnly}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 商品分类 "),
-      (__props.item.inputType === 'd7group')
+      (unref(propsItem_box).inputType === 'd7group')
         ? (openBlock(), createElementBlock("div", _hoisted_24, [
             createVNode(_component_ly0d7group, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[14] || (_cache[14] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-              myProps: {readOnly: __props.item.readOnly}
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[14] || (_cache[14] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+              myProps: {readOnly: unref(propsItem_box).readOnly}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 邮寄地址 "),
-      (__props.item.inputType === 'd7postal')
+      (unref(propsItem_box).inputType === 'd7postal')
         ? (openBlock(), createElementBlock("div", _hoisted_25, [
             createVNode(_component_ly0d7postal, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[15] || (_cache[15] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-              myProps: {readOnly: __props.item.readOnly}
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[15] || (_cache[15] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+              myProps: {readOnly: unref(propsItem_box).readOnly}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 商品标价 "),
-      (__props.item.inputType === 'd7price')
+      (unref(propsItem_box).inputType === 'd7price')
         ? (openBlock(), createElementBlock("div", _hoisted_26, [
             createVNode(_component_ly0d7price, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[16] || (_cache[16] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-              myProps: {readOnly: __props.item.readOnly}
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[16] || (_cache[16] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+              myProps: {readOnly: unref(propsItem_box).readOnly}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 商品规格 "),
-      (__props.item.inputType === 'd7size')
+      (unref(propsItem_box).inputType === 'd7size')
         ? (openBlock(), createElementBlock("div", _hoisted_27, [
             createVNode(_component_ly0d7size, {
-              modelValue: unref(formData)[__props.item.fieldName],
-              "onUpdate:modelValue": _cache[17] || (_cache[17] = $event => ((unref(formData)[__props.item.fieldName]) = $event)),
-              myProps: {readOnly: __props.item.readOnly}
+              modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
+              "onUpdate:modelValue": _cache[17] || (_cache[17] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
+              myProps: {readOnly: unref(propsItem_box).readOnly}
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
       createCommentVNode(" 商品缩略图 "),
-      (__props.item.inputType === 'd7thumb')
+      (unref(propsItem_box).inputType === 'd7thumb')
         ? (openBlock(), createElementBlock("div", _hoisted_28, [
             createVNode(_component_ly0d7thumb, {
-              modelValue: unref(formData),
-              "onUpdate:modelValue": _cache[18] || (_cache[18] = $event => (isRef(formData) ? (formData).value = $event : null)),
+              modelValue: unref(formData_box),
+              "onUpdate:modelValue": _cache[18] || (_cache[18] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
               myProps: {
                     thumb: {
-                        fieldName: __props.item.thumb.fieldName || unref(formProps).para.ly0d7thumb.thumb.fieldName,
-                        width: __props.item.thumb.width || unref(formProps).para.ly0d7thumb.thumb.width,
-                        height: __props.item.thumb.height || unref(formProps).para.ly0d7thumb.thumb.height
+                        fieldName: unref(propsItem_box).thumb.fieldName || unref(formProps_box).para.ly0d7thumb.thumb.fieldName,
+                        width: unref(propsItem_box).thumb.width || unref(formProps_box).para.ly0d7thumb.thumb.width,
+                        height: unref(propsItem_box).thumb.height || unref(formProps_box).para.ly0d7thumb.thumb.height
                     },
                     name: {
-                        fieldName: __props.item.name.fieldName || unref(formProps).para.ly0d7thumb.name.fieldName,
+                        fieldName: unref(propsItem_box).name.fieldName || unref(formProps_box).para.ly0d7thumb.name.fieldName,
                     },
                     number: {
-                        fieldName: __props.item.number.fieldName || unref(formProps).para.ly0d7thumb.number.fieldName,
+                        fieldName: unref(propsItem_box).number.fieldName || unref(formProps_box).para.ly0d7thumb.number.fieldName,
                     },
-                    readOnly: __props.item.readOnly
+                    readOnly: unref(propsItem_box).readOnly
                 }
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
@@ -23292,15 +23329,31 @@ const _hoisted_2$c = ["colspan"];
 const _hoisted_3$5 = { key: 0 };
 const _hoisted_4$3 = ["colspan"];
 
-// 表单数据及方法注入
 
 var script$f = {
   __name: 'Form',
+  props: {
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    }
+},
   setup(__props) {
 
-const formData = inject("formData");
-const formProps = inject("formProps");
-const scopeThis = inject("scopeThis");
+const props = __props;
+
+// props属性包装，继承了顶层组件的响应性，页面和js可以使用相同的命名
+let formData_box = props.modelValue;
+const formProps_box = props.myProps;
+const scopeThis_box = props.scopeThis;
 
 const style = reactive({
     collapse: styleModule.collapse,
@@ -23313,11 +23366,11 @@ const style = reactive({
 
 const hdl = {
     async submit(){
-        if(formProps.submit.handle){
+        if(formProps_box.submit.handle){
             // 执行用户句柄
-            const result = await formProps.submit.handle({
-                formData,
-                scopeThis
+            const result = await formProps_box.submit.handle({
+                formData: formData_box,
+                scopeThis: scopeThis_box
             });
             if(result.code !== 0){
                 return
@@ -23325,10 +23378,10 @@ const hdl = {
         }
         
         // 后台提交 - URL地址
-        if(formProps.submit.url){
+        if(formProps_box.submit.url){
             const result = await request.ly0.ly0request({
-                url: formProps.submit.url,
-                data: formData
+                url: formProps_box.submit.url,
+                data: formData_box
             });
             if(result.code !== 0){
                 return
@@ -23336,21 +23389,19 @@ const hdl = {
         }
         
         // 后台提交 - 存储过程
-        if(formProps.submit.storpro){
+        if(formProps_box.submit.storpro){
             const result = await request.ly0.storpro({
-                storproName: formProps.submit.storpro,
-                data: formData
+                storproName: formProps_box.submit.storpro,
+                data: formData_box
             });
             if(result.code !== 0){
                 return
             }
         }
         
-        // 提交监听
-        formProps.submit.watch = true;
-        if(formProps.popup){
+        if(formProps_box.popup){
             // 关闭表单窗口
-            formProps.popup.visible = false;
+            formProps_box.popup.visible = false;
         }
     }
 };
@@ -23363,31 +23414,37 @@ return (_ctx, _cache) => {
 
   return (openBlock(), createElementBlock(Fragment, null, [
     createCommentVNode(" 置顶菜单 "),
-    (unref(formProps).menu && unref(formProps).menu.menu && unref(formProps).menu.menu.length > 0)
+    (unref(formProps_box).menu && unref(formProps_box).menu.menu && unref(formProps_box).menu.menu.length > 0)
       ? (openBlock(), createBlock(_component_ly0Menu, {
           key: 0,
-          scopeThis: unref(scopeThis),
-          formProps: unref(formProps).menu
-        }, null, 8 /* PROPS */, ["scopeThis", "formProps"]))
+          myProps: unref(formProps_box).menu,
+          scopeThis: __props.scopeThis
+        }, null, 8 /* PROPS */, ["myProps", "scopeThis"]))
       : createCommentVNode("v-if", true),
     createCommentVNode(" 表单区域可以分为多个列 "),
     createElementVNode("div", {
       style: normalizeStyle(style.root_box)
     }, [
-      (openBlock(true), createElementBlock(Fragment, null, renderList(unref(formProps).cols, (item, index) => {
+      (openBlock(true), createElementBlock(Fragment, null, renderList(unref(formProps_box).cols, (item, index) => {
         return (openBlock(), createElementBlock("div", { key: index }, [
           createElementVNode("table", null, [
             createElementVNode("tbody", null, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, (item0, index0) => {
                 return (openBlock(), createElementBlock(Fragment, { key: index0 }, [
-                  (item0.hdlVisible ? item0.hdlVisible({formData: unref(formData), scopeThis: unref(scopeThis)}) : true)
+                  (item0.hdlVisible ? item0.hdlVisible({formData: unref(formData_box), scopeThis: unref(scopeThis_box)}) : true)
                     ? (openBlock(), createElementBlock("tr", _hoisted_1$c, [
                         (!!item0.label)
                           ? (openBlock(), createElementBlock("td", {
                               key: 0,
                               style: normalizeStyle(style.field_box.left)
                             }, [
-                              createVNode(script$h, { item: item0 }, null, 8 /* PROPS */, ["item"])
+                              createVNode(script$h, {
+                                modelValue: unref(formData_box),
+                                "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
+                                myProps: unref(formProps_box),
+                                scopeThis: unref(scopeThis_box),
+                                item: item0
+                              }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis", "item"])
                             ], 4 /* STYLE */))
                           : createCommentVNode("v-if", true),
                         createElementVNode("td", {
@@ -23408,7 +23465,7 @@ return (_ctx, _cache) => {
                                 default: withCtx(() => [
                                   (openBlock(true), createElementBlock(Fragment, null, renderList(item0.items, (item1, index1) => {
                                     return (openBlock(), createElementBlock(Fragment, { key: index1 }, [
-                                      (item1.hdlVisible ? item1.hdlVisible({formData: unref(formData), scopeThis: unref(scopeThis)}) : true)
+                                      (item1.hdlVisible ? item1.hdlVisible({formData: unref(formData_box), scopeThis: unref(scopeThis_box)}) : true)
                                         ? (openBlock(), createBlock(_component_el_collapse_item, {
                                             key: 0,
                                             title: item1.title,
@@ -23422,7 +23479,7 @@ return (_ctx, _cache) => {
                                                   return (openBlock(), createElementBlock(Fragment, { key: index2 }, [
                                                     (
                                                             item2.hdlVisible
-                                                            ? item2.hdlVisible({formData: unref(formData), scopeThis: unref(scopeThis)})
+                                                            ? item2.hdlVisible({formData: unref(formData_box), scopeThis: unref(scopeThis_box)})
                                                             : true
                                                         )
                                                       ? (openBlock(), createElementBlock("tr", _hoisted_3$5, [
@@ -23431,14 +23488,26 @@ return (_ctx, _cache) => {
                                                                 key: 0,
                                                                 style: normalizeStyle(style.field_box.left)
                                                               }, [
-                                                                createVNode(script$h, { item: item2 }, null, 8 /* PROPS */, ["item"])
+                                                                createVNode(script$h, {
+                                                                  modelValue: unref(formData_box),
+                                                                  "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
+                                                                  myProps: unref(formProps_box),
+                                                                  scopeThis: unref(scopeThis_box),
+                                                                  item: item2
+                                                                }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis", "item"])
                                                               ], 4 /* STYLE */))
                                                             : createCommentVNode("v-if", true),
                                                           createElementVNode("td", {
                                                             style: normalizeStyle(style.field_box.right),
                                                             colspan: style.no_field_label(item2)
                                                           }, [
-                                                            createVNode(script$g, { item: item2 }, null, 8 /* PROPS */, ["item"])
+                                                            createVNode(script$g, {
+                                                              modelValue: unref(formData_box),
+                                                              "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
+                                                              myProps: unref(formProps_box),
+                                                              scopeThis: unref(scopeThis_box),
+                                                              item: item2
+                                                            }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis", "item"])
                                                           ], 12 /* STYLE, PROPS */, _hoisted_4$3)
                                                         ]))
                                                       : createCommentVNode("v-if", true)
@@ -23455,7 +23524,13 @@ return (_ctx, _cache) => {
                                 _: 2 /* DYNAMIC */
                               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
                             : createCommentVNode("v-if", true),
-                          createVNode(script$g, { item: item0 }, null, 8 /* PROPS */, ["item"])
+                          createVNode(script$g, {
+                            modelValue: unref(formData_box),
+                            "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
+                            myProps: unref(formProps_box),
+                            scopeThis: unref(scopeThis_box),
+                            item: item0
+                          }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis", "item"])
                         ], 12 /* STYLE, PROPS */, _hoisted_2$c)
                       ]))
                     : createCommentVNode("v-if", true)
@@ -23467,7 +23542,7 @@ return (_ctx, _cache) => {
       }), 128 /* KEYED_FRAGMENT */))
     ], 4 /* STYLE */),
     createCommentVNode(" 提交 "),
-    (unref(formProps).submit.switch)
+    (unref(formProps_box).submit.switch)
       ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
           createElementVNode("div", {
             style: normalizeStyle(style.line)
@@ -23481,7 +23556,7 @@ return (_ctx, _cache) => {
               style: normalizeStyle(style.submit_box.button.style),
               onClick: hdl.submit
             }, {
-              default: withCtx(() => [...(_cache[0] || (_cache[0] = [
+              default: withCtx(() => [...(_cache[4] || (_cache[4] = [
                 createTextVNode("提交", -1 /* CACHED */)
               ]))]),
               _: 1 /* STABLE */
@@ -23513,64 +23588,48 @@ var script$e = {
         default: () => ({})
     }
 },
-  emits: ['update:modelValue', 'change'],
-  setup(__props, { emit: __emit }) {
+  setup(__props) {
 
 const props = __props;
-// 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
-const emit = __emit;
 
-const modelValue_box = reactive(JSON.parse(JSON.stringify(props.modelValue)));
-const myProps_box = reactive(Object.assign({}, ly0default$2.myProps, props.myProps));
-const scopeThis_box = reactive(Object.assign({}, props.scopeThis));
-
-// 表单数据及方法提供
-provide('formData', modelValue_box);
-provide('formProps', myProps_box);
-provide('scopeThis', scopeThis_box);
-
-// 提交模式
-if(myProps_box.submit.switch){
-    watch(
-        myProps_box.submit.watch,
-        (newVal, oldVal) => {
-        if (newVal) {
-            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-            emit("update:modelValue", modelValue_box);
-        }
-    });
-}else { // 非提交模式
-    watch(
-        modelValue_box, // 监听 reactive 对象时，默认是深层监听
-        (newVal, oldVal) => {
-            // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-            emit("update:modelValue", newVal);
-        }
-    );
-}
+// 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
+let formData_box = reactive(props.modelValue);
+const formProps_box = reactive(Object.assign({}, ly0default$2.myProps, props.myProps));
+const scopeThis_box = reactive(props.scopeThis);
 
 return (_ctx, _cache) => {
   const _component_el_dialog = resolveComponent("el-dialog");
 
-  return (myProps_box.popup && myProps_box.popup.visible)
+  return (formProps_box.popup && formProps_box.popup.visible)
     ? (openBlock(), createBlock(_component_el_dialog, {
         key: 0,
-        modelValue: myProps_box.popup.visible,
-        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((myProps_box.popup.visible) = $event)),
+        modelValue: formProps_box.popup.visible,
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((formProps_box.popup.visible) = $event)),
         "custom-class": "code-template-dialog",
         "close-on-press-escape": true,
         "append-to-body": "",
-        title: myProps_box.popup.title,
-        width: myProps_box.popup.width,
-        top: myProps_box.popup.top,
+        title: formProps_box.popup.title,
+        width: formProps_box.popup.width,
+        top: formProps_box.popup.top,
         "destroy-on-close": true
       }, {
         default: withCtx(() => [
-          createVNode(script$f)
+          createVNode(script$f, {
+            modelValue: unref(formData_box),
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
+            myProps: formProps_box,
+            scopeThis: scopeThis_box
+          }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"])
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (openBlock(), createBlock(script$f, { key: 1 }))
+    : (openBlock(), createBlock(script$f, {
+        key: 1,
+        modelValue: unref(formData_box),
+        "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
+        myProps: formProps_box,
+        scopeThis: scopeThis_box
+      }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"]))
 }
 }
 
@@ -23594,11 +23653,12 @@ var ly0default$1 = {
 
 var script$d = {
   __name: 'index',
-  props: ["scopeThis", "myProps"],
+  props: ["myProps", "scopeThis"],
   setup(__props) {
 
 const props = __props;
-const myProps0 = ref(Object.assign({}, ly0default$1.myProps, props.myProps));
+const myProps_box = reactive(Object.assign({}, ly0default$1.myProps, props.myProps));
+const scopeThis_box = reactive(props.scopeThis);
 
 const handleRun = (
     index, // 目标索引
@@ -23613,7 +23673,7 @@ const handleRun = (
         // 节点存在自定义索引
         if (!!menu[i].index && index === menu[i].index) {
             if (menu[i].handle) {
-                menu[i].handle(props.scopeThis, index);
+                menu[i].handle(scopeThis_box, index);
             }
             result = true;
             break
@@ -23621,7 +23681,7 @@ const handleRun = (
         // 节点不存在自定义索引
         if (index === index0) {
             if (menu[i].handle) {
-                menu[i].handle(props.scopeThis, index);
+                menu[i].handle(scopeThis_box, index);
             }
             result = true;
             break
@@ -23638,7 +23698,7 @@ const handleRun = (
 };
 
 const handleSelect = key=>{
-    handleRun(key, props.myProps.menu, '');
+    handleRun(key, myProps_box.menu, '');
 };
 
 const handleOpen = key=>{};
@@ -23650,22 +23710,22 @@ return (_ctx, _cache) => {
   const _component_el_menu = resolveComponent("el-menu");
 
   return (openBlock(), createBlock(_component_el_menu, {
-    mode: myProps0.value.mode,
-    "default-active": myProps0.value.defaultActive,
+    mode: myProps_box.mode,
+    "default-active": myProps_box.defaultActive,
     onOpen: handleOpen,
     onClose: handleClose,
     onSelect: handleSelect,
-    "background-color": myProps0.value.backgroundColor,
-    "text-color": myProps0.value.textColor,
-    "active-text-color": myProps0.value.activeTextColor,
+    "background-color": myProps_box.backgroundColor,
+    "text-color": myProps_box.textColor,
+    "active-text-color": myProps_box.activeTextColor,
     "menu-trigger": "hover",
-    style: normalizeStyle('--el-menu-horizontal-height: ' + myProps0.value.horizontalHeight + '; ' +
-            myProps0.value.styleBase + ' ' +
-            myProps0.value.style)
+    style: normalizeStyle('--el-menu-horizontal-height: ' + myProps_box.horizontalHeight + '; ' +
+            myProps_box.styleBase + ' ' +
+            myProps_box.style)
   }, {
     default: withCtx(() => [
       createCommentVNode(" 第1层 "),
-      (openBlock(true), createElementBlock(Fragment, null, renderList(__props.myProps.menu, (item, index) => {
+      (openBlock(true), createElementBlock(Fragment, null, renderList(myProps_box.menu, (item, index) => {
         return (openBlock(), createElementBlock(Fragment, {
           key: item.index ? item.index : String(index)
         }, [
@@ -23677,7 +23737,7 @@ return (_ctx, _cache) => {
                     'disabled' in item
                     ? item.disabled
                     : 'hdlDisabled' in item
-                        ? item.hdlDisabled(__props.scopeThis, item, index)
+                        ? item.hdlDisabled(scopeThis_box, item, index)
                         : false
                 
               }, {
@@ -23706,7 +23766,7 @@ return (_ctx, _cache) => {
                             'disabled' in item0
                             ? item0.disabled
                             : 'hdlDisabled' in item0
-                                ? item0.hdlDisabled(__props.scopeThis, item0, index0)
+                                ? item0.hdlDisabled(scopeThis_box, item0, index0)
                                 : false
                         
                           }, {
@@ -23743,7 +23803,7 @@ return (_ctx, _cache) => {
                                     'disabled' in item1
                                     ? item1.disabled
                                     : 'hdlDisabled' in item1
-                                        ? item1.hdlDisabled(__props.scopeThis, item1, index1)
+                                        ? item1.hdlDisabled(scopeThis_box, item1, index1)
                                         : false
                                 
                                       }, {
@@ -23784,7 +23844,7 @@ return (_ctx, _cache) => {
                                             'disabled' in item2
                                             ? item2.disabled
                                             : 'hdlDisabled' in item2
-                                                ? item2.hdlDisabled(__props.scopeThis, item2, index2)
+                                                ? item2.hdlDisabled(scopeThis_box, item2, index2)
                                                 : false
                                         
                                                   }, {
@@ -23822,7 +23882,7 @@ return (_ctx, _cache) => {
                                                     'disabled' in item3
                                                     ? item3.disabled
                                                     : 'hdlDisabled' in item3
-                                                        ? item3.hdlDisabled(__props.scopeThis, item3, index3)
+                                                        ? item3.hdlDisabled(scopeThis_box, item3, index3)
                                                         : false
                                                 
                                                     }, {
@@ -40913,10 +40973,11 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const myProps_box = reactive(Object.assign({}, ly0default, props.myProps));
-const fileList_box = reactive([]);
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps));
+// 在这里，const ... reactive不能用于双向绑定：v-model:file-list="fileList_box"
+const fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item,
         response: {
@@ -40947,9 +41008,9 @@ const hdl = {
     },
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         const arr = [];
-        fileList_box.forEach(i=>{
+        fileList_box.value.forEach(i=>{
             arr.push(i.response.data.src);
         });
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -40957,10 +41018,10 @@ const hdl = {
     },
     success (response, file, fileList) { // 上传成功
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         if (response.code === 0) {
             const arr = [];
-            fileList_box.forEach(i=>{
+            fileList_box.value.forEach(i=>{
                 arr.push(i.response.data.src);
             });
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -40973,7 +41034,7 @@ const hdl = {
     },
     deleteAll () { // 删除全部已上传文件
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length);
+        fileList_box.value.splice(0, fileList_box.value.length);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", []);
     }
@@ -40986,8 +41047,8 @@ return (_ctx, _cache) => {
   return (openBlock(), createElementBlock("div", null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
+      "file-list": fileList_box.value,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
       "list-type": "text",
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
@@ -41011,10 +41072,10 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
-    (fileList_box.length>0)
-      ? (openBlock(), createElementBlock("div", _hoisted_2$b, toDisplayString("已上传"+fileList_box.length+"个文件"), 1 /* TEXT */))
+    (fileList_box.value.length>0)
+      ? (openBlock(), createElementBlock("div", _hoisted_2$b, toDisplayString("已上传"+fileList_box.value.length+"个文件"), 1 /* TEXT */))
       : createCommentVNode("v-if", true),
-    (fileList_box.length>0)
+    (fileList_box.value.length>0)
       ? (openBlock(), createBlock(_component_el_button, {
           key: 1,
           size: "small",
@@ -41060,10 +41121,10 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const myProps_box = reactive(Object.assign({}, ly0default, props.myProps));
-const fileList_box = reactive([]);
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps));
+const fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item,
         response: {
@@ -41119,17 +41180,17 @@ const hdl = {
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
         // 因为只能上传一个图片，移除即清空
-        fileList_box.splice(0, fileList_box.length);
+        fileList_box.value.splice(0, fileList_box.value.length);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", []);
     },
     success (response, file, fileList) { // 上传
         // 重置文件列表， 注意：通过使用splice保持响应性
         // 只能上传一个图片
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         if (response.code === 0) {
             const arr = [];
-            fileList_box.forEach(i=>{
+            fileList_box.value.forEach(i=>{
                 arr.push(i.response.data.src);
             });
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -41142,7 +41203,7 @@ const hdl = {
     },
     deleteAll () { // 删除全部已上传文件
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length);
+        fileList_box.value.splice(0, fileList_box.value.length);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", []);
     }
@@ -41159,8 +41220,8 @@ return (_ctx, _cache) => {
       class: "avatar",
       style: normalizeStyle(style.avatarBox),
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
+      "file-list": fileList_box.value,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
       "show-file-list": false,
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
@@ -41169,10 +41230,10 @@ return (_ctx, _cache) => {
       limit: 1
     }, {
       default: withCtx(() => [
-        (fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src)
+        (fileList_box.value.length>0 && fileList_box.value[0].response && fileList_box.value[0].response.data && fileList_box.value[0].response.data.src)
           ? (openBlock(), createElementBlock("img", {
               key: 0,
-              src: fileList_box[0].response.data.src,
+              src: fileList_box.value[0].response.data.src,
               class: "avatar",
               style: normalizeStyle(style.avatarImage)
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$a))
@@ -41189,7 +41250,7 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
-    (fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src)
+    (fileList_box.value.length>0 && fileList_box.value[0].response && fileList_box.value[0].response.data && fileList_box.value[0].response.data.src)
       ? (openBlock(), createElementBlock("div", _hoisted_2$a, [
           createVNode(_component_el_button, {
             size: "small",
@@ -41240,7 +41301,7 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const myProps_box = reactive(Object.assign({}, ly0default, {
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, {
     uploadUrl: ly0default.carplate.uploadUrl,
     avatar: {
         width: ly0default.carplate.width,
@@ -41248,9 +41309,9 @@ const myProps_box = reactive(Object.assign({}, ly0default, {
     }
 }, props.myProps));
 
-const fileList_box = reactive([]);
+const fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.src.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item.src,
         response: {
@@ -41309,7 +41370,7 @@ const hdl = {
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
         // 因为只能上传一个图片，移除即清空
-        fileList_box.splice(0, fileList_box.length);
+        fileList_box.value.splice(0, fileList_box.value.length);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", []);
     }};
@@ -41325,8 +41386,8 @@ return (_ctx, _cache) => {
       class: "avatar",
       style: normalizeStyle(style.avatarBox),
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
+      "file-list": fileList_box.value,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
       "show-file-list": false,
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
@@ -41335,15 +41396,15 @@ return (_ctx, _cache) => {
     }, {
       default: withCtx(() => [
         (
-                    fileList_box.length>0 && 
-                    fileList_box[0].response && 
-                    fileList_box[0].response.data && 
-                    fileList_box[0].response.data.src
+                    fileList_box.value.length>0 && 
+                    fileList_box.value[0].response && 
+                    fileList_box.value[0].response.data && 
+                    fileList_box.value[0].response.data.src
                 )
           ? (openBlock(), createElementBlock("img", {
               key: 0,
               class: "avatar",
-              src: _ctx.fileList[0].response.data.src,
+              src: fileList_box.value[0].response.data.src,
               style: normalizeStyle(style.avatarImage())
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$9))
           : (openBlock(), createBlock(_component_el_icon, {
@@ -41360,22 +41421,22 @@ return (_ctx, _cache) => {
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
     (
-                fileList_box.length>0 && 
-                fileList_box[0].response && 
-                fileList_box[0].response.data && 
-                fileList_box[0].response.data.result && 
-                fileList_box[0].response.data.result.txt
+                fileList_box.value.length>0 && 
+                fileList_box.value[0].response && 
+                fileList_box.value[0].response.data && 
+                fileList_box.value[0].response.data.result && 
+                fileList_box.value[0].response.data.result.txt
             )
       ? (openBlock(), createElementBlock("div", _hoisted_2$9, [
           _cache[1] || (_cache[1] = createElementVNode("span", null, "车牌识别结果：", -1 /* CACHED */)),
-          createElementVNode("span", _hoisted_3$4, toDisplayString(fileList_box[0].response.data.result.txt), 1 /* TEXT */)
+          createElementVNode("span", _hoisted_3$4, toDisplayString(fileList_box.value[0].response.data.result.txt), 1 /* TEXT */)
         ]))
       : createCommentVNode("v-if", true),
     (
-                fileList_box.length>0 && 
-                fileList_box[0].response && 
-                fileList_box[0].response.data && 
-                fileList_box[0].response.data.src
+                fileList_box.value.length>0 && 
+                fileList_box.value[0].response && 
+                fileList_box.value[0].response.data && 
+                fileList_box.value[0].response.data.src
             )
       ? (openBlock(), createElementBlock("div", _hoisted_4$2, [
           createVNode(_component_el_button, {
@@ -41428,10 +41489,10 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const myProps_box = reactive(Object.assign({}, ly0default, props.myProps));
-const fileList_box = reactive([]);
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps));
+const fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item,
         response: {
@@ -41462,9 +41523,9 @@ const hdl = {
     },
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         const arr = [];
-        fileList_box.forEach(i=>{
+        fileList_box.value.forEach(i=>{
             arr.push(i.response.data.src);
         });
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -41472,10 +41533,10 @@ const hdl = {
     },
     success (response, file, fileList) { // 上传
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         if (response.code === 0) {
             const arr = [];
-            fileList_box.forEach(i=>{
+            fileList_box.value.forEach(i=>{
                 arr.push(i.response.data.src);
             });
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -41488,7 +41549,7 @@ const hdl = {
     },
     deleteAll () { // 删除全部已上传文件
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length);
+        fileList_box.value.splice(0, fileList_box.value.length);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", []);
     }
@@ -41503,8 +41564,8 @@ return (_ctx, _cache) => {
   return (openBlock(), createElementBlock("div", null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
+      "file-list": fileList_box.value,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
       "list-type": "text",
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
@@ -41530,10 +41591,10 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
-    (fileList_box.length>0)
-      ? (openBlock(), createElementBlock("div", _hoisted_2$8, toDisplayString("已上传"+fileList_box.length+"个文件"), 1 /* TEXT */))
+    (fileList_box.value.length>0)
+      ? (openBlock(), createElementBlock("div", _hoisted_2$8, toDisplayString("已上传"+fileList_box.value.length+"个文件"), 1 /* TEXT */))
       : createCommentVNode("v-if", true),
-    (fileList_box.length>0)
+    (fileList_box.value.length>0)
       ? (openBlock(), createBlock(_component_el_button, {
           key: 1,
           size: "small",
@@ -41582,10 +41643,10 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const myProps_box = reactive(Object.assign({}, ly0default, props.myProps));
-const fileList_box = reactive([]);
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps));
+const fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item,
         response: {
@@ -41616,9 +41677,9 @@ const hdl = {
     },
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         const arr = [];
-        fileList_box.forEach(i=>{
+        fileList_box.value.forEach(i=>{
             arr.push(i.response.data.src);
         });
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -41626,10 +41687,10 @@ const hdl = {
     },
     success (response, file, fileList) { // 上传
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         if (response.code === 0) {
             const arr = [];
-            fileList_box.forEach(i=>{
+            fileList_box.value.forEach(i=>{
                 arr.push(i.response.data.src);
             });
             // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -41642,7 +41703,7 @@ const hdl = {
     },
     deleteAll () { // 删除全部已上传图片
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length);
+        fileList_box.value.splice(0, fileList_box.value.length);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", []);
     }
@@ -41655,8 +41716,8 @@ return (_ctx, _cache) => {
   return (openBlock(), createElementBlock("div", null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
+      "file-list": fileList_box.value,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
       "list-type": "picture",
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
@@ -41680,10 +41741,10 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["action", "file-list", "before-upload", "on-preview", "on-remove", "on-success", "limit"]),
-    (fileList_box.length>0)
-      ? (openBlock(), createElementBlock("div", _hoisted_2$7, toDisplayString("已上传"+fileList_box.length+"个图片"), 1 /* TEXT */))
+    (fileList_box.value.length>0)
+      ? (openBlock(), createElementBlock("div", _hoisted_2$7, toDisplayString("已上传"+fileList_box.value.length+"个图片"), 1 /* TEXT */))
       : createCommentVNode("v-if", true),
-    (fileList_box.length>0)
+    (fileList_box.value.length>0)
       ? (openBlock(), createBlock(_component_el_button, {
           key: 1,
           size: "small",
@@ -41733,10 +41794,10 @@ const props = __props;
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = __emit;
 
-const myProps_box = reactive(Object.assign({}, ly0default, props.myProps));
-const fileList_box = reactive([]);
+const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps));
+const fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
-    fileList_box.push({
+    fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
         url: item,
         response: {
@@ -41772,9 +41833,9 @@ const hdl = {
     },
     remove (file, fileList) { // 文件列表移除文件时的钩子
         // 重置文件列表， 注意：通过使用splice保持响应性
-        fileList_box.splice(0, fileList_box.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
         const arr = [];
-        fileList_box.forEach(i=>{
+        fileList_box.value.forEach(i=>{
             arr.push(i.response.data.src);
         });
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
@@ -41791,8 +41852,8 @@ return (_ctx, _cache) => {
   return (openBlock(), createElementBlock("div", null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box) = $event)),
+      "file-list": fileList_box.value,
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
       "list-type": "picture-card",
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
@@ -41826,10 +41887,10 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["modelValue"]),
-    (fileList_box.length>0)
-      ? (openBlock(), createElementBlock("div", _hoisted_3$3, toDisplayString("已上传"+fileList_box.length+"个图片"), 1 /* TEXT */))
+    (fileList_box.value.length>0)
+      ? (openBlock(), createElementBlock("div", _hoisted_3$3, toDisplayString("已上传"+fileList_box.value.length+"个图片"), 1 /* TEXT */))
       : createCommentVNode("v-if", true),
-    (fileList_box.length>0)
+    (fileList_box.value.length>0)
       ? (openBlock(), createBlock(_component_el_button, {
           key: 1,
           size: "small",
