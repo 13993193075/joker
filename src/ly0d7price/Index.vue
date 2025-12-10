@@ -6,17 +6,19 @@
                     <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未标价]</td>
                 </tr>
-                <tr v-for="(item, index) in modelValue_box" :key="index">
-                    <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
-                    <td>
-                        <span v-if="!!item.name" :style="style.modelValue_box.name">{{ item.name }}</span>
-                        <span v-else :style="style.modelValue_box.name_empty">[未设置标价名称]</span>
-                        <span :style="style.modelValue_box.price">￥{{ (item.price / 100).toFixed(2) }}</span>
-                        <img v-if="!!item.member" :style="style.modelValue_box.member" src="./member.png" alt="会员" />
-                        <img v-if="!!item.hot" :style="style.modelValue_box.hot" src="./hot.png" alt="热点" />
-                        <span :style="style.modelValue_box.note">{{ item.note || '' }}</span>
-                    </td>
-                </tr>
+                <template v-else>
+                    <tr v-for="(item, index) in modelValue_box" :key="index">
+                        <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
+                        <td>
+                            <span v-if="!!item.name" :style="style.modelValue_box.name">{{ item.name }}</span>
+                            <span v-else :style="style.modelValue_box.name_empty">[未设置标价名称]</span>
+                            <span :style="style.modelValue_box.price">￥{{ (item.price / 100).toFixed(2) }}</span>
+                            <img v-if="!!item.member" :style="style.modelValue_box.member" src="./member.png" alt="会员" />
+                            <img v-if="!!item.hot" :style="style.modelValue_box.hot" src="./hot.png" alt="热点" />
+                            <span :style="style.modelValue_box.note">{{ item.note || '' }}</span>
+                        </td>
+                    </tr>
+                </template>
             </tbody>
         </table>
         <el-dialog
@@ -194,7 +196,6 @@ const style = reactive({
     popup: {
         name: {
             width: '200px',
-            'margin-bottom': '10px'
         },
         price: {
             width: '120px'

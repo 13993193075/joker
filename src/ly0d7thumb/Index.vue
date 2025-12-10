@@ -92,8 +92,8 @@ import {ly0 as ly0request} from '../request/index.js'
 const props = defineProps({
     // modelValue: 外部 v-model 绑定的值
     modelValue: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => ({})
     },
     myProps: {
         type: Object,
@@ -142,8 +142,9 @@ const hdl = {
         popup.visible = true
     },
     submit() {
-        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
-        Object.assign(modelValue_box, popup.formData)
+        modelValue_box[props.myProps.thumb.fieldName] = popup.formData.thumb
+        modelValue_box[props.myProps.name.fieldName] = popup.formData.name
+        modelValue_box[props.myProps.number.fieldName] = popup.formData.number
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", modelValue_box)
         popup.visible = false

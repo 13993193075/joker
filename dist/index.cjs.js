@@ -42341,7 +42341,7 @@ const hdl = {
         popup.visible = true;
     },
     append() {
-        popup.formData.push({ value: '' });
+        popup.formData.push('');
     },
     delete(index) {
         popup.formData.splice(index, 1);
@@ -42350,7 +42350,7 @@ const hdl = {
         // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue);
+        emit("update:modelValue", modelValue_box);
         popup.visible = false;
     }
 };
@@ -42473,8 +42473,8 @@ return (_ctx, _cache) => {
                   }, [
                     vue.createVNode(_component_el_input, {
                       style: vue.normalizeStyle(style.popup.input),
-                      modelValue: popup.value[index],
-                      "onUpdate:modelValue": $event => ((popup.value[index]) = $event)
+                      modelValue: popup.formData[index],
+                      "onUpdate:modelValue": $event => ((popup.formData[index]) = $event)
                     }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"]),
                     vue.createVNode(_component_el_button, {
                       style: vue.normalizeStyle(style.popup.delete),
@@ -42691,63 +42691,62 @@ return (_ctx, _cache) => {
               ]),
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未设置更多邮寄地址]", -1 /* CACHED */))
             ]))
-          : vue.createCommentVNode("v-if", true),
-        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(modelValue_box, (item, index) => {
-          return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
-            vue.createElementVNode("td", null, [
-              (!__props.myProps.readOnly && index === 0)
-                ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
-                    key: 0,
-                    size: 16,
-                    color: "blue"
-                  }, {
-                    default: vue.withCtx(() => [
-                      vue.createVNode(_component_Edit)
-                    ]),
-                    _: 1 /* STABLE */
-                  }))
-                : vue.createCommentVNode("v-if", true)
-            ]),
-            vue.createElementVNode("td", null, [
-              vue.createElementVNode("table", null, [
-                vue.createElementVNode("tbody", null, [
-                  vue.createElementVNode("tr", null, [
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.label)
-                    }, "国内行政区划", 4 /* STYLE */),
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.value)
-                    }, vue.toDisplayString(item.gbt2260text), 5 /* TEXT, STYLE */)
-                  ]),
-                  vue.createElementVNode("tr", null, [
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.label)
-                    }, "详细地址", 4 /* STYLE */),
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.value)
-                    }, vue.toDisplayString(item.address), 5 /* TEXT, STYLE */)
-                  ]),
-                  vue.createElementVNode("tr", null, [
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.label)
-                    }, "联系电话", 4 /* STYLE */),
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.value)
-                    }, vue.toDisplayString(item.tel), 5 /* TEXT, STYLE */)
-                  ]),
-                  vue.createElementVNode("tr", null, [
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.label)
-                    }, "联系人", 4 /* STYLE */),
-                    vue.createElementVNode("td", {
-                      style: vue.normalizeStyle(style.modelValue_box.value)
-                    }, vue.toDisplayString(item.name), 5 /* TEXT, STYLE */)
+          : (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 1 }, vue.renderList(modelValue_box, (item, index) => {
+              return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
+                vue.createElementVNode("td", null, [
+                  (!__props.myProps.readOnly && index === 0)
+                    ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                        key: 0,
+                        size: 16,
+                        color: "blue"
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_Edit)
+                        ]),
+                        _: 1 /* STABLE */
+                      }))
+                    : vue.createCommentVNode("v-if", true)
+                ]),
+                vue.createElementVNode("td", null, [
+                  vue.createElementVNode("table", null, [
+                    vue.createElementVNode("tbody", null, [
+                      vue.createElementVNode("tr", null, [
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.label)
+                        }, "国内行政区划", 4 /* STYLE */),
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.value)
+                        }, vue.toDisplayString(item.gbt2260text), 5 /* TEXT, STYLE */)
+                      ]),
+                      vue.createElementVNode("tr", null, [
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.label)
+                        }, "详细地址", 4 /* STYLE */),
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.value)
+                        }, vue.toDisplayString(item.address), 5 /* TEXT, STYLE */)
+                      ]),
+                      vue.createElementVNode("tr", null, [
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.label)
+                        }, "联系电话", 4 /* STYLE */),
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.value)
+                        }, vue.toDisplayString(item.tel), 5 /* TEXT, STYLE */)
+                      ]),
+                      vue.createElementVNode("tr", null, [
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.label)
+                        }, "联系人", 4 /* STYLE */),
+                        vue.createElementVNode("td", {
+                          style: vue.normalizeStyle(style.modelValue_box.value)
+                        }, vue.toDisplayString(item.name), 5 /* TEXT, STYLE */)
+                      ])
+                    ])
                   ])
                 ])
-              ])
-            ])
-          ]))
-        }), 128 /* KEYED_FRAGMENT */))
+              ]))
+            }), 128 /* KEYED_FRAGMENT */))
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
@@ -42757,7 +42756,7 @@ return (_ctx, _cache) => {
       "close-on-press-escape": true,
       "append-to-body": "",
       title: "邮寄地址",
-      width: "1200px",
+      width: "1240px",
       "destroy-on-close": true
     }, {
       default: vue.withCtx(() => [
@@ -42977,7 +42976,6 @@ const style = vue.reactive({
     popup: {
         name: {
             width: '200px',
-            'margin-bottom': '10px'
         },
         price: {
             width: '120px'
@@ -43028,58 +43026,57 @@ return (_ctx, _cache) => {
               ]),
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未标价]", -1 /* CACHED */))
             ]))
-          : vue.createCommentVNode("v-if", true),
-        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(modelValue_box, (item, index) => {
-          return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
-            vue.createElementVNode("td", null, [
-              (!__props.myProps.readOnly && index === 0)
-                ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
-                    key: 0,
-                    size: 16,
-                    color: "blue"
-                  }, {
-                    default: vue.withCtx(() => [
-                      vue.createVNode(_component_Edit)
-                    ]),
-                    _: 1 /* STABLE */
-                  }))
-                : vue.createCommentVNode("v-if", true)
-            ]),
-            vue.createElementVNode("td", null, [
-              (!!item.name)
-                ? (vue.openBlock(), vue.createElementBlock("span", {
-                    key: 0,
-                    style: vue.normalizeStyle(style.modelValue_box.name)
-                  }, vue.toDisplayString(item.name), 5 /* TEXT, STYLE */))
-                : (vue.openBlock(), vue.createElementBlock("span", {
-                    key: 1,
-                    style: vue.normalizeStyle(style.modelValue_box.name_empty)
-                  }, "[未设置标价名称]", 4 /* STYLE */)),
-              vue.createElementVNode("span", {
-                style: vue.normalizeStyle(style.modelValue_box.price)
-              }, "￥" + vue.toDisplayString((item.price / 100).toFixed(2)), 5 /* TEXT, STYLE */),
-              (!!item.member)
-                ? (vue.openBlock(), vue.createElementBlock("img", {
-                    key: 2,
-                    style: vue.normalizeStyle(style.modelValue_box.member),
-                    src: _imports_0$1,
-                    alt: "会员"
-                  }, null, 4 /* STYLE */))
-                : vue.createCommentVNode("v-if", true),
-              (!!item.hot)
-                ? (vue.openBlock(), vue.createElementBlock("img", {
-                    key: 3,
-                    style: vue.normalizeStyle(style.modelValue_box.hot),
-                    src: _imports_1,
-                    alt: "热点"
-                  }, null, 4 /* STYLE */))
-                : vue.createCommentVNode("v-if", true),
-              vue.createElementVNode("span", {
-                style: vue.normalizeStyle(style.modelValue_box.note)
-              }, vue.toDisplayString(item.note || ''), 5 /* TEXT, STYLE */)
-            ])
-          ]))
-        }), 128 /* KEYED_FRAGMENT */))
+          : (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 1 }, vue.renderList(modelValue_box, (item, index) => {
+              return (vue.openBlock(), vue.createElementBlock("tr", { key: index }, [
+                vue.createElementVNode("td", null, [
+                  (!__props.myProps.readOnly && index === 0)
+                    ? (vue.openBlock(), vue.createBlock(_component_el_icon, {
+                        key: 0,
+                        size: 16,
+                        color: "blue"
+                      }, {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_Edit)
+                        ]),
+                        _: 1 /* STABLE */
+                      }))
+                    : vue.createCommentVNode("v-if", true)
+                ]),
+                vue.createElementVNode("td", null, [
+                  (!!item.name)
+                    ? (vue.openBlock(), vue.createElementBlock("span", {
+                        key: 0,
+                        style: vue.normalizeStyle(style.modelValue_box.name)
+                      }, vue.toDisplayString(item.name), 5 /* TEXT, STYLE */))
+                    : (vue.openBlock(), vue.createElementBlock("span", {
+                        key: 1,
+                        style: vue.normalizeStyle(style.modelValue_box.name_empty)
+                      }, "[未设置标价名称]", 4 /* STYLE */)),
+                  vue.createElementVNode("span", {
+                    style: vue.normalizeStyle(style.modelValue_box.price)
+                  }, "￥" + vue.toDisplayString((item.price / 100).toFixed(2)), 5 /* TEXT, STYLE */),
+                  (!!item.member)
+                    ? (vue.openBlock(), vue.createElementBlock("img", {
+                        key: 2,
+                        style: vue.normalizeStyle(style.modelValue_box.member),
+                        src: _imports_0$1,
+                        alt: "会员"
+                      }, null, 4 /* STYLE */))
+                    : vue.createCommentVNode("v-if", true),
+                  (!!item.hot)
+                    ? (vue.openBlock(), vue.createElementBlock("img", {
+                        key: 3,
+                        style: vue.normalizeStyle(style.modelValue_box.hot),
+                        src: _imports_1,
+                        alt: "热点"
+                      }, null, 4 /* STYLE */))
+                    : vue.createCommentVNode("v-if", true),
+                  vue.createElementVNode("span", {
+                    style: vue.normalizeStyle(style.modelValue_box.note)
+                  }, vue.toDisplayString(item.note || ''), 5 /* TEXT, STYLE */)
+                ])
+              ]))
+            }), 128 /* KEYED_FRAGMENT */))
       ])
     ]),
     vue.createVNode(_component_el_dialog, {
@@ -43280,7 +43277,7 @@ const hdl = {
         // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue);
+        emit("update:modelValue", modelValue_box);
         popup.visible = false;
     }
 };
@@ -43306,7 +43303,6 @@ const style = vue.reactive({
     popup: {
         name: {
             width: '200px',
-            'margin-bottom': '10px',
         },
         size: {
             width: '300px'
@@ -43354,7 +43350,7 @@ return (_ctx, _cache) => {
               _cache[2] || (_cache[2] = vue.createElementVNode("td", null, "[未设置规格]", -1 /* CACHED */))
             ]))
           : vue.createCommentVNode("v-if", true),
-        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.value, (item, index) => {
+        (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(modelValue_box, (item, index) => {
           return (vue.openBlock(), vue.createElementBlock("tr", null, [
             vue.createElementVNode("td", null, [
               (!__props.myProps.readOnly && index === 0)
@@ -43421,17 +43417,17 @@ return (_ctx, _cache) => {
               return (vue.openBlock(), vue.createElementBlock("tr", null, [
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    class: "input-name",
+                    style: vue.normalizeStyle(style.popup.name),
                     modelValue: item.name,
                     "onUpdate:modelValue": $event => ((item.name) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_input, {
-                    class: "input-size",
+                    style: vue.normalizeStyle(style.popup.size),
                     modelValue: item.size,
                     "onUpdate:modelValue": $event => ((item.size) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
                 vue.createElementVNode("td", null, [
                   vue.createVNode(_component_el_switch, {
@@ -43532,8 +43528,8 @@ var script = {
   props: {
     // modelValue: 外部 v-model 绑定的值
     modelValue: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => ({})
     },
     myProps: {
         type: Object,
@@ -43586,8 +43582,9 @@ const hdl = {
         popup.visible = true;
     },
     submit() {
-        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
-        Object.assign(modelValue_box, popup.formData);
+        modelValue_box[props.myProps.thumb.fieldName] = popup.formData.thumb;
+        modelValue_box[props.myProps.name.fieldName] = popup.formData.name;
+        modelValue_box[props.myProps.number.fieldName] = popup.formData.number;
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", modelValue_box);
         popup.visible = false;

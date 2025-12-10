@@ -5,7 +5,7 @@
                 <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                 <td>[未设置规格]</td>
             </tr>
-            <tr v-for="(item, index) in value">
+            <tr v-for="(item, index) in modelValue_box">
                 <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
                 <td>
                     <span v-if="!!item.name">{{ item.name }}</span>
@@ -35,8 +35,8 @@
                 <th></th>
             </tr>
             <tr v-for="(item, index) in popup.formData">
-                <td><el-input class="input-name" v-model="item.name"></el-input></td>
-                <td><el-input class="input-size" v-model="item.size"></el-input></td>
+                <td><el-input :style="style.popup.name" v-model="item.name"></el-input></td>
+                <td><el-input :style="style.popup.size" v-model="item.size"></el-input></td>
                 <td>
                     <el-switch
                         v-model="item.new"
@@ -130,7 +130,7 @@ const hdl = {
         // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         modelValue_box.splice(0, modelValue_box.length, ...popup.formData)
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue)
+        emit("update:modelValue", modelValue_box)
         popup.visible = false
     }
 }
@@ -156,7 +156,6 @@ const style = reactive({
     popup: {
         name: {
             width: '200px',
-            'margin-bottom': '10px',
         },
         size: {
             width: '300px'

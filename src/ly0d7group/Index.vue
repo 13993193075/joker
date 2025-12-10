@@ -33,7 +33,7 @@
                         <td>
                             <template v-for="(item, index) in popup.formData" :key="index">
                                 <div :style="style.popup.item">
-                                    <el-input :style="style.popup.input" v-model="popup.value[index]"></el-input>
+                                    <el-input :style="style.popup.input" v-model="popup.formData[index]"></el-input>
                                     <el-button
                                         :style="style.popup.delete"
                                         type="danger"
@@ -113,7 +113,7 @@ const hdl = {
         popup.visible = true
     },
     append() {
-        popup.formData.push({ value: '' })
+        popup.formData.push('')
     },
     delete(index) {
         popup.formData.splice(index, 1)
@@ -122,7 +122,7 @@ const hdl = {
         // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         modelValue_box.splice(0, modelValue_box.length, ...popup.formData)
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue)
+        emit("update:modelValue", modelValue_box)
         popup.visible = false
     }
 }

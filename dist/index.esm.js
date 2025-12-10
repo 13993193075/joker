@@ -42337,7 +42337,7 @@ const hdl = {
         popup.visible = true;
     },
     append() {
-        popup.formData.push({ value: '' });
+        popup.formData.push('');
     },
     delete(index) {
         popup.formData.splice(index, 1);
@@ -42346,7 +42346,7 @@ const hdl = {
         // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue);
+        emit("update:modelValue", modelValue_box);
         popup.visible = false;
     }
 };
@@ -42469,8 +42469,8 @@ return (_ctx, _cache) => {
                   }, [
                     createVNode(_component_el_input, {
                       style: normalizeStyle(style.popup.input),
-                      modelValue: popup.value[index],
-                      "onUpdate:modelValue": $event => ((popup.value[index]) = $event)
+                      modelValue: popup.formData[index],
+                      "onUpdate:modelValue": $event => ((popup.formData[index]) = $event)
                     }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"]),
                     createVNode(_component_el_button, {
                       style: normalizeStyle(style.popup.delete),
@@ -42687,63 +42687,62 @@ return (_ctx, _cache) => {
               ]),
               _cache[2] || (_cache[2] = createElementVNode("td", null, "[未设置更多邮寄地址]", -1 /* CACHED */))
             ]))
-          : createCommentVNode("v-if", true),
-        (openBlock(true), createElementBlock(Fragment, null, renderList(modelValue_box, (item, index) => {
-          return (openBlock(), createElementBlock("tr", { key: index }, [
-            createElementVNode("td", null, [
-              (!__props.myProps.readOnly && index === 0)
-                ? (openBlock(), createBlock(_component_el_icon, {
-                    key: 0,
-                    size: 16,
-                    color: "blue"
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_Edit)
-                    ]),
-                    _: 1 /* STABLE */
-                  }))
-                : createCommentVNode("v-if", true)
-            ]),
-            createElementVNode("td", null, [
-              createElementVNode("table", null, [
-                createElementVNode("tbody", null, [
-                  createElementVNode("tr", null, [
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.label)
-                    }, "国内行政区划", 4 /* STYLE */),
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.value)
-                    }, toDisplayString(item.gbt2260text), 5 /* TEXT, STYLE */)
-                  ]),
-                  createElementVNode("tr", null, [
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.label)
-                    }, "详细地址", 4 /* STYLE */),
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.value)
-                    }, toDisplayString(item.address), 5 /* TEXT, STYLE */)
-                  ]),
-                  createElementVNode("tr", null, [
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.label)
-                    }, "联系电话", 4 /* STYLE */),
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.value)
-                    }, toDisplayString(item.tel), 5 /* TEXT, STYLE */)
-                  ]),
-                  createElementVNode("tr", null, [
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.label)
-                    }, "联系人", 4 /* STYLE */),
-                    createElementVNode("td", {
-                      style: normalizeStyle(style.modelValue_box.value)
-                    }, toDisplayString(item.name), 5 /* TEXT, STYLE */)
+          : (openBlock(true), createElementBlock(Fragment, { key: 1 }, renderList(modelValue_box, (item, index) => {
+              return (openBlock(), createElementBlock("tr", { key: index }, [
+                createElementVNode("td", null, [
+                  (!__props.myProps.readOnly && index === 0)
+                    ? (openBlock(), createBlock(_component_el_icon, {
+                        key: 0,
+                        size: 16,
+                        color: "blue"
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_Edit)
+                        ]),
+                        _: 1 /* STABLE */
+                      }))
+                    : createCommentVNode("v-if", true)
+                ]),
+                createElementVNode("td", null, [
+                  createElementVNode("table", null, [
+                    createElementVNode("tbody", null, [
+                      createElementVNode("tr", null, [
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.label)
+                        }, "国内行政区划", 4 /* STYLE */),
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.value)
+                        }, toDisplayString(item.gbt2260text), 5 /* TEXT, STYLE */)
+                      ]),
+                      createElementVNode("tr", null, [
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.label)
+                        }, "详细地址", 4 /* STYLE */),
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.value)
+                        }, toDisplayString(item.address), 5 /* TEXT, STYLE */)
+                      ]),
+                      createElementVNode("tr", null, [
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.label)
+                        }, "联系电话", 4 /* STYLE */),
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.value)
+                        }, toDisplayString(item.tel), 5 /* TEXT, STYLE */)
+                      ]),
+                      createElementVNode("tr", null, [
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.label)
+                        }, "联系人", 4 /* STYLE */),
+                        createElementVNode("td", {
+                          style: normalizeStyle(style.modelValue_box.value)
+                        }, toDisplayString(item.name), 5 /* TEXT, STYLE */)
+                      ])
+                    ])
                   ])
                 ])
-              ])
-            ])
-          ]))
-        }), 128 /* KEYED_FRAGMENT */))
+              ]))
+            }), 128 /* KEYED_FRAGMENT */))
       ])
     ]),
     createVNode(_component_el_dialog, {
@@ -42753,7 +42752,7 @@ return (_ctx, _cache) => {
       "close-on-press-escape": true,
       "append-to-body": "",
       title: "邮寄地址",
-      width: "1200px",
+      width: "1240px",
       "destroy-on-close": true
     }, {
       default: withCtx(() => [
@@ -42973,7 +42972,6 @@ const style = reactive({
     popup: {
         name: {
             width: '200px',
-            'margin-bottom': '10px'
         },
         price: {
             width: '120px'
@@ -43024,58 +43022,57 @@ return (_ctx, _cache) => {
               ]),
               _cache[2] || (_cache[2] = createElementVNode("td", null, "[未标价]", -1 /* CACHED */))
             ]))
-          : createCommentVNode("v-if", true),
-        (openBlock(true), createElementBlock(Fragment, null, renderList(modelValue_box, (item, index) => {
-          return (openBlock(), createElementBlock("tr", { key: index }, [
-            createElementVNode("td", null, [
-              (!__props.myProps.readOnly && index === 0)
-                ? (openBlock(), createBlock(_component_el_icon, {
-                    key: 0,
-                    size: 16,
-                    color: "blue"
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_Edit)
-                    ]),
-                    _: 1 /* STABLE */
-                  }))
-                : createCommentVNode("v-if", true)
-            ]),
-            createElementVNode("td", null, [
-              (!!item.name)
-                ? (openBlock(), createElementBlock("span", {
-                    key: 0,
-                    style: normalizeStyle(style.modelValue_box.name)
-                  }, toDisplayString(item.name), 5 /* TEXT, STYLE */))
-                : (openBlock(), createElementBlock("span", {
-                    key: 1,
-                    style: normalizeStyle(style.modelValue_box.name_empty)
-                  }, "[未设置标价名称]", 4 /* STYLE */)),
-              createElementVNode("span", {
-                style: normalizeStyle(style.modelValue_box.price)
-              }, "￥" + toDisplayString((item.price / 100).toFixed(2)), 5 /* TEXT, STYLE */),
-              (!!item.member)
-                ? (openBlock(), createElementBlock("img", {
-                    key: 2,
-                    style: normalizeStyle(style.modelValue_box.member),
-                    src: _imports_0$1,
-                    alt: "会员"
-                  }, null, 4 /* STYLE */))
-                : createCommentVNode("v-if", true),
-              (!!item.hot)
-                ? (openBlock(), createElementBlock("img", {
-                    key: 3,
-                    style: normalizeStyle(style.modelValue_box.hot),
-                    src: _imports_1,
-                    alt: "热点"
-                  }, null, 4 /* STYLE */))
-                : createCommentVNode("v-if", true),
-              createElementVNode("span", {
-                style: normalizeStyle(style.modelValue_box.note)
-              }, toDisplayString(item.note || ''), 5 /* TEXT, STYLE */)
-            ])
-          ]))
-        }), 128 /* KEYED_FRAGMENT */))
+          : (openBlock(true), createElementBlock(Fragment, { key: 1 }, renderList(modelValue_box, (item, index) => {
+              return (openBlock(), createElementBlock("tr", { key: index }, [
+                createElementVNode("td", null, [
+                  (!__props.myProps.readOnly && index === 0)
+                    ? (openBlock(), createBlock(_component_el_icon, {
+                        key: 0,
+                        size: 16,
+                        color: "blue"
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_Edit)
+                        ]),
+                        _: 1 /* STABLE */
+                      }))
+                    : createCommentVNode("v-if", true)
+                ]),
+                createElementVNode("td", null, [
+                  (!!item.name)
+                    ? (openBlock(), createElementBlock("span", {
+                        key: 0,
+                        style: normalizeStyle(style.modelValue_box.name)
+                      }, toDisplayString(item.name), 5 /* TEXT, STYLE */))
+                    : (openBlock(), createElementBlock("span", {
+                        key: 1,
+                        style: normalizeStyle(style.modelValue_box.name_empty)
+                      }, "[未设置标价名称]", 4 /* STYLE */)),
+                  createElementVNode("span", {
+                    style: normalizeStyle(style.modelValue_box.price)
+                  }, "￥" + toDisplayString((item.price / 100).toFixed(2)), 5 /* TEXT, STYLE */),
+                  (!!item.member)
+                    ? (openBlock(), createElementBlock("img", {
+                        key: 2,
+                        style: normalizeStyle(style.modelValue_box.member),
+                        src: _imports_0$1,
+                        alt: "会员"
+                      }, null, 4 /* STYLE */))
+                    : createCommentVNode("v-if", true),
+                  (!!item.hot)
+                    ? (openBlock(), createElementBlock("img", {
+                        key: 3,
+                        style: normalizeStyle(style.modelValue_box.hot),
+                        src: _imports_1,
+                        alt: "热点"
+                      }, null, 4 /* STYLE */))
+                    : createCommentVNode("v-if", true),
+                  createElementVNode("span", {
+                    style: normalizeStyle(style.modelValue_box.note)
+                  }, toDisplayString(item.note || ''), 5 /* TEXT, STYLE */)
+                ])
+              ]))
+            }), 128 /* KEYED_FRAGMENT */))
       ])
     ]),
     createVNode(_component_el_dialog, {
@@ -43276,7 +43273,7 @@ const hdl = {
         // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
         modelValue_box.splice(0, modelValue_box.length, ...popup.formData);
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
-        emit("update:modelValue", submittingValue);
+        emit("update:modelValue", modelValue_box);
         popup.visible = false;
     }
 };
@@ -43302,7 +43299,6 @@ const style = reactive({
     popup: {
         name: {
             width: '200px',
-            'margin-bottom': '10px',
         },
         size: {
             width: '300px'
@@ -43350,7 +43346,7 @@ return (_ctx, _cache) => {
               _cache[2] || (_cache[2] = createElementVNode("td", null, "[未设置规格]", -1 /* CACHED */))
             ]))
           : createCommentVNode("v-if", true),
-        (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.value, (item, index) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList(modelValue_box, (item, index) => {
           return (openBlock(), createElementBlock("tr", null, [
             createElementVNode("td", null, [
               (!__props.myProps.readOnly && index === 0)
@@ -43417,17 +43413,17 @@ return (_ctx, _cache) => {
               return (openBlock(), createElementBlock("tr", null, [
                 createElementVNode("td", null, [
                   createVNode(_component_el_input, {
-                    class: "input-name",
+                    style: normalizeStyle(style.popup.name),
                     modelValue: item.name,
                     "onUpdate:modelValue": $event => ((item.name) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
                 createElementVNode("td", null, [
                   createVNode(_component_el_input, {
-                    class: "input-size",
+                    style: normalizeStyle(style.popup.size),
                     modelValue: item.size,
                     "onUpdate:modelValue": $event => ((item.size) = $event)
-                  }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])
+                  }, null, 8 /* PROPS */, ["style", "modelValue", "onUpdate:modelValue"])
                 ]),
                 createElementVNode("td", null, [
                   createVNode(_component_el_switch, {
@@ -43528,8 +43524,8 @@ var script = {
   props: {
     // modelValue: 外部 v-model 绑定的值
     modelValue: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => ({})
     },
     myProps: {
         type: Object,
@@ -43582,8 +43578,9 @@ const hdl = {
         popup.visible = true;
     },
     submit() {
-        // 这里不能使用JSON.parse(JSON.stringify())，否则会切断modelValue_box的响应性
-        Object.assign(modelValue_box, popup.formData);
+        modelValue_box[props.myProps.thumb.fieldName] = popup.formData.thumb;
+        modelValue_box[props.myProps.name.fieldName] = popup.formData.name;
+        modelValue_box[props.myProps.number.fieldName] = popup.formData.number;
         // 触发 update:modelValue 事件更新父组件的 v-model 绑定的值
         emit("update:modelValue", modelValue_box);
         popup.visible = false;

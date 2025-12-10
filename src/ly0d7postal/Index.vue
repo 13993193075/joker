@@ -6,11 +6,12 @@
                     <td><el-icon v-if="!myProps.readOnly" :size="16" color="blue"><Edit /></el-icon></td>
                     <td>[未设置更多邮寄地址]</td>
                 </tr>
-                <tr v-for="(item, index) in modelValue_box" :key="index">
-                    <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
-                    <td>
-                        <table>
-                            <tbody>
+                <template v-else>
+                    <tr v-for="(item, index) in modelValue_box" :key="index">
+                        <td><el-icon v-if="!myProps.readOnly && index === 0" :size="16" color="blue"><Edit /></el-icon></td>
+                        <td>
+                            <table>
+                                <tbody>
                                 <tr>
                                     <td :style="style.modelValue_box.label">国内行政区划</td>
                                     <td :style="style.modelValue_box.value">{{ item.gbt2260text }}</td>
@@ -27,10 +28,12 @@
                                     <td :style="style.modelValue_box.label">联系人</td>
                                     <td :style="style.modelValue_box.value">{{ item.name }}</td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </template>
+                
             </tbody>
         </table>
         <el-dialog
@@ -39,7 +42,7 @@
             :close-on-press-escape="true"
             append-to-body
             title="邮寄地址"
-            width="1200px"
+            width="1240px"
             :destroy-on-close="true"
         >
         <table style="width: 100%">
