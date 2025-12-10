@@ -106,6 +106,7 @@ const hdl = {
             ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB')
             return false
         }
+        
         ElMessage('正在上传 ...')
         return true
     },

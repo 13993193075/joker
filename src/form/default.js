@@ -21,9 +21,6 @@ export default {
             url: '', // 后台提交 - URL地址
             storpro: '', // 后台提交 - 存储过程
         },
-        uploadUrl: ly0resquest.domain + ly0resquest.upload,
-        uploadUrl_image: ly0resquest.domain + ly0resquest.upload_image,
-        uploadUrl_carplate: ly0resquest.domain + ly0resquest.upload_carplate,
         para: {
             inputWidth: '200px',
             placeholder: {
@@ -43,6 +40,11 @@ export default {
             video: {
                 width: '300px',
                 height: '200px',
+            },
+            upload: {
+                uploadUrl: ly0resquest.domain + ly0resquest.upload,
+                uploadUrl_image: ly0resquest.domain + ly0resquest.upload_image,
+                uploadUrl_carplate: ly0resquest.domain + ly0resquest.upload_carplate,
             },
             richtext: {
                 editorWidth: '500px', // 富文本编辑器宽度

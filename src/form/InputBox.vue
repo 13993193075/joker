@@ -481,7 +481,7 @@ const images = reactive({
 })
 
 const richtextProps = ref({
-    uploadUrl: formProps_box.para.uploadUrl
+    uploadUrl: formProps_box.para.upload.uploadUrl_image
 })
 
 const video = reactive({
@@ -534,9 +534,9 @@ const download = reactive({
 })
 
 const upload = reactive({
-    uploadUrl: formProps_box.para.uploadUrl,
-    uploadUrl_image: formProps_box.para.uploadUrl_image,
-    uploadUrl_carplate: formProps_box.para.uploadUrl_carplate
+    uploadUrl: formProps_box.para.upload.uploadUrl,
+    uploadUrl_image: formProps_box.para.upload.uploadUrl_image,
+    uploadUrl_carplate: formProps_box.para.upload.uploadUrl_carplate
 })
 
 const style = reactive({

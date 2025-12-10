@@ -22167,9 +22167,6 @@ var ly0default$2 = {
       // 后台提交 - URL地址
       storpro: '' // 后台提交 - 存储过程
     },
-    uploadUrl: ly0request.domain + ly0request.upload,
-    uploadUrl_image: ly0request.domain + ly0request.upload_image,
-    uploadUrl_carplate: ly0request.domain + ly0request.upload_carplate,
     para: {
       inputWidth: '200px',
       placeholder: {
@@ -22189,6 +22186,11 @@ var ly0default$2 = {
       video: {
         width: '300px',
         height: '200px'
+      },
+      upload: {
+        uploadUrl: ly0request.domain + ly0request.upload,
+        uploadUrl_image: ly0request.domain + ly0request.upload_image,
+        uploadUrl_carplate: ly0request.domain + ly0request.upload_carplate
       },
       richtext: {
         editorWidth: '500px',
@@ -22744,7 +22746,7 @@ const images = reactive({
 });
 
 const richtextProps = ref({
-    uploadUrl: formProps_box.para.uploadUrl
+    uploadUrl: formProps_box.para.upload.uploadUrl_image
 });
 
 const video = reactive({
@@ -22797,9 +22799,9 @@ const download = reactive({
 });
 
 const upload = reactive({
-    uploadUrl: formProps_box.para.uploadUrl,
-    uploadUrl_image: formProps_box.para.uploadUrl_image,
-    uploadUrl_carplate: formProps_box.para.uploadUrl_carplate
+    uploadUrl: formProps_box.para.upload.uploadUrl,
+    uploadUrl_image: formProps_box.para.upload.uploadUrl_image,
+    uploadUrl_carplate: formProps_box.para.upload.uploadUrl_carplate
 });
 
 const style = reactive({
@@ -41172,6 +41174,7 @@ const hdl = {
             ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
             return false
         }
+        
         ElMessage('正在上传 ...');
         return true
     },
@@ -41362,6 +41365,7 @@ const hdl = {
             ElMessage.error('上传文件的大小不能超过 ' + myProps_box.size + ' KB');
             return false
         }
+        
         ElMessage('正在上传 ...');
         return true
     },
@@ -43557,7 +43561,7 @@ const popup = reactive({
 
 const upload = reactive({
     props: {
-        uploadUrl: props.myProps.thumb.uploadUrl || ly0request.upload,
+        uploadUrl: props.myProps.thumb.uploadUrl || ly0request.domain + ly0request.upload_image,
         avatar: {
             width: props.myProps.thumb.width || '100px',
             height: props.myProps.thumb.height || '100px'
