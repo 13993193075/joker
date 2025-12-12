@@ -80,7 +80,7 @@
 </style>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {reactive} from "vue";
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 const props = defineProps({

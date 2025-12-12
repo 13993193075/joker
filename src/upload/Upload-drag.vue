@@ -29,6 +29,7 @@
 import {reactive, ref} from "vue";
 import { ElMessage } from 'element-plus';
 import ly0default from './default.js'
+import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 const props = defineProps({
@@ -45,7 +46,10 @@ const props = defineProps({
 // 遵循 Vue 3 v-model 规范，使用 update:modelValue 事件
 const emit = defineEmits(['update:modelValue', 'change'])
 
-const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps))
+const myProps_box = reactive(beanUnclass.deepClone.deepMerge(
+    beanUnclass.deepClone.deepClone(ly0default.myProps),
+    props.myProps
+))
 const fileList_box = ref([])
 props.modelValue.forEach((item, index) => {
     fileList_box.value.push({

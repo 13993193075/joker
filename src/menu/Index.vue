@@ -158,9 +158,13 @@
 <script setup>
 import {reactive} from "vue";
 import ly0default from './default.js'
+import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
 const props = defineProps(["myProps", "scopeThis"]);
-const myProps_box = reactive(Object.assign({}, ly0default.myProps, props.myProps))
+const myProps_box = reactive(beanUnclass.deepClone.deepMerge(
+    beanUnclass.deepClone.deepClone(ly0default.myProps),
+    props.myProps
+))
 const scopeThis_box = reactive(props.scopeThis)
 
 const handleRun = (
