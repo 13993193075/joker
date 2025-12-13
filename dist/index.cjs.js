@@ -41436,7 +41436,7 @@ const props = __props;
 // props属性包装，继承了顶层组件的响应性，页面和js可以使用相同的命名
 const tableProps_box = props.tableProps;
 
-let checkedAll = vue.ref(true); // 是否全选状态
+let checkedAll = vue.ref(false); // 是否全选状态
 let isIndeterminate = vue.ref(false); // 不确定状态：非全选、非全空
 let itemsChecked = vue.reactive([]); // 已选中条目
 
@@ -41452,12 +41452,24 @@ const hdl = {
     // 全选
     checkedAll(val) {
         itemsChecked = val ? hdl.getKeys(tableProps_box.table.pickCol.colsInit) : [];
-        isIndeterminate.value = false;
+        isIndeterminate.value = !val;
     },
     // 选中或取消某一条
     checkedItemsChange(val) {
-        checkedAll.value = val.length === tableProps_box.table.pickCol.colsInit.length;
-        isIndeterminate.value = val.length > 0 && val.length < tableProps_box.table.pickCol.colsInit.length;
+        if(val.length > 0 && val.length === tableProps_box.table.pickCol.colsInit.length){
+            checkedAll.value = true;
+            isIndeterminate.value = false;
+            return
+        }
+        if(val.length > 0 && val.length !== tableProps_box.table.pickCol.colsInit.length){
+            checkedAll.value = false;
+            isIndeterminate.value = true;
+            return
+        }
+        if(val.length === 0){
+            checkedAll.value = false;
+            isIndeterminate.value = false;
+        }
     },
     confirm() { // 确认提交
         tableProps_box.table.cols = [];
