@@ -223,7 +223,7 @@
             layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
 
-        <!-- 选择列 -->
+        <!-- 选择列 --><!-- 使用该组件，必须设置每一列的唯一标识：key -->
         <compPickCol :tableProps="tableProps_box"></compPickCol>
     </div>
 </template>

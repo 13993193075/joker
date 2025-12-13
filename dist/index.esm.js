@@ -41441,13 +41441,17 @@ const hdl = {
     getKeys(p) {
         let a = [];
         p.forEach(i => {
-            a.push(i.key);
+            a.push(i.fieldName);
         });
         return a
     },
     // 全选
     checkedAll(val) {
-        itemsChecked = val ? hdl.getKeys(tableProps_box.table.pickCol.colsInit) : [];
+        itemsChecked.splice(0, itemsChecked.length);
+        if (val) {
+            // 正确：重新填充数组，保持响应性
+            itemsChecked.push(...hdl.getKeys(tableProps_box.table.pickCol.colsInit));
+        }
         isIndeterminate.value = !val;
     },
     // 选中或取消某一条
@@ -41471,7 +41475,7 @@ const hdl = {
         tableProps_box.table.cols = [];
         itemsChecked.forEach(i => {
             tableProps_box.table.cols.push(tableProps_box.table.pickCol.colsInit.find(j => {
-                return j.key === i
+                return j.fieldName === i
             }));
         });
         tableProps_box.table.pickCol.popup.visible = false;
@@ -41480,11 +41484,19 @@ const hdl = {
 
 // 窗口弹出监听
 watch(
-    ref(tableProps_box.table.pickCol.popup.visible),
+    () => tableProps_box.table.pickCol.popup.visible,
     (newVal, oldVal) => {
         if (newVal) {
-            checkedAll.value = tableProps_box.table.cols.length === tableProps_box.table.pickCol.colsInit.length;
-            isIndeterminate.value = tableProps_box.table.cols.length !== tableProps_box.table.pickCol.colsInit.length;
+            if(tableProps_box.table.cols.length > 0 && tableProps_box.table.cols.length === tableProps_box.table.pickCol.colsInit.length){
+                checkedAll.value = true;
+                isIndeterminate.value = false;
+            }else if(tableProps_box.table.cols.length > 0 && tableProps_box.table.cols.length !== tableProps_box.table.pickCol.colsInit.length){
+                checkedAll.value = false;
+                isIndeterminate.value = true;
+            }else if(tableProps_box.table.cols.length === 0){
+                checkedAll.value = false;
+                isIndeterminate.value = false;
+            }
             itemsChecked = hdl.getKeys(tableProps_box.table.cols);
         }
     }
@@ -41529,8 +41541,8 @@ return (_ctx, _cache) => {
             (openBlock(true), createElementBlock(Fragment, null, renderList(unref(tableProps_box).table.pickCol.colsInit, (item) => {
               return (openBlock(), createBlock(_component_el_checkbox, {
                 style: {"display":"block","margin-bottom":"10px"},
-                label: item ? item.key : '',
-                key: item ? item.key : ''
+                label: item ? item.fieldName : '',
+                key: item ? item.fieldName : ''
               }, {
                 default: withCtx(() => [
                   createTextVNode(toDisplayString(item ? item.label : ''), 1 /* TEXT */)
