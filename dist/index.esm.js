@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router';
-import { ref, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, unref, reactive, computed, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, isRef, defineComponent, h, onMounted, onBeforeUnmount, watch, nextTick as nextTick$1 } from 'vue';
+import { ref, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, unref, reactive, computed, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, isRef, defineComponent, h, onMounted, onBeforeUnmount, watch, nextTick as nextTick$1, resolveDirective, withDirectives } from 'vue';
 import { ElMessage } from 'element-plus';
 
 function _mergeNamespaces(n, m) {
@@ -22138,7 +22138,7 @@ var request = {
 
 // 默认值
 
-var ly0default$2 = {
+var ly0default$3 = {
   myProps: {
     popup: {
       visible: false,
@@ -22494,7 +22494,7 @@ var styleModule = {
   input
 };
 
-var script$h = {
+var script$k = {
   __name: 'LabelBox',
   props: {
     modelValue: {
@@ -22551,13 +22551,13 @@ return (_ctx, _cache) => {
 
 };
 
-script$h.__file = "src/form/LabelBox.vue";
+script$k.__file = "src/form/LabelBox.vue";
 
-const _hoisted_1$d = { key: 12 };
-const _hoisted_2$d = { key: 0 };
-const _hoisted_3$6 = { key: 13 };
-const _hoisted_4$4 = { key: 0 };
-const _hoisted_5$1 = { key: 14 };
+const _hoisted_1$e = { key: 12 };
+const _hoisted_2$e = { key: 0 };
+const _hoisted_3$7 = { key: 13 };
+const _hoisted_4$5 = { key: 0 };
+const _hoisted_5$2 = { key: 14 };
 const _hoisted_6 = { key: 0 };
 const _hoisted_7 = { key: 16 };
 const _hoisted_8 = ["innerHTML"];
@@ -22583,7 +22583,7 @@ const _hoisted_27 = { key: 29 };
 const _hoisted_28 = { key: 30 };
 
 
-var script$g = {
+var script$j = {
   __name: 'InputBox',
   props: {
     modelValue: {
@@ -22992,7 +22992,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
         : createCommentVNode("v-if", true),
       (unref(propsItem_box).inputType === 'button-group' && unref(propsItem_box).box && unref(propsItem_box).box.length > 0)
-        ? (openBlock(), createElementBlock("div", _hoisted_1$d, [
+        ? (openBlock(), createElementBlock("div", _hoisted_1$e, [
             (openBlock(true), createElementBlock(Fragment, null, renderList(unref(propsItem_box).box, (item0, index0) => {
               return (openBlock(), createBlock(_component_el_button_group, {
                 key: index0,
@@ -23021,7 +23021,7 @@ return (_ctx, _cache) => {
                         }, {
                           default: withCtx(() => [
                             (item1.text)
-                              ? (openBlock(), createElementBlock("span", _hoisted_2$d, toDisplayString(item1.text), 1 /* TEXT */))
+                              ? (openBlock(), createElementBlock("span", _hoisted_2$e, toDisplayString(item1.text), 1 /* TEXT */))
                               : createCommentVNode("v-if", true)
                           ]),
                           _: 2 /* DYNAMIC */
@@ -23039,7 +23039,7 @@ return (_ctx, _cache) => {
       createCommentVNode(" 图片&富文本&视频 "),
       createCommentVNode(" 图片 "),
       (unref(propsItem_box).inputType === 'image')
-        ? (openBlock(), createElementBlock("div", _hoisted_3$6, [
+        ? (openBlock(), createElementBlock("div", _hoisted_3$7, [
             createElementVNode("div", null, [
               createVNode(_component_el_image, {
                 style: normalizeStyle(style.image(unref(propsItem_box), unref(formProps_box))),
@@ -23051,7 +23051,7 @@ return (_ctx, _cache) => {
             ]),
             createCommentVNode(" 设置了图片删除功能，同时图片不为空 "),
             (!!unref(propsItem_box).imageDelete && !!unref(formData_box)[unref(propsItem_box).fieldName])
-              ? (openBlock(), createElementBlock("div", _hoisted_4$4, [
+              ? (openBlock(), createElementBlock("div", _hoisted_4$5, [
                   createVNode(_component_el_button, {
                     size: "small",
                     icon: !unref(formData_box)[unref(propsItem_box).imageDelete] ? 'el-icon-delete' : 'el-icon-magic-stick',
@@ -23068,7 +23068,7 @@ return (_ctx, _cache) => {
         : createCommentVNode("v-if", true),
       createCommentVNode(" 多个图片 "),
       (unref(propsItem_box).inputType === 'images')
-        ? (openBlock(), createElementBlock("div", _hoisted_5$1, [
+        ? (openBlock(), createElementBlock("div", _hoisted_5$2, [
             (openBlock(true), createElementBlock(Fragment, null, renderList(unref(formData_box)[unref(propsItem_box).fieldName], (itemImages, indexImages) => {
               return (openBlock(), createElementBlock("div", {
                 key: indexImages,
@@ -23323,16 +23323,16 @@ return (_ctx, _cache) => {
 
 };
 
-script$g.__scopeId = "data-v-a94fa4ba";
-script$g.__file = "src/form/InputBox.vue";
+script$j.__scopeId = "data-v-a94fa4ba";
+script$j.__file = "src/form/InputBox.vue";
 
-const _hoisted_1$c = { key: 0 };
-const _hoisted_2$c = ["colspan"];
-const _hoisted_3$5 = { key: 0 };
-const _hoisted_4$3 = ["colspan"];
+const _hoisted_1$d = { key: 0 };
+const _hoisted_2$d = ["colspan"];
+const _hoisted_3$6 = { key: 0 };
+const _hoisted_4$4 = ["colspan"];
 
 
-var script$f = {
+var script$i = {
   __name: 'Form',
   props: {
     modelValue: {
@@ -23434,13 +23434,13 @@ return (_ctx, _cache) => {
               (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, (item0, index0) => {
                 return (openBlock(), createElementBlock(Fragment, { key: index0 }, [
                   (item0.hdlVisible ? item0.hdlVisible({formData: unref(formData_box), scopeThis: unref(scopeThis_box)}) : true)
-                    ? (openBlock(), createElementBlock("tr", _hoisted_1$c, [
+                    ? (openBlock(), createElementBlock("tr", _hoisted_1$d, [
                         (!!item0.label)
                           ? (openBlock(), createElementBlock("td", {
                               key: 0,
                               style: normalizeStyle(style.field_box.left)
                             }, [
-                              createVNode(script$h, {
+                              createVNode(script$k, {
                                 modelValue: unref(formData_box),
                                 "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                                 myProps: unref(formProps_box),
@@ -23484,13 +23484,13 @@ return (_ctx, _cache) => {
                                                             ? item2.hdlVisible({formData: unref(formData_box), scopeThis: unref(scopeThis_box)})
                                                             : true
                                                         )
-                                                      ? (openBlock(), createElementBlock("tr", _hoisted_3$5, [
+                                                      ? (openBlock(), createElementBlock("tr", _hoisted_3$6, [
                                                           (item2.label)
                                                             ? (openBlock(), createElementBlock("td", {
                                                                 key: 0,
                                                                 style: normalizeStyle(style.field_box.left)
                                                               }, [
-                                                                createVNode(script$h, {
+                                                                createVNode(script$k, {
                                                                   modelValue: unref(formData_box),
                                                                   "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                                                                   myProps: unref(formProps_box),
@@ -23503,14 +23503,14 @@ return (_ctx, _cache) => {
                                                             style: normalizeStyle(style.field_box.right),
                                                             colspan: style.no_field_label(item2)
                                                           }, [
-                                                            createVNode(script$g, {
+                                                            createVNode(script$j, {
                                                               modelValue: unref(formData_box),
                                                               "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                                                               myProps: unref(formProps_box),
                                                               scopeThis: unref(scopeThis_box),
                                                               item: item2
                                                             }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis", "item"])
-                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$3)
+                                                          ], 12 /* STYLE, PROPS */, _hoisted_4$4)
                                                         ]))
                                                       : createCommentVNode("v-if", true)
                                                   ], 64 /* STABLE_FRAGMENT */))
@@ -23526,14 +23526,14 @@ return (_ctx, _cache) => {
                                 _: 2 /* DYNAMIC */
                               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
                             : createCommentVNode("v-if", true),
-                          createVNode(script$g, {
+                          createVNode(script$j, {
                             modelValue: unref(formData_box),
                             "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                             myProps: unref(formProps_box),
                             scopeThis: unref(scopeThis_box),
                             item: item0
                           }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis", "item"])
-                        ], 12 /* STYLE, PROPS */, _hoisted_2$c)
+                        ], 12 /* STYLE, PROPS */, _hoisted_2$d)
                       ]))
                     : createCommentVNode("v-if", true)
                 ], 64 /* STABLE_FRAGMENT */))
@@ -23572,7 +23572,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$f.__file = "src/form/Form.vue";
+script$i.__file = "src/form/Form.vue";
 
 // 引用标准：GB/T 2260
 
@@ -24064,7 +24064,7 @@ var deepClone = {
 var unclassified = {
     deepClone};
 
-var script$e = {
+var script$h = {
   __name: 'index',
   props: {
     modelValue: {
@@ -24087,7 +24087,7 @@ const props = __props;
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
 let formData_box = reactive(props.modelValue);
 const formProps_box = reactive(unclassified.deepClone.deepMerge(
-    unclassified.deepClone.deepClone(ly0default$2.myProps),
+    unclassified.deepClone.deepClone(ly0default$3.myProps),
     props.myProps
 ));
 const scopeThis_box = reactive(props.scopeThis);
@@ -24109,7 +24109,7 @@ return (_ctx, _cache) => {
         "destroy-on-close": true
       }, {
         default: withCtx(() => [
-          createVNode(script$f, {
+          createVNode(script$i, {
             modelValue: unref(formData_box),
             "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
             myProps: formProps_box,
@@ -24118,7 +24118,7 @@ return (_ctx, _cache) => {
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (openBlock(), createBlock(script$f, {
+    : (openBlock(), createBlock(script$i, {
         key: 1,
         modelValue: unref(formData_box),
         "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
@@ -24130,9 +24130,9 @@ return (_ctx, _cache) => {
 
 };
 
-script$e.__file = "src/form/index.vue";
+script$h.__file = "src/form/index.vue";
 
-var ly0default$1 = {
+var ly0default$2 = {
   myProps: {
     mode: 'horizontal',
     defaultActive: '',
@@ -24146,14 +24146,14 @@ var ly0default$1 = {
   }
 };
 
-var script$d = {
+var script$g = {
   __name: 'index',
   props: ["myProps", "scopeThis"],
   setup(__props) {
 
 const props = __props;
 const myProps_box = reactive(unclassified.deepClone.deepMerge(
-    unclassified.deepClone.deepClone(ly0default$1.myProps),
+    unclassified.deepClone.deepClone(ly0default$2.myProps),
     props.myProps
 ));
 const scopeThis_box = reactive(props.scopeThis);
@@ -24418,7 +24418,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$d.__file = "src/menu/index.vue";
+script$g.__file = "src/menu/index.vue";
 
 var quill$1 = {exports: {}};
 
@@ -41274,7 +41274,7 @@ v-model 是一个语法糖（syntactic sugar）。当你在一个自定义组件
     2. 监听一个名为 update:modelValue 的自定义事件（用于更新值）
 */
 
-var script$c = {
+var script$f = {
   __name: 'index',
   props: {
     // v-model 对应的 prop
@@ -41416,7 +41416,805 @@ return (_ctx, _cache) => {
 
 };
 
-script$c.__file = "src/richtext/index.vue";
+script$f.__file = "src/richtext/index.vue";
+
+var script$e = {
+  __name: 'PickCol',
+  props: {
+    tableProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  setup(__props) {
+
+const props = __props;
+// props属性包装，继承了顶层组件的响应性，页面和js可以使用相同的命名
+const tableProps_box = props.tableProps;
+
+let checkedAll = ref(true); // 是否全选状态
+let isIndeterminate = ref(false); // 不确定状态：非全选、非全空
+let itemsChecked = reactive([]); // 已选中条目
+
+const hdl = {
+    // 获取键值数组
+    getKeys(p) {
+        let a = [];
+        p.forEach(i => {
+            a.push(i.key);
+        });
+        return a
+    },
+    // 全选
+    checkedAll(val) {
+        itemsChecked = val ? hdl.getKeys(tableProps_box.table.pickCol.colsInit) : [];
+        isIndeterminate.value = false;
+    },
+    // 选中或取消某一条
+    checkedItemsChange(val) {
+        checkedAll.value = val.length === tableProps_box.table.pickCol.colsInit.length;
+        isIndeterminate.value = val.length > 0 && val.length < tableProps_box.table.pickCol.colsInit.length;
+    },
+    confirm() { // 确认提交
+        tableProps_box.table.cols = [];
+        itemsChecked.forEach(i => {
+            tableProps_box.table.cols.push(tableProps_box.table.pickCol.colsInit.find(j => {
+                return j.key === i
+            }));
+        });
+        tableProps_box.table.pickCol.popup.visible = false;
+    }
+};
+
+// 窗口弹出监听
+watch(
+    ref(tableProps_box.table.pickCol.popup.visible),
+    (newVal, oldVal) => {
+        if (newVal) {
+            checkedAll.value = tableProps_box.table.cols.length === tableProps_box.table.pickCol.colsInit.length;
+            isIndeterminate.value = tableProps_box.table.cols.length !== tableProps_box.table.pickCol.colsInit.length;
+            itemsChecked = hdl.getKeys(tableProps_box.table.cols);
+        }
+    }
+);
+
+return (_ctx, _cache) => {
+  const _component_el_checkbox = resolveComponent("el-checkbox");
+  const _component_el_row = resolveComponent("el-row");
+  const _component_el_checkbox_group = resolveComponent("el-checkbox-group");
+  const _component_el_button = resolveComponent("el-button");
+  const _component_el_dialog = resolveComponent("el-dialog");
+
+  return (openBlock(), createElementBlock("div", null, [
+    createVNode(_component_el_dialog, {
+      modelValue: unref(tableProps_box).table.pickCol.popup.visible,
+      "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((unref(tableProps_box).table.pickCol.popup.visible) = $event)),
+      "custom-class": 'code-template-dialog',
+      "close-on-press-escape": true,
+      "append-to-body": "",
+      title: "选择列",
+      width: "400px"
+    }, {
+      default: withCtx(() => [
+        createVNode(_component_el_checkbox, {
+          indeterminate: unref(isIndeterminate),
+          modelValue: unref(checkedAll),
+          "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(checkedAll) ? (checkedAll).value = $event : checkedAll = $event)),
+          onChange: hdl.checkedAll
+        }, {
+          default: withCtx(() => [...(_cache[3] || (_cache[3] = [
+            createTextVNode("全选", -1 /* CACHED */)
+          ]))]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["indeterminate", "modelValue", "onChange"]),
+        createVNode(_component_el_row, { style: {"height":"1px","background-color":"#bdbdbd","margin-top":"10px","margin-bottom":"10px"} }),
+        createVNode(_component_el_checkbox_group, {
+          modelValue: unref(itemsChecked),
+          "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (isRef(itemsChecked) ? (itemsChecked).value = $event : itemsChecked = $event)),
+          onChange: hdl.checkedItemsChange
+        }, {
+          default: withCtx(() => [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(tableProps_box).table.pickCol.colsInit, (item) => {
+              return (openBlock(), createBlock(_component_el_checkbox, {
+                style: {"display":"block","margin-bottom":"10px"},
+                label: item ? item.key : '',
+                key: item ? item.key : ''
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString(item ? item.label : ''), 1 /* TEXT */)
+                ]),
+                _: 2 /* DYNAMIC */
+              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["label"]))
+            }), 128 /* KEYED_FRAGMENT */))
+          ]),
+          _: 1 /* STABLE */
+        }, 8 /* PROPS */, ["modelValue", "onChange"]),
+        createVNode(_component_el_row, { style: {"height":"1px","background-color":"#bdbdbd","margin-top":"10px","margin-bottom":"10px"} }),
+        createVNode(_component_el_row, { style: {"text-align":"center"} }, {
+          default: withCtx(() => [
+            createVNode(_component_el_button, {
+              type: "success",
+              round: "",
+              onClick: hdl.confirm
+            }, {
+              default: withCtx(() => [...(_cache[4] || (_cache[4] = [
+                createTextVNode("确认", -1 /* CACHED */)
+              ]))]),
+              _: 1 /* STABLE */
+            }, 8 /* PROPS */, ["onClick"])
+          ]),
+          _: 1 /* STABLE */
+        })
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["modelValue"])
+  ]))
+}
+}
+
+};
+
+script$e.__file = "src/table/PickCol.vue";
+
+const _hoisted_1$c = { style: {"padding":"10px"} };
+const _hoisted_2$c = { key: 0 };
+const _hoisted_3$5 = ["onClick", "onMouseover"];
+const _hoisted_4$3 = ["href", "download"];
+const _hoisted_5$1 = {
+  key: 1,
+  style: {"color":"#6a6a6a"}
+};
+
+
+var script$d = {
+  __name: 'Table',
+  props: {
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  setup(__props) {
+
+const props = __props;
+
+// props属性包装，继承了顶层组件的响应性，页面和js可以使用相同的命名
+let tableData_box = props.modelValue;
+const tableProps_box = props.myProps;
+const scopeThis_box = props.scopeThis;
+// 设置列选择初始化参数
+tableProps_box.table.pickCol.colsInit = unclassified.deepClone.deepClone(tableProps_box.table.cols);
+
+const hdl = {
+    cellMouseEnter(row, column, cell, event) {
+        // 当单元格hover进入时会触发该事件
+        if (tableProps_box.table.hdlCellMouseEnter) {
+            tableProps_box.table.hdlCellMouseEnter({scopeThis: scopeThis_box, tableProps: tableProps_box, inherit: {
+                row,
+                column,
+                cell,
+                event
+            }});
+        } else {
+            tableProps_box.table.cellTooltip = [];
+        }
+    },
+    rowClick(row, column, event) {
+        // 当某一行被点击时会触发该事件
+        if (tableProps_box.table.hdlRowClick) {
+            tableProps_box.table.hdlRowClick({scopeThis: scopeThis_box, inherit: {
+                row,
+                column,
+                event
+            }});
+        }
+    },
+    selectionChange(selection) {
+        // 当选择项发生变化时会触发该事件
+        if (tableProps_box.table.hdlSelectionChange) {
+            tableProps_box.table.hdlSelectionChange({scopeThis: scopeThis_box, inherit: {
+                selection
+            }});
+        }
+    },
+    sortChange(para) {
+        // 当表格的排序条件发生变化的时候会触发该事件，一般用于远程排序
+        // para.column
+        // para.prop
+        // para.order
+
+        if (tableProps_box.table.hdlSortChange) {
+            tableProps_box.table.hdlSortChange({scopeThis: scopeThis_box, inherit: {
+                column: para.column,
+                prop: para.prop,
+                order: para.order,
+            }});
+        }
+    },
+    cellMouseover({col, row}) {
+        if (col.hdlMouseover) {
+            col.hdlMouseover({scopeThis: scopeThis_box, row, col});
+        } else {
+            tableData_box.cellTooltip = [];
+        }
+    },
+    download({row, col}) {
+        if(!col.hdlGetSrc){
+            return {
+                src: '',
+                label: tableProps_box.table.colShow.download.downloadLabelNoSrc,
+                fileName: tableProps_box.table.colShow.download.fileName
+            }
+        }
+
+        const src = col.hdlGetSrc({scopeThis: scopeThis_box, row});
+        const label = col.hdlGetDownloadLabel
+            ? col.hdlGetDownloadLabel({scopeThis: scopeThis_box, row})
+            : tableProps_box.table.colShow.download.downloadLabel;
+        const fileName = col.hdlGetFileName
+            ? col.hdlGetFileName({scopeThis: scopeThis_box, row})
+            : tableProps_box.table.colShow.download.fileName;
+        return {
+            src: src || '',
+            label: src ? label : tableProps_box.table.colShow.download.downloadLabelNoSrc,
+            fileName: src ? fileName : tableProps_box.table.colShow.download.fileName
+        }
+    },
+    pageSizeChange(pageSize) {
+        // 重新分页
+        tableProps_box.query.pageSize = pageSize;
+        tableProps_box.query.currentPage = 1;
+    },
+    currentPageChange(currentPage) {
+        // 修改当前页号
+        tableProps_box.query.currentPage = currentPage;
+    }
+};
+
+const style = {
+    topButtonGroups: {
+        rootBox: {
+            display: 'flex',
+            'justify-content': 'space-between',
+            'margin-bottom': '10px'
+        },
+        button(index, index0){return {
+            style: tableProps_box.topButtonGroups[index][index0].style || {
+                "background-color": "#009f95",
+                color: "#ffffff"
+            },
+            icon: tableProps_box.topButtonGroups[index][index0].icon || "", // el-图标
+            type: tableProps_box.topButtonGroups[index][index0].type || "",
+            size: tableProps_box.topButtonGroups[index][index0].size || "",
+            plain: tableProps_box.topButtonGroups[index][index0].plain || false,
+            round: tableProps_box.topButtonGroups[index][index0].round || false,
+            circle: tableProps_box.topButtonGroups[index][index0].circle || false
+        }}
+    },
+    cell: {
+        text: {
+            'white-space': 'pre-line' // 保留换行符
+        },
+        buttonGroup({item}){return {
+            style: item.style || {
+                'background-color': '#009f95',
+                color: '#ffffff'
+            },
+            icon: item.icon || "", // el-图标
+            type: item.type || "",
+            size: item.size || "",
+            plain: item.plain || false,
+            round: item.round || false,
+            circle: item.circle || false
+        }},
+        image({col}){return {
+            width: col.imageWidth || tableProps_box.table.colShow.image.width,
+            height: col.imageHeight || tableProps_box.table.colShow.image.height,
+        }}
+    },
+    pagination: {
+        "text-align": "left",
+        "margin-top": "10px"
+    }
+};
+
+return (_ctx, _cache) => {
+  const _component_el_divider = resolveComponent("el-divider");
+  const _component_ly0Menu = resolveComponent("ly0Menu");
+  const _component_el_button = resolveComponent("el-button");
+  const _component_el_tooltip = resolveComponent("el-tooltip");
+  const _component_el_button_group = resolveComponent("el-button-group");
+  const _component_el_table_column = resolveComponent("el-table-column");
+  const _component_el_switch = resolveComponent("el-switch");
+  const _component_el_image = resolveComponent("el-image");
+  const _component_ly0d7thumb = resolveComponent("ly0d7thumb");
+  const _component_ly0d7group = resolveComponent("ly0d7group");
+  const _component_ly0d7size = resolveComponent("ly0d7size");
+  const _component_ly0d7price = resolveComponent("ly0d7price");
+  const _component_el_table = resolveComponent("el-table");
+  const _component_el_pagination = resolveComponent("el-pagination");
+  const _directive_loading = resolveDirective("loading");
+
+  return (openBlock(), createElementBlock("div", _hoisted_1$c, [
+    createCommentVNode(" 标题线 "),
+    (unref(tableProps_box).titleLine.text)
+      ? (openBlock(), createElementBlock("div", {
+          key: 0,
+          style: normalizeStyle(unref(tableProps_box).titleLine.style.line)
+        }, [
+          createVNode(_component_el_divider, { "content-position": "left" }, {
+            default: withCtx(() => [
+              createElementVNode("span", {
+                style: normalizeStyle(unref(tableProps_box).titleLine.style.text)
+              }, toDisplayString(unref(tableProps_box).titleLine.text), 5 /* TEXT, STYLE */)
+            ]),
+            _: 1 /* STABLE */
+          })
+        ], 4 /* STYLE */))
+      : createCommentVNode("v-if", true),
+    createCommentVNode(" 置顶菜单 "),
+    (!!unref(tableProps_box).menu)
+      ? (openBlock(), createBlock(_component_ly0Menu, {
+          key: 1,
+          myProps: unref(tableProps_box).menu,
+          scopeThis: unref(scopeThis_box)
+        }, null, 8 /* PROPS */, ["myProps", "scopeThis"]))
+      : createCommentVNode("v-if", true),
+    createCommentVNode(" 置顶快捷按钮组 "),
+    (unref(tableProps_box).topButtonGroups.length > 0)
+      ? (openBlock(), createElementBlock("div", {
+          key: 2,
+          style: normalizeStyle(style.topButtonGroups.rootBox)
+        }, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(unref(tableProps_box).topButtonGroups, (item, index) => {
+            return (openBlock(), createBlock(_component_el_button_group, { key: index }, {
+              default: withCtx(() => [
+                (openBlock(true), createElementBlock(Fragment, null, renderList(item, (item0, index0) => {
+                  return (openBlock(), createBlock(_component_el_tooltip, {
+                    key: index0,
+                    disabled: !item0.tip,
+                    content: item0.tip && item0.tip.content ? item0.tip.content : '',
+                    placement: item0.tip && item0.tip.placement ? item0.tip.placement : 'bottom',
+                    effect: "light"
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_el_button, {
+                        style: normalizeStyle(style.topButtonGroups.button(index, index0).style),
+                        icon: style.topButtonGroups.button(index, index0).icon,
+                        type: style.topButtonGroups.button(index, index0).type,
+                        size: style.topButtonGroups.button(index, index0).size,
+                        plain: style.topButtonGroups.button(index, index0).plain,
+                        round: style.topButtonGroups.button(index, index0).round,
+                        circle: style.topButtonGroups.button(index, index0).circle,
+                        onClick: $event => (item0.hdlClick ? item0.hdlClick({scopeThis: unref(scopeThis_box)}) : null)
+                      }, {
+                        default: withCtx(() => [
+                          (item0.text)
+                            ? (openBlock(), createElementBlock("span", _hoisted_2$c, toDisplayString(item0.text), 1 /* TEXT */))
+                            : createCommentVNode("v-if", true)
+                        ]),
+                        _: 2 /* DYNAMIC */
+                      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["style", "icon", "type", "size", "plain", "round", "circle", "onClick"])
+                    ]),
+                    _: 2 /* DYNAMIC */
+                  }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["disabled", "content", "placement"]))
+                }), 128 /* KEYED_FRAGMENT */))
+              ]),
+              _: 2 /* DYNAMIC */
+            }, 1024 /* DYNAMIC_SLOTS */))
+          }), 128 /* KEYED_FRAGMENT */))
+        ], 4 /* STYLE */))
+      : createCommentVNode("v-if", true),
+    createCommentVNode(" 表体 "),
+    withDirectives((openBlock(), createBlock(_component_el_table, {
+      data: unref(tableData_box).data,
+      stripe: "",
+      border: "",
+      onCellMouseEnter: hdl.cellMouseEnter,
+      onRowClick: hdl.rowClick,
+      onSelectionChange: hdl.selectionChange,
+      onSortChange: hdl.sortChange
+    }, {
+      default: withCtx(() => [
+        createCommentVNode(" 左手第1列：是否可以选择记录行 "),
+        (unref(tableProps_box).table.selection.yes)
+          ? (openBlock(), createBlock(_component_el_table_column, {
+              key: 0,
+              type: "selection",
+              width: unref(tableProps_box).table.selection.width
+            }, null, 8 /* PROPS */, ["width"]))
+          : createCommentVNode("v-if", true),
+        createCommentVNode(" 列 "),
+        (openBlock(true), createElementBlock(Fragment, null, renderList(unref(tableProps_box).table.cols, (col, colIndex) => {
+          return (openBlock(), createElementBlock(Fragment, { key: colIndex }, [
+            (col.hdlVisible ? col.hdlVisible({scopeThis: unref(scopeThis_box)}) : true)
+              ? (openBlock(), createBlock(_component_el_table_column, {
+                  key: 0,
+                  modelValue: col.fieldName,
+                  "onUpdate:modelValue": $event => ((col.fieldName) = $event),
+                  label: col.label,
+                  sortable: col.sortable,
+                  "sort-method": (row2, row1)=>{
+                        if(col.hdlSortMethod){
+                            return col.hdlSortMethod({inherit: {row2, row1}})
+                        }else {
+                            if(row2.name > row1.name){
+                                return 1 // 升序
+                            } else {
+                                return -1 // 降序
+                            }
+                        }
+                    },
+                  width: col.width ? col.width : ''
+                }, {
+                  default: withCtx((scope) => [
+                    createVNode(_component_el_tooltip, {
+                      placement: "left",
+                      effect: "dark",
+                      disabled: unref(tableProps_box).table.cellTooltip.length === 0
+                    }, {
+                      content: withCtx(() => [
+                        (openBlock(true), createElementBlock(Fragment, null, renderList(unref(tableProps_box).table.cellTooltip, (item, index) => {
+                          return (openBlock(), createElementBlock("div", { key: index }, toDisplayString(item), 1 /* TEXT */))
+                        }), 128 /* KEYED_FRAGMENT */))
+                      ]),
+                      default: withCtx(() => [
+                        createElementVNode("div", {
+                          onClick: $event => (col.hdlClick ? col.hdlClick({scopeThis: unref(scopeThis_box), row: scope.row}) : null),
+                          onMouseover: $event => (hdl.cellMouseover({col, row: scope.row}))
+                        }, [
+                          (col.show === 'text')
+                            ? (openBlock(), createElementBlock("span", {
+                                key: 0,
+                                style: normalizeStyle(style.cell.text)
+                              }, toDisplayString(scope.row[col.fieldName]), 5 /* TEXT, STYLE */))
+                            : createCommentVNode("v-if", true),
+                          (!col.show)
+                            ? (openBlock(), createElementBlock("span", {
+                                key: 1,
+                                style: normalizeStyle(style.cell.text)
+                              }, toDisplayString(scope.row[col.fieldName]), 5 /* TEXT, STYLE */))
+                            : createCommentVNode("v-if", true),
+                          (col.show === 'expression')
+                            ? (openBlock(), createElementBlock("span", {
+                                key: 2,
+                                style: normalizeStyle(style.cell.text)
+                              }, toDisplayString(col.hdlExpression({scopeThis: __props.scopeThis, row: scope.row})), 5 /* TEXT, STYLE */))
+                            : createCommentVNode("v-if", true),
+                          (col.show === 'switch')
+                            ? (openBlock(), createBlock(_component_el_switch, {
+                                key: 3,
+                                modelValue: scope.row[col.fieldName],
+                                "onUpdate:modelValue": $event => ((scope.row[col.fieldName]) = $event),
+                                "active-value": col.activeValue,
+                                "inactive-value": col.inactiveValue,
+                                "active-text": col.activeText,
+                                "inactive-text": col.inactiveText,
+                                "active-color": col.activeColor,
+                                onChange: 
+                                        (valNew) => {
+                                            if(col.hdlChange){
+                                                col.hdlChange({scopeThis: unref(scopeThis_box), row: scope.row, inherit: {valNew}});
+                                            }
+                                        }
+                                    
+                              }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue", "active-value", "inactive-value", "active-text", "inactive-text", "active-color", "onChange"]))
+                            : createCommentVNode("v-if", true),
+                          (col.show === 'button-group')
+                            ? (openBlock(), createBlock(_component_el_button_group, { key: 4 }, {
+                                default: withCtx(() => [
+                                  (openBlock(true), createElementBlock(Fragment, null, renderList(col.buttonGroup, (item, index) => {
+                                    return (openBlock(), createElementBlock(Fragment, { key: index }, [
+                                      (item.hdlVisible ? item.hdlVisible({scopeThis: unref(scopeThis_box), row: scope.row}) : true)
+                                        ? (openBlock(), createBlock(_component_el_button, {
+                                            key: index,
+                                            style: normalizeStyle(style.cell.buttonGroup({item}).style),
+                                            icon: style.cell.buttonGroup({item}).icon,
+                                            type: style.cell.buttonGroup({item}).type,
+                                            size: style.cell.buttonGroup({item}).size,
+                                            plain: style.cell.buttonGroup({item}).plain,
+                                            round: style.cell.buttonGroup({item}).round,
+                                            circle: style.cell.buttonGroup({item}).circle,
+                                            onClick: $event => (item.hdlClick({scopeThis: unref(scopeThis_box), row: scope.row}))
+                                          }, {
+                                            default: withCtx(() => [
+                                              createTextVNode(toDisplayString(item.text ? item.text : item.hdlText({scopeThis: unref(scopeThis_box), row: scope.row})), 1 /* TEXT */)
+                                            ]),
+                                            _: 2 /* DYNAMIC */
+                                          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["style", "icon", "type", "size", "plain", "round", "circle", "onClick"]))
+                                        : createCommentVNode("v-if", true)
+                                    ], 64 /* STABLE_FRAGMENT */))
+                                  }), 128 /* KEYED_FRAGMENT */))
+                                ]),
+                                _: 2 /* DYNAMIC */
+                              }, 1024 /* DYNAMIC_SLOTS */))
+                            : createCommentVNode("v-if", true),
+                          (col.show === 'image')
+                            ? (openBlock(), createBlock(_component_el_image, {
+                                key: 5,
+                                style: normalizeStyle(style.cell.image({col})),
+                                src: scope.row[col.fieldName][0] || '',
+                                "preview-src-list": scope.row[col.fieldName] || [''],
+                                "preview-teleported": true,
+                                "hide-on-click-modal": true
+                              }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"]))
+                            : createCommentVNode("v-if", true),
+                          (col.show === 'download')
+                            ? (openBlock(), createElementBlock(Fragment, { key: 6 }, [
+                                (hdl.download({col, row: scope.row}).src)
+                                  ? (openBlock(), createElementBlock("a", {
+                                      key: 0,
+                                      style: {"text-decoration":"underline","color":"#0000ff"},
+                                      href: hdl.download({col, row: scope.row}).src,
+                                      download: hdl.download({col, row: scope.row}).fileName
+                                    }, [
+                                      createElementVNode("span", null, toDisplayString(hdl.download({col, row: scope.row}).label), 1 /* TEXT */)
+                                    ], 8 /* PROPS */, _hoisted_4$3))
+                                  : (openBlock(), createElementBlock("span", _hoisted_5$1, toDisplayString(hdl.download({col, row: scope.row}).label), 1 /* TEXT */))
+                              ], 64 /* STABLE_FRAGMENT */))
+                            : createCommentVNode("v-if", true),
+                          createCommentVNode(" 商品缩略图 "),
+                          (col.show === 'd7thumb')
+                            ? (openBlock(), createBlock(_component_ly0d7thumb, {
+                                key: 7,
+                                modelValue: scope.row,
+                                "onUpdate:modelValue": $event => ((scope.row) = $event),
+                                myProps: {
+                                        thumb: {
+                                            fieldName: col.thumb.fieldName,
+                                            width: col.thumb.width || unref(tableProps_box).table.colShow.ly0d7thumb.thumb.width,
+                                            height: col.thumb.height || unref(tableProps_box).table.colshow.ly0d7thumb.thumb.height
+                                        },
+                                        number: {
+                                            fieldName: col.number.fieldName
+                                        },
+                                        name: {
+                                            fieldName: col.name.fieldName
+                                        },
+                                        readOnly: !!col.readOnly
+                                    }
+                              }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue", "myProps"]))
+                            : createCommentVNode("v-if", true),
+                          createCommentVNode(" 商品分类 "),
+                          (col.show === 'd7group')
+                            ? (openBlock(), createBlock(_component_ly0d7group, {
+                                key: 8,
+                                modelValue: scope.row[col.fieldName],
+                                "onUpdate:modelValue": $event => ((scope.row[col.fieldName]) = $event),
+                                myProps: {readOnly: !!col.readOnly}
+                              }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue", "myProps"]))
+                            : createCommentVNode("v-if", true),
+                          createCommentVNode(" 商品规格 "),
+                          (col.show === 'd7size')
+                            ? (openBlock(), createBlock(_component_ly0d7size, {
+                                key: 9,
+                                modelValue: scope.row[col.fieldName],
+                                "onUpdate:modelValue": $event => ((scope.row[col.fieldName]) = $event),
+                                myProps: {readOnly: !!col.readOnly}
+                              }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue", "myProps"]))
+                            : createCommentVNode("v-if", true),
+                          createCommentVNode(" 商品标价 "),
+                          (col.show === 'd7price')
+                            ? (openBlock(), createBlock(_component_ly0d7price, {
+                                key: 10,
+                                modelValue: scope.row[col.fieldName],
+                                "onUpdate:modelValue": $event => ((scope.row[col.fieldName]) = $event),
+                                myProps: {readOnly: !!col.readOnly}
+                              }, null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue", "myProps"]))
+                            : createCommentVNode("v-if", true)
+                        ], 40 /* PROPS, NEED_HYDRATION */, _hoisted_3$5)
+                      ]),
+                      _: 2 /* DYNAMIC */
+                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["disabled"])
+                  ]),
+                  _: 2 /* DYNAMIC */
+                }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["modelValue", "onUpdate:modelValue", "label", "sortable", "sort-method", "width"]))
+              : createCommentVNode("v-if", true)
+          ], 64 /* STABLE_FRAGMENT */))
+        }), 128 /* KEYED_FRAGMENT */))
+      ]),
+      _: 1 /* STABLE */
+    }, 8 /* PROPS */, ["data", "onCellMouseEnter", "onRowClick", "onSelectionChange", "onSortChange"])), [
+      [_directive_loading, unref(tableProps_box).query.loading.visible],
+      [
+        _directive_loading,
+        unref(tableProps_box).query.loading.visible ? unref(tableProps_box).query.loading.text : '',
+        void 0,
+        { text: true }
+      ],
+      [
+        _directive_loading,
+        unref(tableProps_box).query.loading.visible ? unref(tableProps_box).query.loading.spinner : '',
+        void 0,
+        { spinner: true }
+      ],
+      [
+        _directive_loading,
+        unref(tableProps_box).query.loading.visible ? unref(tableProps_box).query.loading.background : '',
+        void 0,
+        { background: true }
+      ]
+    ]),
+    createCommentVNode(" 分页 "),
+    createVNode(_component_el_pagination, {
+      total: unref(tableData_box).total,
+      "page-size": unref(tableProps_box).query.pageSize,
+      "page-sizes": [unref(tableProps_box).query.pageSize],
+      "current-page": unref(tableProps_box).query.currentPage,
+      style: normalizeStyle(style.pagination),
+      onSizeChange: hdl.pageSizeChange,
+      onCurrentChange: hdl.currentPageChange,
+      layout: "total, sizes, prev, pager, next, jumper"
+    }, null, 8 /* PROPS */, ["total", "page-size", "page-sizes", "current-page", "style", "onSizeChange", "onCurrentChange"]),
+    createCommentVNode(" 选择列 "),
+    createVNode(script$e, { tableProps: unref(tableProps_box) }, null, 8 /* PROPS */, ["tableProps"])
+  ]))
+}
+}
+
+};
+
+script$d.__file = "src/table/Table.vue";
+
+// 默认值
+
+var ly0default$1 = {
+  myProps: {
+    popup: {
+      visible: false,
+      title: '',
+      width: "1024px",
+      top: "15vh"
+    },
+    titleLine: {
+      // 标题线
+      text: '',
+      style: {
+        Line: {
+          "margin-bottom": "50px"
+        },
+        text: {
+          "font-size": "large",
+          color: "#828282"
+        }
+      }
+    },
+    topButtonGroups: [],
+    table: {
+      colShow: {
+        // 列元素类型
+        image: {
+          // 图标
+          width: "40px",
+          height: "30px"
+        },
+        download: {
+          // 下载
+          fileName: "new-file",
+          // 下载文件名
+          downloadLabel: "点击这里下载",
+          // 下载标签
+          downloadLabelNoSrc: "没有可供下载的资源" // 下载标签
+        },
+        ly0d7thumb: {
+          // 商品图标
+          thumb: {
+            width: "80px",
+            height: "60px"
+          }
+        }
+      },
+      selection: {
+        // 行选择器
+        yes: false,
+        width: "48px" // 行选择器的列宽度
+      },
+      cellTooltip: [],
+      // 单元格提示信息
+      pickCol: {
+        // 选择列
+        colsInit: [],
+        popup: {
+          visible: false
+        }
+      },
+      excel: {
+        fileName: "table-to-excel.xlsx" // 另存excel文件名}
+      }
+    },
+    query: {
+      // 查询体
+      sort: {
+        label: "",
+        order: ""
+      },
+      pageSize: 10,
+      currentPage: 1,
+      loading: {
+        visible: false,
+        text: "加载中...",
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.8)'
+      }
+    }
+  }};
+
+var script$c = {
+  __name: 'Index',
+  props: {
+    modelValue: {
+        type: Object,
+        default: () => ({})
+    },
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  setup(__props) {
+
+const props = __props;
+
+// 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
+let tableData_box = reactive(props.modelValue);
+const tableProps_box = reactive(unclassified.deepClone.deepMerge(
+    unclassified.deepClone.deepClone(ly0default$1.myProps),
+    props.myProps
+));
+
+const scopeThis_box = reactive(props.scopeThis);
+
+return (_ctx, _cache) => {
+  const _component_el_dialog = resolveComponent("el-dialog");
+
+  return (tableProps_box.popup.visible)
+    ? (openBlock(), createBlock(_component_el_dialog, {
+        key: 0,
+        modelValue: tableProps_box.popup.visible,
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((tableProps_box.popup.visible) = $event)),
+        "custom-class": 'code-template-dialog',
+        "close-on-press-escape": true,
+        "append-to-body": "",
+        title: tableProps_box.popup.title,
+        width: tableProps_box.popup.width,
+        top: tableProps_box.popup.top,
+        "destroy-on-close": true
+      }, {
+        default: withCtx(() => [
+          createVNode(script$d, {
+            modelValue: unref(tableData_box),
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(tableData_box) ? (tableData_box).value = $event : tableData_box = $event)),
+            myProps: tableProps_box,
+            scopeThis: scopeThis_box
+          }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"])
+        ]),
+        _: 1 /* STABLE */
+      }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
+    : (openBlock(), createBlock(script$d, {
+        key: 1,
+        modelValue: unref(tableData_box),
+        "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(tableData_box) ? (tableData_box).value = $event : tableData_box = $event)),
+        myProps: tableProps_box,
+        scopeThis: scopeThis_box
+      }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"]))
+}
+}
+
+};
+
+script$c.__file = "src/table/Index.vue";
 
 var ly0default = {
   myProps: {
@@ -44275,9 +45073,10 @@ script.__file = "src/ly0d7thumb/index.vue";
 var index = {
   install(app, options) {
     // 全局注册组件
-    app.component('ly0Form', script$e);
-    app.component('ly0Menu', script$d);
-    app.component('ly0Richtext', script$c);
+    app.component('ly0Form', script$h);
+    app.component('ly0Menu', script$g);
+    app.component('ly0Table', script$c);
+    app.component('ly0Richtext', script$f);
     app.component('ly0Upload', upload.Upload);
     app.component('ly0Upload_avatar', upload.Upload_avatar);
     app.component('ly0Upload_carplate', upload.Upload_carplate);
