@@ -22557,7 +22557,7 @@ return (_ctx, _cache) => {
 
 script$k.__file = "src/form/LabelBox.vue";
 
-const _hoisted_1$e = { key: 12 };
+const _hoisted_1$f = { key: 12 };
 const _hoisted_2$e = { key: 0 };
 const _hoisted_3$7 = { key: 13 };
 const _hoisted_4$5 = { key: 0 };
@@ -22996,7 +22996,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
         : vue.createCommentVNode("v-if", true),
       (vue.unref(propsItem_box).inputType === 'button-group' && vue.unref(propsItem_box).box && vue.unref(propsItem_box).box.length > 0)
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$e, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$f, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(propsItem_box).box, (item0, index0) => {
               return (vue.openBlock(), vue.createBlock(_component_el_button_group, {
                 key: index0,
@@ -23330,7 +23330,7 @@ return (_ctx, _cache) => {
 script$j.__scopeId = "data-v-a94fa4ba";
 script$j.__file = "src/form/InputBox.vue";
 
-const _hoisted_1$d = { key: 0 };
+const _hoisted_1$e = { key: 0 };
 const _hoisted_2$d = ["colspan"];
 const _hoisted_3$6 = { key: 0 };
 const _hoisted_4$4 = ["colspan"];
@@ -23438,7 +23438,7 @@ return (_ctx, _cache) => {
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.items, (item0, index0) => {
                 return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index0 }, [
                   (item0.hdlVisible ? item0.hdlVisible({formData: vue.unref(formData_box), scopeThis: vue.unref(scopeThis_box)}) : true)
-                    ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$d, [
+                    ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$e, [
                         (!!item0.label)
                           ? (vue.openBlock(), vue.createElementBlock("td", {
                               key: 0,
@@ -41422,6 +41422,9 @@ return (_ctx, _cache) => {
 
 script$f.__file = "src/richtext/index.vue";
 
+const _hoisted_1$d = { style: {"text-align":"center"} };
+
+
 var script$e = {
   __name: 'PickCol',
   props: {
@@ -41438,34 +41441,43 @@ const tableProps_box = props.tableProps;
 
 let checkedAll = vue.ref(false); // 是否全选状态
 let isIndeterminate = vue.ref(false); // 不确定状态：非全选、非全空
-let itemsChecked = vue.reactive([]); // 已选中条目
+let itemsChecked = vue.ref([]); // 已选中条目
+let itemsAll = vue.ref([]); // 全部条目
 
 const hdl = {
     // 获取键值数组
-    getKeys(p) {
+    getItems(p) {
         let a = [];
-        p.forEach(i => {
-            a.push(i.fieldName);
+        p.forEach((item, index) => {
+            a.push(item.key);
         });
         return a
     },
     // 全选
     checkedAll(val) {
-        itemsChecked.splice(0, itemsChecked.length);
+        itemsChecked.value = [];
         if (val) {
-            // 正确：重新填充数组，保持响应性
-            itemsChecked.push(...hdl.getKeys(tableProps_box.table.pickCol.colsInit));
+            itemsChecked.value.push(...itemsAll.value);
         }
-        isIndeterminate.value = !val;
+        if(itemsChecked.value.length > 0 && itemsChecked.value.length === itemsAll.value.length){
+            checkedAll.value = true;
+            isIndeterminate.value = false;
+        }else if(itemsChecked.value.length > 0 && itemsChecked.value.length !== itemsAll.value.length){
+            checkedAll.value = false;
+            isIndeterminate.value = true;
+        }else if(itemsChecked.value.length === 0){
+            checkedAll.value = false;
+            isIndeterminate.value = false;
+        }
     },
     // 选中或取消某一条
     checkedItemsChange(val) {
-        if(val.length > 0 && val.length === tableProps_box.table.pickCol.colsInit.length){
+        if(val.length > 0 && val.length === itemsAll.value.length){
             checkedAll.value = true;
             isIndeterminate.value = false;
             return
         }
-        if(val.length > 0 && val.length !== tableProps_box.table.pickCol.colsInit.length){
+        if(val.length > 0 && val.length !== itemsAll.value.length){
             checkedAll.value = false;
             isIndeterminate.value = true;
             return
@@ -41477,9 +41489,9 @@ const hdl = {
     },
     confirm() { // 确认提交
         tableProps_box.table.cols = [];
-        itemsChecked.forEach(i => {
-            tableProps_box.table.cols.push(tableProps_box.table.pickCol.colsInit.find(j => {
-                return j.fieldName === i
+        itemsChecked.value.forEach((item, index) => {
+            tableProps_box.table.cols.push(tableProps_box.table.pickCol.colsInit.find((item0, index0) => {
+                return item === '' + item0.key
             }));
         });
         tableProps_box.table.pickCol.popup.visible = false;
@@ -41491,24 +41503,24 @@ vue.watch(
     () => tableProps_box.table.pickCol.popup.visible,
     (newVal, oldVal) => {
         if (newVal) {
-            if(tableProps_box.table.cols.length > 0 && tableProps_box.table.cols.length === tableProps_box.table.pickCol.colsInit.length){
+            itemsAll.value = hdl.getItems(tableProps_box.table.pickCol.colsInit);
+            itemsChecked.value = hdl.getItems(tableProps_box.table.cols);
+            if(itemsChecked.value.length > 0 && itemsChecked.value.length === itemsAll.value.length){
                 checkedAll.value = true;
                 isIndeterminate.value = false;
-            }else if(tableProps_box.table.cols.length > 0 && tableProps_box.table.cols.length !== tableProps_box.table.pickCol.colsInit.length){
+            }else if(itemsChecked.value.length > 0 && itemsChecked.value.length !== itemsAll.value.length){
                 checkedAll.value = false;
                 isIndeterminate.value = true;
-            }else if(tableProps_box.table.cols.length === 0){
+            }else if(itemsChecked.value.length === 0){
                 checkedAll.value = false;
                 isIndeterminate.value = false;
             }
-            itemsChecked = hdl.getKeys(tableProps_box.table.cols);
         }
     }
 );
 
 return (_ctx, _cache) => {
   const _component_el_checkbox = vue.resolveComponent("el-checkbox");
-  const _component_el_row = vue.resolveComponent("el-row");
   const _component_el_checkbox_group = vue.resolveComponent("el-checkbox-group");
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_el_dialog = vue.resolveComponent("el-dialog");
@@ -41525,31 +41537,31 @@ return (_ctx, _cache) => {
     }, {
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_checkbox, {
-          indeterminate: vue.unref(isIndeterminate),
           modelValue: vue.unref(checkedAll),
           "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (vue.isRef(checkedAll) ? (checkedAll).value = $event : checkedAll = $event)),
+          indeterminate: vue.unref(isIndeterminate),
           onChange: hdl.checkedAll
         }, {
           default: vue.withCtx(() => [...(_cache[3] || (_cache[3] = [
             vue.createTextVNode("全选", -1 /* CACHED */)
           ]))]),
           _: 1 /* STABLE */
-        }, 8 /* PROPS */, ["indeterminate", "modelValue", "onChange"]),
-        vue.createVNode(_component_el_row, { style: {"height":"1px","background-color":"#bdbdbd","margin-top":"10px","margin-bottom":"10px"} }),
+        }, 8 /* PROPS */, ["modelValue", "indeterminate", "onChange"]),
+        _cache[5] || (_cache[5] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
         vue.createVNode(_component_el_checkbox_group, {
           modelValue: vue.unref(itemsChecked),
           "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (vue.isRef(itemsChecked) ? (itemsChecked).value = $event : itemsChecked = $event)),
           onChange: hdl.checkedItemsChange
         }, {
           default: vue.withCtx(() => [
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(tableProps_box).table.pickCol.colsInit, (item) => {
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(tableProps_box).table.pickCol.colsInit, (item, index) => {
               return (vue.openBlock(), vue.createBlock(_component_el_checkbox, {
-                style: {"display":"block","margin-bottom":"10px"},
-                label: item ? item.fieldName : '',
-                key: item ? item.fieldName : ''
+                label: item.key,
+                key: index,
+                style: {"display":"block","margin-bottom":"10px"}
               }, {
                 default: vue.withCtx(() => [
-                  vue.createTextVNode(vue.toDisplayString(item ? item.label : ''), 1 /* TEXT */)
+                  vue.createTextVNode(vue.toDisplayString(item.label), 1 /* TEXT */)
                 ]),
                 _: 2 /* DYNAMIC */
               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["label"]))
@@ -41557,22 +41569,19 @@ return (_ctx, _cache) => {
           ]),
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["modelValue", "onChange"]),
-        vue.createVNode(_component_el_row, { style: {"height":"1px","background-color":"#bdbdbd","margin-top":"10px","margin-bottom":"10px"} }),
-        vue.createVNode(_component_el_row, { style: {"text-align":"center"} }, {
-          default: vue.withCtx(() => [
-            vue.createVNode(_component_el_button, {
-              type: "success",
-              round: "",
-              onClick: hdl.confirm
-            }, {
-              default: vue.withCtx(() => [...(_cache[4] || (_cache[4] = [
-                vue.createTextVNode("确认", -1 /* CACHED */)
-              ]))]),
-              _: 1 /* STABLE */
-            }, 8 /* PROPS */, ["onClick"])
-          ]),
-          _: 1 /* STABLE */
-        })
+        _cache[6] || (_cache[6] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
+        vue.createElementVNode("div", _hoisted_1$d, [
+          vue.createVNode(_component_el_button, {
+            type: "success",
+            round: "",
+            onClick: hdl.confirm
+          }, {
+            default: vue.withCtx(() => [...(_cache[4] || (_cache[4] = [
+              vue.createTextVNode("确认", -1 /* CACHED */)
+            ]))]),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["onClick"])
+        ])
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["modelValue"])
@@ -41582,6 +41591,7 @@ return (_ctx, _cache) => {
 
 };
 
+script$e.__scopeId = "data-v-733feb96";
 script$e.__file = "src/table/PickCol.vue";
 
 const _hoisted_1$c = { style: {"padding":"10px"} };
@@ -42083,6 +42093,7 @@ return (_ctx, _cache) => {
       layout: "total, sizes, prev, pager, next, jumper"
     }, null, 8 /* PROPS */, ["total", "page-size", "page-sizes", "current-page", "style", "onSizeChange", "onCurrentChange"]),
     vue.createCommentVNode(" 选择列 "),
+    vue.createCommentVNode(" 使用该组件，必须设置每一列的唯一标识：key "),
     vue.createVNode(script$e, { tableProps: vue.unref(tableProps_box) }, null, 8 /* PROPS */, ["tableProps"])
   ]))
 }
