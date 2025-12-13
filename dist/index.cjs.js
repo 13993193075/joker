@@ -41519,6 +41519,15 @@ vue.watch(
     }
 );
 
+const style = {
+    line: {
+        height: '1px',
+        'background-color': '#bdbdbd',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+};
+
 return (_ctx, _cache) => {
   const _component_el_checkbox = vue.resolveComponent("el-checkbox");
   const _component_el_checkbox_group = vue.resolveComponent("el-checkbox-group");
@@ -41547,7 +41556,9 @@ return (_ctx, _cache) => {
           ]))]),
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["modelValue", "indeterminate", "onChange"]),
-        _cache[5] || (_cache[5] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.line)
+        }, null, 4 /* STYLE */),
         vue.createVNode(_component_el_checkbox_group, {
           modelValue: vue.unref(itemsChecked),
           "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (vue.isRef(itemsChecked) ? (itemsChecked).value = $event : itemsChecked = $event)),
@@ -41569,7 +41580,9 @@ return (_ctx, _cache) => {
           ]),
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["modelValue", "onChange"]),
-        _cache[6] || (_cache[6] = vue.createElementVNode("div", { class: "line" }, null, -1 /* CACHED */)),
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle(style.line)
+        }, null, 4 /* STYLE */),
         vue.createElementVNode("div", _hoisted_1$d, [
           vue.createVNode(_component_el_button, {
             type: "success",
@@ -41591,7 +41604,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$e.__scopeId = "data-v-733feb96";
 script$e.__file = "src/table/PickCol.vue";
 
 const _hoisted_1$c = { style: {"padding":"10px"} };

@@ -12,7 +12,7 @@
             :indeterminate="isIndeterminate"
             @change="hdl.checkedAll"
         >全选</el-checkbox>
-        <div class="line"></div>
+        <div :style="style.line"></div>
         <el-checkbox-group
             v-model="itemsChecked"
             @change="hdl.checkedItemsChange"
@@ -26,7 +26,7 @@
             </el-checkbox>
         </el-checkbox-group>
 
-        <div class="line"></div>
+        <div :style="style.line"></div>
         <div style="text-align: center;">
             <el-button type="success" round @click="hdl.confirm">确认</el-button>
         </div>
@@ -34,12 +34,6 @@
 </div></template>
 
 <style lang="scss" scoped>
-.line {
-    height: 1px;
-    background-color: #bdbdbd;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
 </style>
 
 <script setup>
@@ -133,4 +127,13 @@ watch(
         }
     }
 )
+
+const style = {
+    line: {
+        height: '1px',
+        'background-color': '#bdbdbd',
+        'margin-top': '10px',
+        'margin-bottom': '10px'
+    }
+}
 </script>
