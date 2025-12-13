@@ -41794,7 +41794,7 @@ return (_ctx, _cache) => {
                         plain: style.topButtonGroups.button(index, index0).plain,
                         round: style.topButtonGroups.button(index, index0).round,
                         circle: style.topButtonGroups.button(index, index0).circle,
-                        onClick: $event => (item0.hdlClick ? item0.hdlClick({scopeThis: unref(scopeThis_box)}) : null)
+                        onClick: $event => (item0.hdlClick ? item0.hdlClick({tableData: unref(tableData_box), tableProps: unref(tableProps_box), scopeThis: unref(scopeThis_box)}) : null)
                       }, {
                         default: withCtx(() => [
                           (item0.text)

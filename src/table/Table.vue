@@ -36,7 +36,7 @@
                             :plain="style.topButtonGroups.button(index, index0).plain"
                             :round="style.topButtonGroups.button(index, index0).round"
                             :circle="style.topButtonGroups.button(index, index0).circle"
-                            @click="item0.hdlClick ? item0.hdlClick({scopeThis: scopeThis_box}) : null"
+                            @click="item0.hdlClick ? item0.hdlClick({tableData: tableData_box, tableProps: tableProps_box, scopeThis: scopeThis_box}) : null"
                         >
                             <span v-if="item0.text">{{ item0.text }}</span>
                         </el-button>

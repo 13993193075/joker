@@ -41798,7 +41798,7 @@ return (_ctx, _cache) => {
                         plain: style.topButtonGroups.button(index, index0).plain,
                         round: style.topButtonGroups.button(index, index0).round,
                         circle: style.topButtonGroups.button(index, index0).circle,
-                        onClick: $event => (item0.hdlClick ? item0.hdlClick({scopeThis: vue.unref(scopeThis_box)}) : null)
+                        onClick: $event => (item0.hdlClick ? item0.hdlClick({tableData: vue.unref(tableData_box), tableProps: vue.unref(tableProps_box), scopeThis: vue.unref(scopeThis_box)}) : null)
                       }, {
                         default: vue.withCtx(() => [
                           (item0.text)
