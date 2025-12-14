@@ -118,16 +118,15 @@ const submitFind = async ({scopeThis}) => {
         ? scopeThis.tableProps.query.currentPage : ly0default.currentPage
     const result = await refresh({scopeThis})
     if(result.code === 0){
-        proxy.$message('查询已提交并刷新数据')
         // 关闭窗口
         scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
             scopeThis.formProps.popup,
             {visible: false}
         )
+        proxy.$message('查询已提交并刷新数据')
     }else{
         proxy.$message('查询错误')
     }
-
 }
 
 export default {
