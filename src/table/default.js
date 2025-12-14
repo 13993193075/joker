@@ -22,6 +22,12 @@ export default {
         },
         topButtonGroups: [],
         table: {
+            loading: {
+                visible: false,
+                text: "加载中...",
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.8)'
+            },
             colShow: { // 列元素类型
                 image: { // 图标
                     width: "40px",
@@ -61,12 +67,6 @@ export default {
             },
             pageSize: 10,
             currentPage: 1,
-            loading: {
-                visible: false,
-                text: "加载中...",
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.8)'
-            },
         }
     },
     modelValue: {

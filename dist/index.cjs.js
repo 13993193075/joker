@@ -41895,12 +41895,6 @@ return (_ctx, _cache) => {
                   "sort-method": (row2, row1)=>{
                         if(col.hdlSortMethod){
                             return col.hdlSortMethod({inherit: {row2, row1}})
-                        }else {
-                            if(row2.name > row1.name){
-                                return 1 // 升序
-                            } else {
-                                return -1 // 降序
-                            }
                         }
                     },
                   width: col.width ? col.width : ''
@@ -42073,22 +42067,22 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["data", "onCellMouseEnter", "onRowClick", "onSelectionChange", "onSortChange"])), [
-      [_directive_loading, vue.unref(tableProps_box).query.loading.visible],
+      [_directive_loading, vue.unref(tableProps_box).table.loading.visible],
       [
         _directive_loading,
-        vue.unref(tableProps_box).query.loading.visible ? vue.unref(tableProps_box).query.loading.text : '',
+        vue.unref(tableProps_box).table.loading.visible ? vue.unref(tableProps_box).table.loading.text : '',
         void 0,
         { text: true }
       ],
       [
         _directive_loading,
-        vue.unref(tableProps_box).query.loading.visible ? vue.unref(tableProps_box).query.loading.spinner : '',
+        vue.unref(tableProps_box).table.loading.visible ? vue.unref(tableProps_box).table.loading.spinner : '',
         void 0,
         { spinner: true }
       ],
       [
         _directive_loading,
-        vue.unref(tableProps_box).query.loading.visible ? vue.unref(tableProps_box).query.loading.background : '',
+        vue.unref(tableProps_box).table.loading.visible ? vue.unref(tableProps_box).table.loading.background : '',
         void 0,
         { background: true }
       ]
@@ -42140,6 +42134,12 @@ var ly0default$1 = {
     },
     topButtonGroups: [],
     table: {
+      loading: {
+        visible: false,
+        text: "加载中...",
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.8)'
+      },
       colShow: {
         // 列元素类型
         image: {
@@ -42188,13 +42188,7 @@ var ly0default$1 = {
         order: ""
       },
       pageSize: 10,
-      currentPage: 1,
-      loading: {
-        visible: false,
-        text: "加载中...",
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.8)'
-      }
+      currentPage: 1
     }
   }};
 

@@ -50,10 +50,10 @@
             :data="tableData_box.data"
             stripe
             border
-            v-loading="tableProps_box.query.loading.visible"
-            v-loading.text="tableProps_box.query.loading.visible ? tableProps_box.query.loading.text : ''"
-            v-loading.spinner="tableProps_box.query.loading.visible ? tableProps_box.query.loading.spinner : ''"
-            v-loading.background="tableProps_box.query.loading.visible ? tableProps_box.query.loading.background : ''"
+            v-loading="tableProps_box.table.loading.visible"
+            v-loading.text="tableProps_box.table.loading.visible ? tableProps_box.table.loading.text : ''"
+            v-loading.spinner="tableProps_box.table.loading.visible ? tableProps_box.table.loading.spinner : ''"
+            v-loading.background="tableProps_box.table.loading.visible ? tableProps_box.table.loading.background : ''"
             @cell-mouse-enter="hdl.cellMouseEnter"
             @row-click="hdl.rowClick"
             @selection-change="hdl.selectionChange"
@@ -77,12 +77,6 @@
                     :sort-method="(row2, row1)=>{
                         if(col.hdlSortMethod){
                             return col.hdlSortMethod({inherit: {row2, row1}})
-                        }else{
-                            if(row2.name > row1.name){
-                                return 1 // 升序
-                            } else {
-                                return -1 // 降序
-                            }
                         }
                     }"
                     :width="col.width ? col.width : ''"
