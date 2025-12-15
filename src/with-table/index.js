@@ -28,6 +28,15 @@
 
 // scopeThis.find.formProps 查询表单属性
 
+// scopeThis.insertOne.formData
+// scopeThis.insertOne.formProps 新增一条记录表单属性
+
+// scopeThis.updateOne.formData
+// scopeThis.updateOne.formProps 修改一条记录表单属性
+
+// scopeThis.doc.formData
+// scopeThis.doc.formProps 选中记录表单属性
+
 import { getCurrentInstance } from 'vue'
 import { ly0 as ly0request } from '../request/index.js'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
@@ -106,6 +115,17 @@ const popupFind = async ({scopeThis}) => {
     )
 }
 
+// 弹出新增一条记录页面
+const popupInsertOne = async ({scopeThis}) => {
+    scopeThis.formData = beanUnclass.deepClone.deepClone(scopeThis.insertOne.formData)
+    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.insertOne.formProps)
+    // 弹出窗口
+    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+        scopeThis.formProps.popup,
+        {visible: true}
+    )
+}
+
 // 提交查询
 const submitFind = async ({scopeThis}) => {
     scopeThis.query.formData = scopeThis.formData
@@ -135,5 +155,6 @@ export default {
     getPgData,
     init,
     popupFind,
+    popupInsertOne,
     submitFind
 }
