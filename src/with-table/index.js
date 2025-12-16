@@ -1,41 +1,51 @@
 // with-table数据模板
 
-// scopeThis.tableData.data 表格数据
+// 表格数据
+// scopeThis.tableData.data
 // scopeThis.tableData.total 查询总记录数
 // scopeThis.tableProps 表格属性
 
-// scopeThis.formData 表单数据，用于查询、新增、修改等
+// 表单数据，用于查询、新增一条记录、修改一条记录、详细信息等
+// scopeThis.formData
 // scopeThis.formProps 表单属性
 
-// scopeThis.queryInit.formData 查询初始化相关 - 表单数据
+// 查询初始化相关
+// scopeThis.queryInit.formData 表单数据
 // scopeThis.queryInit.sort 排序
 // scopeThis.queryInit.pageSize 页记录数
 // scopeThis.queryInit.currentPage 默认当前页号
 
-// scopeThis.query.formData 当前查询相关 - 表单数据
+// 当前查询相关
+// scopeThis.query.formData 表单数据
 // scopeThis.query.sort 排序
 // scopeThis.query.pageSize 页记录数
 // scopeThis.query.currentPage 默认当前页号
 
-// scopeThis.pgData.query 页面数据查询对象
-// scopeThis.pgData.data 页面数据
+// 页面数据附加
+// scopeThis.pgData.query 查询对象
+// scopeThis.pgData.data
 
-// scopeThis.storpro.refresh 存储过程 - 数据刷新
-// scopeThis.storpro.getPgData 获取页面数据
+// 存储过程
+// scopeThis.storpro.refresh 数据刷新
+// scopeThis.storpro.getPgData 获取页面数据附加
 // scopeThis.storpro.insertOne 新增一条记录
 // scopeThis.storpro.updateOne 修改一条记录
 // scopeThis.storpro.deleteOne 删除一条记录
 
-// scopeThis.find.formProps 查询表单属性
+// 查询表单
+// scopeThis.find.formProps
 
-// scopeThis.insertOne.formData
-// scopeThis.insertOne.formProps 新增一条记录表单属性
+// 新增一条记录
+// scopeThis.insertOne.formData 表单数据初始值
+// scopeThis.insertOne.formProps 表单属性
 
-// scopeThis.updateOne.formData
-// scopeThis.updateOne.formProps 修改一条记录表单属性
+// 修改一条记录
+// 表单数据继承行记录的值
+// scopeThis.updateOne.formProps 表单属性
 
-// scopeThis.doc.formData
-// scopeThis.doc.formProps 选中记录表单属性
+// 详细信息
+// 表单数据继承行记录的值
+// scopeThis.doc.formProps 表单属性
 
 import { getCurrentInstance } from 'vue'
 import { ly0 as ly0request } from '../request/index.js'
@@ -43,8 +53,7 @@ import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
 const {proxy} = getCurrentInstance()
 const ly0default = {
-    pageSize: 10,
-    currentPage: 1,
+    pageSize: 10
 }
 
 // 数据刷新
@@ -55,7 +64,7 @@ const refresh = async ({scopeThis}) => {
             query: scopeThis.query && scopeThis.query.formData ? scopeThis.query.formData : null,
             sort: scopeThis.query && scopeThis.query.sort ? scopeThis.query.sort : null,
             limit: scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default.pageSize,
-            page: scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : ly0default.currentPage,
+            page: scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1,
         }
     })
     if(result.code === 0){
@@ -75,7 +84,7 @@ const reload = async ({scopeThis}) => {
     proxy.$message(result.code === 0 ? '数据已重载' : '数据重载错误')
 }
 
-// 获取页面数据
+// 获取页面数据附加
 const getPgData = async ({scopeThis}) => {
     const result = await ly0request.ly0.storpro({
         storproName: scopeThis.storpro.getPgData,
@@ -89,7 +98,7 @@ const getPgData = async ({scopeThis}) => {
     proxy.$message('获取页面数据错误')
 }
 
-// 页面初始化
+// 初始化
 const init = async ({scopeThis}) => {
     if(scopeThis.pgData) {
         await getPgData({scopeThis})
@@ -97,7 +106,7 @@ const init = async ({scopeThis}) => {
     await reload({scopeThis})
 }
 
-// 弹出查询页面
+// 弹出 - 查询
 const popupFind = async ({scopeThis}) => {
     scopeThis.formData = scopeThis.query && scopeThis.query.formData
         ? beanUnclass.deepClone.deepClone(scopeThis.query.formData) : null
@@ -106,7 +115,7 @@ const popupFind = async ({scopeThis}) => {
     scopeThis.TableProps.query.pageSize = scopeThis.query && scopeThis.query.pageSize
         ? scopeThis.query.pageSize : ly0default.pageSize
     scopeThis.TableProps.query.currentPage = scopeThis.query && scopeThis.query.currentPage
-        ? scopeThis.query.currentPage : ly0default.currentPage
+        ? scopeThis.query.currentPage : 1
     scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.find.formProps)
     // 弹出窗口
     scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
@@ -115,7 +124,7 @@ const popupFind = async ({scopeThis}) => {
     )
 }
 
-// 弹出新增一条记录页面
+// 弹出 - 新增一条记录
 const popupInsertOne = async ({scopeThis}) => {
     scopeThis.formData = beanUnclass.deepClone.deepClone(scopeThis.insertOne.formData)
     scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.insertOne.formProps)
@@ -126,7 +135,29 @@ const popupInsertOne = async ({scopeThis}) => {
     )
 }
 
-// 提交查询
+// 弹出 - 修改一条记录
+const popupUpdateOne = async ({scopeThis, formData}) => {
+    scopeThis.formData = beanUnclass.deepClone.deepClone(formData) // 继承行记录的值
+    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.UpdateOne.formProps)
+    // 弹出窗口
+    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+        scopeThis.formProps.popup,
+        {visible: true}
+    )
+}
+
+// 弹出 - 详细信息
+const popupDoc = async ({scopeThis, formData}) => {
+    scopeThis.formData = beanUnclass.deepClone.deepClone(formData) // 继承行记录的值
+    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.doc.formProps)
+    // 弹出窗口
+    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+        scopeThis.formProps.popup,
+        {visible: true}
+    )
+}
+
+// 提交 - 查询
 const submitFind = async ({scopeThis}) => {
     scopeThis.query.formData = scopeThis.formData
         ? beanUnclass.deepClone.deepClone(scopeThis.formData) : null
@@ -135,17 +166,101 @@ const submitFind = async ({scopeThis}) => {
     scopeThis.query.pageSize = scopeThis.tableProps.query && scopeThis.tableProps.query.pageSize
         ? scopeThis.tableProps.query.pageSize : ly0default.pageSize
     scopeThis.query.currentPage = scopeThis.tableProps.query && scopeThis.tableProps.query.currentPage
-        ? scopeThis.tableProps.query.currentPage : ly0default.currentPage
+        ? scopeThis.tableProps.query.currentPage : 1
     const result = await refresh({scopeThis})
     if(result.code === 0){
-        // 关闭窗口
-        scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
-            scopeThis.formProps.popup,
-            {visible: false}
-        )
+        // 关闭表单窗口
+        scopeThis.formProps.popup.visible = false
         proxy.$message('查询已提交并刷新数据')
     }else{
         proxy.$message('查询错误')
+    }
+}
+
+// 提交 - 新增一条记录
+const submitInsertOne = async ({scopeThis}) => {
+    try{
+        await proxy.$confirm('新增一条记录, 提交?', '提示', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning', // 警告图标
+        })
+        const result = await ly0request.ly0.storpro({
+            storproName: scopeThis.storpro.insertOne,
+            data: scopeThis.formData
+        })
+        if(result.code === 0){
+            // 关闭表单窗口
+            scopeThis.formProps.popup.visible = false
+            proxy.$message('新增一条记录成功')
+            scopeThis.query.currentPage = 1
+            scopeThis.tableData = {
+                data: result.dataNew,
+                total: 1
+            }
+        }else{
+            proxy.$message('新增一条记录失败')
+        }
+    }catch(error){
+        proxy.$message('已取消')
+    }
+}
+
+// 提交 - 修改一条记录
+const submitUpdateOne = async ({scopeThis}) => {
+    try{
+        await proxy.$confirm('修改一条记录, 提交?', '提示', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning', // 警告图标
+        })
+        const result = await ly0request.ly0.storpro({
+            storproName: scopeThis.storpro.updateOne,
+            data: scopeThis.formData
+        })
+        if(result.code === 0){
+            // 关闭表单窗口
+            scopeThis.formProps.popup.visible = false
+            proxy.$message('修改一条记录成功')
+            const resultRefresh = await refresh({scopeThis})
+            if(resultRefresh.code === 0){
+                proxy.$message('已刷新数据')
+            }else{
+                proxy.$message('刷新错误')
+            }
+        }else{
+            proxy.$message('修改一条记录失败')
+        }
+    }catch(error){
+        proxy.$message('已取消')
+    }
+}
+
+// 提交 - 删除一条记录
+const submitDeleteOne = async ({scopeThis, formData}) => {
+    try{
+        await proxy.$confirm('删除一条记录, 提交?', '警告', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning', // 警告图标
+        })
+        const result = await ly0request.ly0.storpro({
+            storproName: scopeThis.storpro.deleteOne,
+            data: formData // 继承行记录的值
+        })
+        if(result.code === 0){
+            proxy.$message('删除一条记录成功')
+            const resultRefresh = await refresh({scopeThis})
+            if(resultRefresh.code === 0){
+                proxy.$message('已刷新数据')
+            }else{
+                proxy.$message('刷新错误')
+            }
+        }else{
+            proxy.$message('删除一条记录失败')
+        }
+    }catch(error){
+        proxy.$message('已取消')
     }
 }
 
@@ -156,5 +271,10 @@ export default {
     init,
     popupFind,
     popupInsertOne,
-    submitFind
+    popupUpdateOne,
+    popupDoc,
+    submitFind,
+    submitInsertOne,
+    submitUpdateOne,
+    submitDeleteOne
 }
