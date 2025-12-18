@@ -300,7 +300,7 @@ const hdl = {
         if (col.hdlMouseover) {
             col.hdlMouseover({scopeThis: scopeThis_box, row, col})
         } else {
-            tableData_box.cellTooltip = []
+            tableProps_box.table.cellTooltip = []
         }
     },
     download({row, col}) {

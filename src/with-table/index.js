@@ -47,18 +47,17 @@
 // 表单数据继承行记录的值
 // scopeThis.doc.formProps 表单属性
 
-import { getCurrentInstance } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import { ly0 as ly0request } from '../request/index.js'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
-const {proxy} = getCurrentInstance()
 const ly0default = {
     pageSize: 10
 }
 
 // 数据刷新
-const refresh = async ({scopeThis}) => {
-    const result = await ly0request.ly0.storpro({
+const refresh = async ({scopeThis, message}) => {
+    const result = await ly0request.storpro({
         storproName: scopeThis.storpro.refresh,
         data: {
             query: scopeThis.query && scopeThis.query.formData ? scopeThis.query.formData : null,
@@ -72,6 +71,13 @@ const refresh = async ({scopeThis}) => {
             data: result.data,
             total: result.total
         }
+        if(!!message){
+            ElMessage('数据已刷新')
+        }
+    }else{
+        if(!!message){
+            ElMessage('数据刷新错误')
+        }
     }
     return {code: result.code, message: result.message}
 }
@@ -81,21 +87,21 @@ const reload = async ({scopeThis}) => {
     scopeThis.query = scopeThis.queryInit
         ? beanUnclass.deepClone.deepClone(scopeThis.queryInit) : null
     const result = await refresh({scopeThis})
-    proxy.$message(result.code === 0 ? '数据已重载' : '数据重载错误')
+    ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误')
 }
 
 // 获取页面数据附加
 const getPgData = async ({scopeThis}) => {
-    const result = await ly0request.ly0.storpro({
+    const result = await ly0request.storpro({
         storproName: scopeThis.storpro.getPgData,
         data: scopeThis.pgData && scopeThis.pgData.query ? scopeThis.pgData.query : null,
     })
     if(result.code === 0){
         scopeThis.pgData = beanUnclass.deepClone.deepMerge(scopeThis.pgData, {data: result.data})
-        proxy.$message('已获取页面数据')
+        ElMessage('已获取页面数据')
         return
     }
-    proxy.$message('获取页面数据错误')
+    ElMessage('获取页面数据错误')
 }
 
 // 初始化
@@ -171,96 +177,96 @@ const submitFind = async ({scopeThis}) => {
     if(result.code === 0){
         // 关闭表单窗口
         scopeThis.formProps.popup.visible = false
-        proxy.$message('查询已提交并刷新数据')
+        ElMessage('查询已提交并刷新数据')
     }else{
-        proxy.$message('查询错误')
+        ElMessage('查询错误')
     }
 }
 
 // 提交 - 新增一条记录
 const submitInsertOne = async ({scopeThis}) => {
     try{
-        await proxy.$confirm('新增一条记录, 提交?', '提示', {
+        await ElMessageBox.confirm('新增一条记录, 提交?', '提示', {
             confirmButtonText: '确认',
             cancelButtonText: '取消',
             type: 'warning', // 警告图标
         })
-        const result = await ly0request.ly0.storpro({
+        const result = await ly0request.storpro({
             storproName: scopeThis.storpro.insertOne,
             data: scopeThis.formData
         })
         if(result.code === 0){
             // 关闭表单窗口
             scopeThis.formProps.popup.visible = false
-            proxy.$message('新增一条记录成功')
+            ElMessage('新增一条记录成功')
             scopeThis.query.currentPage = 1
             scopeThis.tableData = {
                 data: result.dataNew,
                 total: 1
             }
         }else{
-            proxy.$message('新增一条记录失败')
+            ElMessage('新增一条记录失败')
         }
     }catch(error){
-        proxy.$message('已取消')
+        ElMessage('已取消')
     }
 }
 
 // 提交 - 修改一条记录
 const submitUpdateOne = async ({scopeThis}) => {
     try{
-        await proxy.$confirm('修改一条记录, 提交?', '提示', {
+        await ElMessageBox.confirm('修改一条记录, 提交?', '提示', {
             confirmButtonText: '确认',
             cancelButtonText: '取消',
             type: 'warning', // 警告图标
         })
-        const result = await ly0request.ly0.storpro({
+        const result = await ly0request.storpro({
             storproName: scopeThis.storpro.updateOne,
             data: scopeThis.formData
         })
         if(result.code === 0){
             // 关闭表单窗口
             scopeThis.formProps.popup.visible = false
-            proxy.$message('修改一条记录成功')
+            ElMessage('修改一条记录成功')
             const resultRefresh = await refresh({scopeThis})
             if(resultRefresh.code === 0){
-                proxy.$message('已刷新数据')
+                ElMessage('已刷新数据')
             }else{
-                proxy.$message('刷新错误')
+                ElMessage('刷新错误')
             }
         }else{
-            proxy.$message('修改一条记录失败')
+            ElMessage('修改一条记录失败')
         }
     }catch(error){
-        proxy.$message('已取消')
+        ElMessage('已取消')
     }
 }
 
 // 提交 - 删除一条记录
 const submitDeleteOne = async ({scopeThis, formData}) => {
     try{
-        await proxy.$confirm('删除一条记录, 提交?', '警告', {
+        await ElMessageBox.confirm('删除一条记录, 提交?', '警告', {
             confirmButtonText: '确认',
             cancelButtonText: '取消',
             type: 'warning', // 警告图标
         })
-        const result = await ly0request.ly0.storpro({
+        const result = await ly0request.storpro({
             storproName: scopeThis.storpro.deleteOne,
             data: formData // 继承行记录的值
         })
         if(result.code === 0){
-            proxy.$message('删除一条记录成功')
+            ElMessage('删除一条记录成功')
             const resultRefresh = await refresh({scopeThis})
             if(resultRefresh.code === 0){
-                proxy.$message('已刷新数据')
+                ElMessage('已刷新数据')
             }else{
-                proxy.$message('刷新错误')
+                ElMessage('刷新错误')
             }
         }else{
-            proxy.$message('删除一条记录失败')
+            ElMessage('删除一条记录失败')
         }
     }catch(error){
-        proxy.$message('已取消')
+        ElMessage('已取消')
     }
 }
 

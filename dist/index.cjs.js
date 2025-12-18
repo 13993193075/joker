@@ -3,8 +3,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var vueRouter = require('vue-router');
-var vue = require('vue');
 var elementPlus = require('element-plus');
+var vue = require('vue');
 
 function _mergeNamespaces(n, m) {
 	m.forEach(function (e) {
@@ -16873,7 +16873,7 @@ var lookup = [];
 var revLookup = [];
 var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
 var inited = false;
-function init () {
+function init$1 () {
   inited = true;
   var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
   for (var i = 0, len = code.length; i < len; ++i) {
@@ -16887,7 +16887,7 @@ function init () {
 
 function toByteArray (b64) {
   if (!inited) {
-    init();
+    init$1();
   }
   var i, j, l, tmp, placeHolders, arr;
   var len = b64.length;
@@ -16946,7 +16946,7 @@ function encodeChunk (uint8, start, end) {
 
 function fromByteArray (uint8) {
   if (!inited) {
-    init();
+    init$1();
   }
   var tmp;
   var len = uint8.length;
@@ -22140,6 +22140,775 @@ var request = {
   ly0: ly0request$1
 };
 
+// 引用标准：GB/T 2260
+
+/**
+ * 深度拷贝函数
+ *
+ * @param {any} obj 需要拷贝的对象、数组或基本类型值
+ * @param {WeakMap} [cache=new WeakMap()] 用于处理循环引用的缓存
+ * @returns {any} 深度拷贝后的新对象/新值
+ */
+function deepClone$1(obj, cache = new WeakMap()) {
+    // 1. 基本类型值（包括 null）和函数，直接返回
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+    // 处理函数（尽管技术上函数是对象，但我们通常不克隆它，而是直接引用）
+    if (typeof obj === 'function') {
+        return obj;
+    }
+
+    // 2. 检查循环引用
+    // 如果缓存中已存在该对象，说明遇到了循环引用，直接返回缓存中的克隆对象
+    if (cache.has(obj)) {
+        return cache.get(obj);
+    }
+
+    // 3. 处理特定内置对象（Date 和 RegExp）
+    if (obj instanceof Date) {
+        return new Date(obj.getTime());
+    }
+    if (obj instanceof RegExp) {
+        // g: global, i: ignoreCase, m: multiline, u: unicode, y: sticky
+        const flags = obj.global ? 'g' : ''
+                    + obj.ignoreCase ? 'i' : ''
+                    + obj.multiline ? 'm' : ''
+                    + obj.unicode ? 'u' : ''
+                    + obj.sticky ? 'y' : '';
+        return new RegExp(obj.source, flags);
+    }
+
+    // 4. 初始化克隆对象
+    // 如果是数组，则初始化为空数组；否则初始化为空对象
+    const clone = Array.isArray(obj) ? [] : {};
+
+    // 将克隆对象放入缓存，以处理接下来的递归调用中可能遇到的循环引用
+    cache.set(obj, clone);
+
+    // 5. 递归拷贝属性
+    for (const key in obj) {
+        // 确保只处理对象自身的属性，排除原型链上的属性
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            clone[key] = deepClone$1(obj[key], cache);
+        }
+    }
+
+    // 6. 拷贝 Symbol 属性 (ES6/ES2015+)
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+        Object.getOwnPropertySymbols(obj).forEach(sym => {
+            clone[sym] = deepClone$1(obj[sym], cache);
+        });
+    }
+
+    return clone;
+}
+
+/**
+ * 深度拷贝函数，并在拷贝叶节点值时应用一个转换函数。
+ *
+ * @param {any} obj - 需要拷贝的对象、数组或基本类型值。
+ * @param {function} valueMapper - 接收叶节点值作为参数，并返回新值的转换函数。
+ * @param {WeakMap} [cache=new WeakMap()] - 用于处理循环引用的缓存。
+ * @returns {any} 深度拷贝并转换后的新对象/新值。
+ */
+function deepCloneAndMap(obj, valueMapper, cache = new WeakMap()) {
+    // 1. 基本类型值（包括 null）和函数，**应用 valueMapper**
+    
+    // 如果是基本类型值（包括 null），则认为是叶节点，应用 valueMapper
+    if (obj === null || typeof obj !== 'object') {
+        // 对基本类型值应用转换函数
+        return valueMapper ? valueMapper(obj) : obj;
+    }
+    
+    // 如果是函数，通常我们不克隆它，也不转换它的值，直接返回
+    if (typeof obj === 'function') {
+        return obj;
+    }
+
+    // 2. 检查循环引用 (与原函数逻辑相同)
+    if (cache.has(obj)) {
+        return cache.get(obj);
+    }
+
+    // 3. 处理特定内置对象（Date 和 RegExp），**应用 valueMapper**
+    
+    // 对于 Date 和 RegExp 这种对象实例，我们通常将它们的**值**视为叶节点，
+    // 克隆实例本身后，再对这个克隆实例应用 valueMapper。
+    let clone;
+    
+    if (obj instanceof Date) {
+        clone = new Date(obj.getTime());
+    } else if (obj instanceof RegExp) {
+        // 提取 flags
+        const flags = (obj.global ? 'g' : '')
+                    + (obj.ignoreCase ? 'i' : '')
+                    + (obj.multiline ? 'm' : '')
+                    + (obj.unicode ? 'u' : '')
+                    + (obj.sticky ? 'y' : '');
+        clone = new RegExp(obj.source, flags);
+    } 
+    
+    // 检查是否是内置对象（Date/RegExp），如果是，对克隆后的实例应用转换
+    if (clone) {
+        return valueMapper ? valueMapper(clone) : clone;
+    }
+
+    // 4. 初始化克隆对象 (普通对象和数组)
+    clone = Array.isArray(obj) ? [] : {};
+
+    // 将克隆对象放入缓存
+    cache.set(obj, clone);
+
+    // 5. 递归拷贝属性
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            // 递归调用自身，对子属性进行深拷贝和转换
+            clone[key] = deepCloneAndMap(obj[key], valueMapper, cache);
+        }
+    }
+
+    // 6. 拷贝 Symbol 属性
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+        Object.getOwnPropertySymbols(obj).forEach(sym => {
+            // 递归调用自身，对 Symbol 属性的值进行深拷贝和转换
+            clone[sym] = deepCloneAndMap(obj[sym], valueMapper, cache);
+        });
+    }
+
+    // 7. 返回深度克隆并转换后的对象/数组
+    return clone;
+}
+
+/**
+ * 健壮的数据类型判断函数
+ *
+ * @param {any} value 需要判断类型的值
+ * @returns {string} 小写的类型字符串，例如：'string', 'number', 'array', 'function', 'object', 'null', 'undefined'
+ */
+function typeOfValue(value) {
+    // 1. 处理基本类型值（typeof 准确的部分）
+    const type = typeof value;
+
+    // 'string', 'number', 'boolean', 'symbol', 'bigint', 'function', 'undefined'
+    if (type !== 'object') {
+        return type;
+    }
+
+    // 2. 处理 null (typeof 的缺陷：typeof null === 'object')
+    if (value === null) {
+        return 'null';
+    }
+
+    // 3. 处理对象类型值 (使用 Object.prototype.toString.call() 获取内部 [[Class]] 属性)
+    // 结果格式为：[object Class]
+    const classString = Object.prototype.toString.call(value);
+
+    // 提取 'Array', 'Date', 'RegExp', 'Map', 'Set', 'Object' 等 Class 名称
+    const className = classString.slice(8, -1);
+
+    // 4. 特殊处理 Array.isArray() 
+    // 虽然 className 已经是 'Array'，但 Array.isArray 更快且明确
+    if (className === 'Array') {
+        return 'array';
+    }
+
+    // 5. 将其他内置对象和普通对象名称转为小写返回
+    return className.toLowerCase();
+}
+
+/**
+ * 判断一个字符串是否是有效的 JSON 格式
+ *
+ * @param {string} strValue - 要检查的字符串值
+ * @returns {boolean} 如果字符串是有效的 JSON 格式则返回 true，否则返回 false
+ */
+function isJsonString(strValue) {
+    // 1. 确保输入是一个字符串，如果不是，则直接返回 false
+    // JSON 格式只能是字符串
+    if (typeof strValue !== 'string') {
+        return false;
+    }
+
+    // 2. 尝试解析字符串
+    try {
+        // 使用 JSON.parse() 尝试解析。
+        // 如果解析成功，它就会返回解析后的对象或值。
+        // 如果解析失败，就会抛出 SyntaxError 错误。
+        JSON.parse(strValue);
+        
+        // 3. 额外的检查 (可选但推荐): 
+        // 确保解析结果不是原始类型值，例如 "123" 或 "true"
+        // 某些场景下，用户希望 JSON 字符串必须是对象或数组的字符串表示
+        // const parsed = JSON.parse(strValue);
+        // if (typeof parsed !== 'object' || parsed === null) {
+        //     // 如果你想排除 "123", "null", "true" 这些原始值的 JSON 字符串，可以取消注释
+        //     // return false; 
+        // }
+
+    } catch (e) {
+        // 捕获任何解析错误（通常是 SyntaxError），表示格式不符合 JSON 规范
+        return false;
+    }
+
+    // 4. 解析成功，返回 true
+    return true;
+}
+
+/**
+ * 遍历树形结构（对象或数组）的所有叶节点，将叶节点的值收集到数组中。
+ *
+ * 叶节点被定义为：值不是普通对象或数组的节点。
+ *
+ * @param {object|Array} tree - 要扁平化处理的树形结构对象或数组。
+ * @param {Array<any>} [result=[]] - 存储叶节点值的数组（递归内部使用）。
+ * @returns {Array<any>} 包含所有叶节点值的数组。
+ */
+function flattenTreeValues(tree, result = []) {
+    // 确保输入是对象或数组。如果不是，或者为 null，则直接返回结果数组。
+    if (typeof tree !== 'object' || tree === null) {
+        return result;
+    }
+
+    // 遍历对象的键（如果是数组，键就是索引）
+    for (const key in tree) {
+        // 确保只处理对象自身的属性，排除原型链上的属性
+        if (Object.prototype.hasOwnProperty.call(tree, key)) {
+            const value = tree[key];
+
+            // 判断当前值是否为“叶节点”
+            // 检查：值不是对象，且值不是 null
+            if (typeof value !== 'object' || value === null) {
+                // 1. 如果是基本类型值（叶节点），则将其压入结果数组
+                result.push(value);
+            } else {
+                // 2. 如果是对象或数组（非叶节点），则进行递归调用
+                // 注意：这里没有处理 Date, RegExp, Set, Map 等特殊对象，
+                // 默认将它们视为非叶节点，直到它们内部的值被遍历完（这通常是不对的）
+                // 
+                // 为了更精确地实现“叶节点”概念，我们将 Date, RegExp 等内置对象视为叶节点：
+                const isArray = Array.isArray(value);
+                const isPlainObject = !isArray && Object.prototype.toString.call(value) === '[object Object]';
+                
+                if (isArray || isPlainObject) {
+                    // 如果是普通数组或普通对象，则递归
+                    flattenTreeValues(value, result);
+                } else {
+                    // 如果是像 Date, RegExp, Map, Set 等特殊内置对象，
+                    // 我们将其视为叶节点的值（而不是继续遍历其内部结构）
+                    result.push(value);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
+ * 将扁平化的对象数组转换为树形结构数据，并在每个节点中保留原始数据。
+ *
+ * @param {Object[]} flatArray 待转化的扁平数组。
+ * @param {Object} inputFields 描述输入数组中字段名的对象。
+ * @param {string} inputFields.idField 节点代码字段名。
+ * @param {string} inputFields.textField 节点文本字段名。
+ * @param {string} inputFields.parentField 父节点代码字段名。
+ * @param {Object} outputFields 描述输出树形结构中字段名的对象。
+ * @param {string} outputFields.idField 输出节点代码字段名 (接收 inputFields.idField 的值)。
+ * @param {string} outputFields.textField 输出节点文本字段名 (接收 inputFields.textField 的值)。
+ * @param {string} outputFields.childrenField 子节点数组字段名。
+ * @param {string} outputFields.originDataField 原始数据字段名 (用于存储原始的 item 对象)。
+ * @returns {Object[]} 转换后的树形结构数组。
+ */
+function arrayToTree(flatArray, inputFields, outputFields) {
+    // 1. 参数校验和字段提取
+    if (!Array.isArray(flatArray) || flatArray.length === 0) {
+        return [];
+    }
+
+    // 提取输入字段名
+    const {
+        idField: inputId,
+        textField: inputText,
+        parentField: inputParent
+    } = inputFields;
+
+    // 提取输出字段名
+    const {
+        idField: outputId,
+        textField: outputText,
+        childrenField: outputChildren,
+        originDataField: outputRawData // 新增：用于存储原始数据的字段名
+    } = outputFields;
+
+    // 2. 初始化辅助数据结构
+    const tree = [];
+    const childrenMap = new Map(); // 存储所有节点，键为节点ID
+    const rootCandidates = new Set(); // 存储所有可能的根节点ID
+
+    // 3. 第一次遍历：创建所有节点并建立 ID-Node 映射
+    for (const item of flatArray) {
+        // 关键：创建一个只包含转换后字段和子节点的结构
+        const newNode = {
+            // 映射输入字段到输出字段
+            [outputId]: item[inputId],
+            [outputText]: item[inputText],
+            [outputChildren]: [], // 初始化子节点数组
+            [outputRawData]: item // 新增：存储原始数据对象
+        };
+        
+        childrenMap.set(newNode[outputId], newNode);
+        rootCandidates.add(newNode[outputId]); // 假设所有节点都是根节点
+    }
+
+    // 4. 第二次遍历：连接父子关系
+    for (const node of childrenMap.values()) {
+        const parentId = node[outputRawData][inputParent]; // 从原始数据中获取父ID
+
+        // 查找父节点
+        const parentNode = childrenMap.get(parentId);
+
+        if (parentNode) {
+            // 如果找到了父节点，则将当前节点添加到父节点的子节点列表中
+            parentNode[outputChildren].push(node);
+
+            // 如果当前节点有父节点，它就不是根节点，从根节点候选中移除
+            rootCandidates.delete(node[outputId]);
+        }
+    }
+    
+    // 5. 组装最终树结构
+    // 最终的树结构由所有仍在 rootCandidates 列表中的节点组成
+    for (const rootId of rootCandidates) {
+        const rootNode = childrenMap.get(rootId);
+        if (rootNode) {
+             tree.push(rootNode);
+        }
+    }
+
+    return tree;
+}
+
+/**
+ * 在树形对象中查找指定名称的叶子节点值
+ * @param {Object} tree - 被查找的对象（树形结构）
+ * @param {String} leafName - 要查找的属性名称
+ * @returns {any} - 查找到的叶节点内容，未找到返回 undefined
+ */
+function getLeafValue(tree, leafName) {
+    // 边界检查：如果 tree 不是对象或者是 null，无法查找
+    if (typeof tree !== 'object' || tree === null) {
+        return undefined;
+    }
+
+    // 遍历当前层级的键
+    for (const key in tree) {
+        const value = tree[key];
+
+        // 判断当前值是否为“结构节点”（即中间节点：非数组的非空对象）
+        // 这里假设数组是数据（叶子），普通对象是结构（中间节点）
+        const isStructuralNode = typeof value === 'object' && value !== null && !Array.isArray(value);
+
+        // 1. 如果 key 匹配
+        if (key === leafName) {
+            // 且它不是中间节点（即它是叶子节点），则直接返回
+            if (!isStructuralNode) {
+                return value;
+            }
+            // 如果 key 匹配但是它是中间节点（Object），根据要求“不包括中间节点”，
+            // 我们不返回它，而是继续在这个对象内部递归查找（进入下方的递归逻辑）
+        }
+
+        // 2. 如果当前值是对象（中间节点），则递归查找
+        if (isStructuralNode) {
+            const result = getLeafValue(value, leafName);
+            // 如果在深层找到了结果，直接返回（冒泡上来）
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
+
+    return undefined; // 遍历完未找到
+}
+
+/**
+ * 在树形对象中查找任意指定名称的节点（包含中间节点和叶子节点）
+ * @param {Object} tree - 被查找的对象
+ * @param {String} nodeName - 要查找的属性名称
+ * @returns {any} - 查找到的节点内容（可能是值，也可能是对象），未找到返回 undefined
+ */
+function getNodeValue(tree, nodeName) {
+    // 边界检查
+    if (typeof tree !== 'object' || tree === null) {
+        return undefined;
+    }
+
+    // 1. 优先检查当前层级是否存在该 key (广度优先视角的微调，可选)
+    // 如果你希望优先匹配当前层级，而不是先钻入第一个子对象里找，可以取消下面这行的注释：
+    // if (tree.hasOwnProperty(nodeName)) return tree[nodeName];
+
+    // 遍历当前对象
+    for (const key in tree) {
+        const value = tree[key];
+
+        // 1. 只要 Key 匹配，立刻返回 Value
+        // 无论 value 是字符串、数字、还是另一个对象，都视为找到了
+        if (key === nodeName) {
+            return value;
+        }
+
+        // 2. 如果不匹配，且 value 是对象（具备子结构），则递归查找
+        // 注意：这里通常建议排除数组，除非你确定数组里也包含带 key 的对象
+        if (typeof value === 'object' && value !== null) {
+            const result = getNodeValue(value, nodeName);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
+
+    return undefined;
+}
+
+/**
+ * 深度非侵入式合并函数 (Deep Non-Destructive Merge)
+ * * 特点：
+ * 1. 深度递归地合并对象属性。
+ * 2. 源对象中缺失的属性不会删除或覆盖目标对象中已存在的对应属性。
+ * 3. 数组会被源对象中的数组完全覆盖。
+ * * @param {Object} target 目标对象（将被修改）
+ * @param {Object} source 源对象
+ * @returns {Object} 修改后的目标对象
+ */
+function deepMerge(target, source) {
+    // 确保源对象是一个有效的对象，如果不是则直接返回目标对象
+    if (typeof source !== 'object' || source === null) {
+        return target;
+    }
+
+    for (const key in source) {
+        // 确保只处理源对象自身的属性
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+            const sourceValue = source[key];
+            const targetValue = target[key];
+
+            // 1. 如果源属性的值是对象且目标属性的值也是对象，则递归合并
+            if (
+                typeof sourceValue === 'object' && sourceValue !== null &&
+                !Array.isArray(sourceValue) &&
+                typeof targetValue === 'object' && targetValue !== null &&
+                !Array.isArray(targetValue)
+            ) {
+                // 递归调用自身进行深度合并
+                target[key] = deepMerge(targetValue, sourceValue);
+            }
+            // 2. 对于其他类型（基本类型、数组、null），直接覆盖
+            else {
+                // 这里的关键是：只有源对象中存在的属性，才会覆盖目标对象的属性。
+                // 如果源对象中不存在某个键（key），则不会进入此循环，
+                // 从而目标对象中已有的该属性得以保留。
+                target[key] = sourceValue;
+            }
+        }
+    }
+
+    return target;
+}
+var deepClone = {
+    deepClone: deepClone$1,
+    deepCloneAndMap,
+    typeOfValue,
+    isJsonString,
+    flattenTreeValues,
+    arrayToTree,
+    getLeafValue,
+    getNodeValue,
+    deepMerge
+};
+
+var unclassified = {
+    deepClone};
+
+// with-table数据模板
+
+const ly0default$4 = {
+  pageSize: 10
+};
+
+// 数据刷新
+const refresh = async _ref => {
+  let {
+    scopeThis,
+    message
+  } = _ref;
+  const result = await ly0request$1.storpro({
+    storproName: scopeThis.storpro.refresh,
+    data: {
+      query: scopeThis.query && scopeThis.query.formData ? scopeThis.query.formData : null,
+      sort: scopeThis.query && scopeThis.query.sort ? scopeThis.query.sort : null,
+      limit: scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize,
+      page: scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1
+    }
+  });
+  if (result.code === 0) {
+    scopeThis.tableData = {
+      data: result.data,
+      total: result.total
+    };
+    if (!!message) {
+      elementPlus.ElMessage('数据已刷新');
+    }
+  } else {
+    if (!!message) {
+      elementPlus.ElMessage('数据刷新错误');
+    }
+  }
+  return {
+    code: result.code,
+    message: result.message
+  };
+};
+
+// 数据重载
+const reload = async _ref2 => {
+  let {
+    scopeThis
+  } = _ref2;
+  scopeThis.query = scopeThis.queryInit ? unclassified.deepClone.deepClone(scopeThis.queryInit) : null;
+  const result = await refresh({
+    scopeThis
+  });
+  elementPlus.ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误');
+};
+
+// 获取页面数据附加
+const getPgData = async _ref3 => {
+  let {
+    scopeThis
+  } = _ref3;
+  const result = await ly0request$1.storpro({
+    storproName: scopeThis.storpro.getPgData,
+    data: scopeThis.pgData && scopeThis.pgData.query ? scopeThis.pgData.query : null
+  });
+  if (result.code === 0) {
+    scopeThis.pgData = unclassified.deepClone.deepMerge(scopeThis.pgData, {
+      data: result.data
+    });
+    elementPlus.ElMessage('已获取页面数据');
+    return;
+  }
+  elementPlus.ElMessage('获取页面数据错误');
+};
+
+// 初始化
+const init = async _ref4 => {
+  let {
+    scopeThis
+  } = _ref4;
+  if (scopeThis.pgData) {
+    await getPgData({
+      scopeThis
+    });
+  }
+  await reload({
+    scopeThis
+  });
+};
+
+// 弹出 - 查询
+const popupFind = async _ref5 => {
+  let {
+    scopeThis
+  } = _ref5;
+  scopeThis.formData = scopeThis.query && scopeThis.query.formData ? unclassified.deepClone.deepClone(scopeThis.query.formData) : null;
+  scopeThis.TableProps.query.sort = scopeThis.query && scopeThis.query.sort ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null;
+  scopeThis.TableProps.query.pageSize = scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize;
+  scopeThis.TableProps.query.currentPage = scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1;
+  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.find.formProps);
+  // 弹出窗口
+  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+    visible: true
+  });
+};
+
+// 弹出 - 新增一条记录
+const popupInsertOne = async _ref6 => {
+  let {
+    scopeThis
+  } = _ref6;
+  scopeThis.formData = unclassified.deepClone.deepClone(scopeThis.insertOne.formData);
+  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.insertOne.formProps);
+  // 弹出窗口
+  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+    visible: true
+  });
+};
+
+// 弹出 - 修改一条记录
+const popupUpdateOne = async _ref7 => {
+  let {
+    scopeThis,
+    formData
+  } = _ref7;
+  scopeThis.formData = unclassified.deepClone.deepClone(formData); // 继承行记录的值
+  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.UpdateOne.formProps);
+  // 弹出窗口
+  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+    visible: true
+  });
+};
+
+// 弹出 - 详细信息
+const popupDoc = async _ref8 => {
+  let {
+    scopeThis,
+    formData
+  } = _ref8;
+  scopeThis.formData = unclassified.deepClone.deepClone(formData); // 继承行记录的值
+  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.doc.formProps);
+  // 弹出窗口
+  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+    visible: true
+  });
+};
+
+// 提交 - 查询
+const submitFind = async _ref9 => {
+  let {
+    scopeThis
+  } = _ref9;
+  scopeThis.query.formData = scopeThis.formData ? unclassified.deepClone.deepClone(scopeThis.formData) : null;
+  scopeThis.query.sort = scopeThis.tableProps.query && scopeThis.tableProps.query.sort ? JSON.parse(JSON.stringify(scopeThis.tableProps.query.sort)) : null;
+  scopeThis.query.pageSize = scopeThis.tableProps.query && scopeThis.tableProps.query.pageSize ? scopeThis.tableProps.query.pageSize : ly0default$4.pageSize;
+  scopeThis.query.currentPage = scopeThis.tableProps.query && scopeThis.tableProps.query.currentPage ? scopeThis.tableProps.query.currentPage : 1;
+  const result = await refresh({
+    scopeThis
+  });
+  if (result.code === 0) {
+    // 关闭表单窗口
+    scopeThis.formProps.popup.visible = false;
+    elementPlus.ElMessage('查询已提交并刷新数据');
+  } else {
+    elementPlus.ElMessage('查询错误');
+  }
+};
+
+// 提交 - 新增一条记录
+const submitInsertOne = async _ref0 => {
+  let {
+    scopeThis
+  } = _ref0;
+  try {
+    await elementPlus.ElMessageBox.confirm('新增一条记录, 提交?', '提示', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning' // 警告图标
+    });
+    const result = await ly0request$1.storpro({
+      storproName: scopeThis.storpro.insertOne,
+      data: scopeThis.formData
+    });
+    if (result.code === 0) {
+      // 关闭表单窗口
+      scopeThis.formProps.popup.visible = false;
+      elementPlus.ElMessage('新增一条记录成功');
+      scopeThis.query.currentPage = 1;
+      scopeThis.tableData = {
+        data: result.dataNew,
+        total: 1
+      };
+    } else {
+      elementPlus.ElMessage('新增一条记录失败');
+    }
+  } catch (error) {
+    elementPlus.ElMessage('已取消');
+  }
+};
+
+// 提交 - 修改一条记录
+const submitUpdateOne = async _ref1 => {
+  let {
+    scopeThis
+  } = _ref1;
+  try {
+    await elementPlus.ElMessageBox.confirm('修改一条记录, 提交?', '提示', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning' // 警告图标
+    });
+    const result = await ly0request$1.storpro({
+      storproName: scopeThis.storpro.updateOne,
+      data: scopeThis.formData
+    });
+    if (result.code === 0) {
+      // 关闭表单窗口
+      scopeThis.formProps.popup.visible = false;
+      elementPlus.ElMessage('修改一条记录成功');
+      const resultRefresh = await refresh({
+        scopeThis
+      });
+      if (resultRefresh.code === 0) {
+        elementPlus.ElMessage('已刷新数据');
+      } else {
+        elementPlus.ElMessage('刷新错误');
+      }
+    } else {
+      elementPlus.ElMessage('修改一条记录失败');
+    }
+  } catch (error) {
+    elementPlus.ElMessage('已取消');
+  }
+};
+
+// 提交 - 删除一条记录
+const submitDeleteOne = async _ref10 => {
+  let {
+    scopeThis,
+    formData
+  } = _ref10;
+  try {
+    await elementPlus.ElMessageBox.confirm('删除一条记录, 提交?', '警告', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning' // 警告图标
+    });
+    const result = await ly0request$1.storpro({
+      storproName: scopeThis.storpro.deleteOne,
+      data: formData // 继承行记录的值
+    });
+    if (result.code === 0) {
+      elementPlus.ElMessage('删除一条记录成功');
+      const resultRefresh = await refresh({
+        scopeThis
+      });
+      if (resultRefresh.code === 0) {
+        elementPlus.ElMessage('已刷新数据');
+      } else {
+        elementPlus.ElMessage('刷新错误');
+      }
+    } else {
+      elementPlus.ElMessage('删除一条记录失败');
+    }
+  } catch (error) {
+    elementPlus.ElMessage('已取消');
+  }
+};
+var withTable = {
+  refresh,
+  reload,
+  getPgData,
+  init,
+  popupFind,
+  popupInsertOne,
+  popupUpdateOne,
+  popupDoc,
+  submitFind,
+  submitInsertOne,
+  submitUpdateOne,
+  submitDeleteOne
+};
+
 // 默认值
 
 var ly0default$3 = {
@@ -23577,496 +24346,6 @@ return (_ctx, _cache) => {
 };
 
 script$i.__file = "src/form/Form.vue";
-
-// 引用标准：GB/T 2260
-
-/**
- * 深度拷贝函数
- *
- * @param {any} obj 需要拷贝的对象、数组或基本类型值
- * @param {WeakMap} [cache=new WeakMap()] 用于处理循环引用的缓存
- * @returns {any} 深度拷贝后的新对象/新值
- */
-function deepClone$1(obj, cache = new WeakMap()) {
-    // 1. 基本类型值（包括 null）和函数，直接返回
-    if (obj === null || typeof obj !== 'object') {
-        return obj;
-    }
-    // 处理函数（尽管技术上函数是对象，但我们通常不克隆它，而是直接引用）
-    if (typeof obj === 'function') {
-        return obj;
-    }
-
-    // 2. 检查循环引用
-    // 如果缓存中已存在该对象，说明遇到了循环引用，直接返回缓存中的克隆对象
-    if (cache.has(obj)) {
-        return cache.get(obj);
-    }
-
-    // 3. 处理特定内置对象（Date 和 RegExp）
-    if (obj instanceof Date) {
-        return new Date(obj.getTime());
-    }
-    if (obj instanceof RegExp) {
-        // g: global, i: ignoreCase, m: multiline, u: unicode, y: sticky
-        const flags = obj.global ? 'g' : ''
-                    + obj.ignoreCase ? 'i' : ''
-                    + obj.multiline ? 'm' : ''
-                    + obj.unicode ? 'u' : ''
-                    + obj.sticky ? 'y' : '';
-        return new RegExp(obj.source, flags);
-    }
-
-    // 4. 初始化克隆对象
-    // 如果是数组，则初始化为空数组；否则初始化为空对象
-    const clone = Array.isArray(obj) ? [] : {};
-
-    // 将克隆对象放入缓存，以处理接下来的递归调用中可能遇到的循环引用
-    cache.set(obj, clone);
-
-    // 5. 递归拷贝属性
-    for (const key in obj) {
-        // 确保只处理对象自身的属性，排除原型链上的属性
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            clone[key] = deepClone$1(obj[key], cache);
-        }
-    }
-
-    // 6. 拷贝 Symbol 属性 (ES6/ES2015+)
-    if (typeof Object.getOwnPropertySymbols === 'function') {
-        Object.getOwnPropertySymbols(obj).forEach(sym => {
-            clone[sym] = deepClone$1(obj[sym], cache);
-        });
-    }
-
-    return clone;
-}
-
-/**
- * 深度拷贝函数，并在拷贝叶节点值时应用一个转换函数。
- *
- * @param {any} obj - 需要拷贝的对象、数组或基本类型值。
- * @param {function} valueMapper - 接收叶节点值作为参数，并返回新值的转换函数。
- * @param {WeakMap} [cache=new WeakMap()] - 用于处理循环引用的缓存。
- * @returns {any} 深度拷贝并转换后的新对象/新值。
- */
-function deepCloneAndMap(obj, valueMapper, cache = new WeakMap()) {
-    // 1. 基本类型值（包括 null）和函数，**应用 valueMapper**
-    
-    // 如果是基本类型值（包括 null），则认为是叶节点，应用 valueMapper
-    if (obj === null || typeof obj !== 'object') {
-        // 对基本类型值应用转换函数
-        return valueMapper ? valueMapper(obj) : obj;
-    }
-    
-    // 如果是函数，通常我们不克隆它，也不转换它的值，直接返回
-    if (typeof obj === 'function') {
-        return obj;
-    }
-
-    // 2. 检查循环引用 (与原函数逻辑相同)
-    if (cache.has(obj)) {
-        return cache.get(obj);
-    }
-
-    // 3. 处理特定内置对象（Date 和 RegExp），**应用 valueMapper**
-    
-    // 对于 Date 和 RegExp 这种对象实例，我们通常将它们的**值**视为叶节点，
-    // 克隆实例本身后，再对这个克隆实例应用 valueMapper。
-    let clone;
-    
-    if (obj instanceof Date) {
-        clone = new Date(obj.getTime());
-    } else if (obj instanceof RegExp) {
-        // 提取 flags
-        const flags = (obj.global ? 'g' : '')
-                    + (obj.ignoreCase ? 'i' : '')
-                    + (obj.multiline ? 'm' : '')
-                    + (obj.unicode ? 'u' : '')
-                    + (obj.sticky ? 'y' : '');
-        clone = new RegExp(obj.source, flags);
-    } 
-    
-    // 检查是否是内置对象（Date/RegExp），如果是，对克隆后的实例应用转换
-    if (clone) {
-        return valueMapper ? valueMapper(clone) : clone;
-    }
-
-    // 4. 初始化克隆对象 (普通对象和数组)
-    clone = Array.isArray(obj) ? [] : {};
-
-    // 将克隆对象放入缓存
-    cache.set(obj, clone);
-
-    // 5. 递归拷贝属性
-    for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            // 递归调用自身，对子属性进行深拷贝和转换
-            clone[key] = deepCloneAndMap(obj[key], valueMapper, cache);
-        }
-    }
-
-    // 6. 拷贝 Symbol 属性
-    if (typeof Object.getOwnPropertySymbols === 'function') {
-        Object.getOwnPropertySymbols(obj).forEach(sym => {
-            // 递归调用自身，对 Symbol 属性的值进行深拷贝和转换
-            clone[sym] = deepCloneAndMap(obj[sym], valueMapper, cache);
-        });
-    }
-
-    // 7. 返回深度克隆并转换后的对象/数组
-    return clone;
-}
-
-/**
- * 健壮的数据类型判断函数
- *
- * @param {any} value 需要判断类型的值
- * @returns {string} 小写的类型字符串，例如：'string', 'number', 'array', 'function', 'object', 'null', 'undefined'
- */
-function typeOfValue(value) {
-    // 1. 处理基本类型值（typeof 准确的部分）
-    const type = typeof value;
-
-    // 'string', 'number', 'boolean', 'symbol', 'bigint', 'function', 'undefined'
-    if (type !== 'object') {
-        return type;
-    }
-
-    // 2. 处理 null (typeof 的缺陷：typeof null === 'object')
-    if (value === null) {
-        return 'null';
-    }
-
-    // 3. 处理对象类型值 (使用 Object.prototype.toString.call() 获取内部 [[Class]] 属性)
-    // 结果格式为：[object Class]
-    const classString = Object.prototype.toString.call(value);
-
-    // 提取 'Array', 'Date', 'RegExp', 'Map', 'Set', 'Object' 等 Class 名称
-    const className = classString.slice(8, -1);
-
-    // 4. 特殊处理 Array.isArray() 
-    // 虽然 className 已经是 'Array'，但 Array.isArray 更快且明确
-    if (className === 'Array') {
-        return 'array';
-    }
-
-    // 5. 将其他内置对象和普通对象名称转为小写返回
-    return className.toLowerCase();
-}
-
-/**
- * 判断一个字符串是否是有效的 JSON 格式
- *
- * @param {string} strValue - 要检查的字符串值
- * @returns {boolean} 如果字符串是有效的 JSON 格式则返回 true，否则返回 false
- */
-function isJsonString(strValue) {
-    // 1. 确保输入是一个字符串，如果不是，则直接返回 false
-    // JSON 格式只能是字符串
-    if (typeof strValue !== 'string') {
-        return false;
-    }
-
-    // 2. 尝试解析字符串
-    try {
-        // 使用 JSON.parse() 尝试解析。
-        // 如果解析成功，它就会返回解析后的对象或值。
-        // 如果解析失败，就会抛出 SyntaxError 错误。
-        JSON.parse(strValue);
-        
-        // 3. 额外的检查 (可选但推荐): 
-        // 确保解析结果不是原始类型值，例如 "123" 或 "true"
-        // 某些场景下，用户希望 JSON 字符串必须是对象或数组的字符串表示
-        // const parsed = JSON.parse(strValue);
-        // if (typeof parsed !== 'object' || parsed === null) {
-        //     // 如果你想排除 "123", "null", "true" 这些原始值的 JSON 字符串，可以取消注释
-        //     // return false; 
-        // }
-
-    } catch (e) {
-        // 捕获任何解析错误（通常是 SyntaxError），表示格式不符合 JSON 规范
-        return false;
-    }
-
-    // 4. 解析成功，返回 true
-    return true;
-}
-
-/**
- * 遍历树形结构（对象或数组）的所有叶节点，将叶节点的值收集到数组中。
- *
- * 叶节点被定义为：值不是普通对象或数组的节点。
- *
- * @param {object|Array} tree - 要扁平化处理的树形结构对象或数组。
- * @param {Array<any>} [result=[]] - 存储叶节点值的数组（递归内部使用）。
- * @returns {Array<any>} 包含所有叶节点值的数组。
- */
-function flattenTreeValues(tree, result = []) {
-    // 确保输入是对象或数组。如果不是，或者为 null，则直接返回结果数组。
-    if (typeof tree !== 'object' || tree === null) {
-        return result;
-    }
-
-    // 遍历对象的键（如果是数组，键就是索引）
-    for (const key in tree) {
-        // 确保只处理对象自身的属性，排除原型链上的属性
-        if (Object.prototype.hasOwnProperty.call(tree, key)) {
-            const value = tree[key];
-
-            // 判断当前值是否为“叶节点”
-            // 检查：值不是对象，且值不是 null
-            if (typeof value !== 'object' || value === null) {
-                // 1. 如果是基本类型值（叶节点），则将其压入结果数组
-                result.push(value);
-            } else {
-                // 2. 如果是对象或数组（非叶节点），则进行递归调用
-                // 注意：这里没有处理 Date, RegExp, Set, Map 等特殊对象，
-                // 默认将它们视为非叶节点，直到它们内部的值被遍历完（这通常是不对的）
-                // 
-                // 为了更精确地实现“叶节点”概念，我们将 Date, RegExp 等内置对象视为叶节点：
-                const isArray = Array.isArray(value);
-                const isPlainObject = !isArray && Object.prototype.toString.call(value) === '[object Object]';
-                
-                if (isArray || isPlainObject) {
-                    // 如果是普通数组或普通对象，则递归
-                    flattenTreeValues(value, result);
-                } else {
-                    // 如果是像 Date, RegExp, Map, Set 等特殊内置对象，
-                    // 我们将其视为叶节点的值（而不是继续遍历其内部结构）
-                    result.push(value);
-                }
-            }
-        }
-    }
-
-    return result;
-}
-
-/**
- * 将扁平化的对象数组转换为树形结构数据，并在每个节点中保留原始数据。
- *
- * @param {Object[]} flatArray 待转化的扁平数组。
- * @param {Object} inputFields 描述输入数组中字段名的对象。
- * @param {string} inputFields.idField 节点代码字段名。
- * @param {string} inputFields.textField 节点文本字段名。
- * @param {string} inputFields.parentField 父节点代码字段名。
- * @param {Object} outputFields 描述输出树形结构中字段名的对象。
- * @param {string} outputFields.idField 输出节点代码字段名 (接收 inputFields.idField 的值)。
- * @param {string} outputFields.textField 输出节点文本字段名 (接收 inputFields.textField 的值)。
- * @param {string} outputFields.childrenField 子节点数组字段名。
- * @param {string} outputFields.originDataField 原始数据字段名 (用于存储原始的 item 对象)。
- * @returns {Object[]} 转换后的树形结构数组。
- */
-function arrayToTree(flatArray, inputFields, outputFields) {
-    // 1. 参数校验和字段提取
-    if (!Array.isArray(flatArray) || flatArray.length === 0) {
-        return [];
-    }
-
-    // 提取输入字段名
-    const {
-        idField: inputId,
-        textField: inputText,
-        parentField: inputParent
-    } = inputFields;
-
-    // 提取输出字段名
-    const {
-        idField: outputId,
-        textField: outputText,
-        childrenField: outputChildren,
-        originDataField: outputRawData // 新增：用于存储原始数据的字段名
-    } = outputFields;
-
-    // 2. 初始化辅助数据结构
-    const tree = [];
-    const childrenMap = new Map(); // 存储所有节点，键为节点ID
-    const rootCandidates = new Set(); // 存储所有可能的根节点ID
-
-    // 3. 第一次遍历：创建所有节点并建立 ID-Node 映射
-    for (const item of flatArray) {
-        // 关键：创建一个只包含转换后字段和子节点的结构
-        const newNode = {
-            // 映射输入字段到输出字段
-            [outputId]: item[inputId],
-            [outputText]: item[inputText],
-            [outputChildren]: [], // 初始化子节点数组
-            [outputRawData]: item // 新增：存储原始数据对象
-        };
-        
-        childrenMap.set(newNode[outputId], newNode);
-        rootCandidates.add(newNode[outputId]); // 假设所有节点都是根节点
-    }
-
-    // 4. 第二次遍历：连接父子关系
-    for (const node of childrenMap.values()) {
-        const parentId = node[outputRawData][inputParent]; // 从原始数据中获取父ID
-
-        // 查找父节点
-        const parentNode = childrenMap.get(parentId);
-
-        if (parentNode) {
-            // 如果找到了父节点，则将当前节点添加到父节点的子节点列表中
-            parentNode[outputChildren].push(node);
-
-            // 如果当前节点有父节点，它就不是根节点，从根节点候选中移除
-            rootCandidates.delete(node[outputId]);
-        }
-    }
-    
-    // 5. 组装最终树结构
-    // 最终的树结构由所有仍在 rootCandidates 列表中的节点组成
-    for (const rootId of rootCandidates) {
-        const rootNode = childrenMap.get(rootId);
-        if (rootNode) {
-             tree.push(rootNode);
-        }
-    }
-
-    return tree;
-}
-
-/**
- * 在树形对象中查找指定名称的叶子节点值
- * @param {Object} tree - 被查找的对象（树形结构）
- * @param {String} leafName - 要查找的属性名称
- * @returns {any} - 查找到的叶节点内容，未找到返回 undefined
- */
-function getLeafValue(tree, leafName) {
-    // 边界检查：如果 tree 不是对象或者是 null，无法查找
-    if (typeof tree !== 'object' || tree === null) {
-        return undefined;
-    }
-
-    // 遍历当前层级的键
-    for (const key in tree) {
-        const value = tree[key];
-
-        // 判断当前值是否为“结构节点”（即中间节点：非数组的非空对象）
-        // 这里假设数组是数据（叶子），普通对象是结构（中间节点）
-        const isStructuralNode = typeof value === 'object' && value !== null && !Array.isArray(value);
-
-        // 1. 如果 key 匹配
-        if (key === leafName) {
-            // 且它不是中间节点（即它是叶子节点），则直接返回
-            if (!isStructuralNode) {
-                return value;
-            }
-            // 如果 key 匹配但是它是中间节点（Object），根据要求“不包括中间节点”，
-            // 我们不返回它，而是继续在这个对象内部递归查找（进入下方的递归逻辑）
-        }
-
-        // 2. 如果当前值是对象（中间节点），则递归查找
-        if (isStructuralNode) {
-            const result = getLeafValue(value, leafName);
-            // 如果在深层找到了结果，直接返回（冒泡上来）
-            if (result !== undefined) {
-                return result;
-            }
-        }
-    }
-
-    return undefined; // 遍历完未找到
-}
-
-/**
- * 在树形对象中查找任意指定名称的节点（包含中间节点和叶子节点）
- * @param {Object} tree - 被查找的对象
- * @param {String} nodeName - 要查找的属性名称
- * @returns {any} - 查找到的节点内容（可能是值，也可能是对象），未找到返回 undefined
- */
-function getNodeValue(tree, nodeName) {
-    // 边界检查
-    if (typeof tree !== 'object' || tree === null) {
-        return undefined;
-    }
-
-    // 1. 优先检查当前层级是否存在该 key (广度优先视角的微调，可选)
-    // 如果你希望优先匹配当前层级，而不是先钻入第一个子对象里找，可以取消下面这行的注释：
-    // if (tree.hasOwnProperty(nodeName)) return tree[nodeName];
-
-    // 遍历当前对象
-    for (const key in tree) {
-        const value = tree[key];
-
-        // 1. 只要 Key 匹配，立刻返回 Value
-        // 无论 value 是字符串、数字、还是另一个对象，都视为找到了
-        if (key === nodeName) {
-            return value;
-        }
-
-        // 2. 如果不匹配，且 value 是对象（具备子结构），则递归查找
-        // 注意：这里通常建议排除数组，除非你确定数组里也包含带 key 的对象
-        if (typeof value === 'object' && value !== null) {
-            const result = getNodeValue(value, nodeName);
-            if (result !== undefined) {
-                return result;
-            }
-        }
-    }
-
-    return undefined;
-}
-
-/**
- * 深度非侵入式合并函数 (Deep Non-Destructive Merge)
- * * 特点：
- * 1. 深度递归地合并对象属性。
- * 2. 源对象中缺失的属性不会删除或覆盖目标对象中已存在的对应属性。
- * 3. 数组会被源对象中的数组完全覆盖。
- * * @param {Object} target 目标对象（将被修改）
- * @param {Object} source 源对象
- * @returns {Object} 修改后的目标对象
- */
-function deepMerge(target, source) {
-    // 确保源对象是一个有效的对象，如果不是则直接返回目标对象
-    if (typeof source !== 'object' || source === null) {
-        return target;
-    }
-
-    for (const key in source) {
-        // 确保只处理源对象自身的属性
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-            const sourceValue = source[key];
-            const targetValue = target[key];
-
-            // 1. 如果源属性的值是对象且目标属性的值也是对象，则递归合并
-            if (
-                typeof sourceValue === 'object' && sourceValue !== null &&
-                !Array.isArray(sourceValue) &&
-                typeof targetValue === 'object' && targetValue !== null &&
-                !Array.isArray(targetValue)
-            ) {
-                // 递归调用自身进行深度合并
-                target[key] = deepMerge(targetValue, sourceValue);
-            }
-            // 2. 对于其他类型（基本类型、数组、null），直接覆盖
-            else {
-                // 这里的关键是：只有源对象中存在的属性，才会覆盖目标对象的属性。
-                // 如果源对象中不存在某个键（key），则不会进入此循环，
-                // 从而目标对象中已有的该属性得以保留。
-                target[key] = sourceValue;
-            }
-        }
-    }
-
-    return target;
-}
-var deepClone = {
-    deepClone: deepClone$1,
-    deepCloneAndMap,
-    typeOfValue,
-    isJsonString,
-    flattenTreeValues,
-    arrayToTree,
-    getLeafValue,
-    getNodeValue,
-    deepMerge
-};
-
-var unclassified = {
-    deepClone};
 
 var script$h = {
   __name: 'index',
@@ -41693,7 +41972,7 @@ const hdl = {
         if (col.hdlMouseover) {
             col.hdlMouseover({scopeThis: scopeThis_box, row, col});
         } else {
-            tableData_box.cellTooltip = [];
+            tableProps_box.table.cellTooltip = [];
         }
     },
     download({row, col}) {
@@ -45136,10 +45415,12 @@ var index = {
     app.component('ly0d7thumb', script);
   },
   FileSaver: FileSaver$1,
-  request
+  request,
+  withTable
 };
 
 exports.FileSaver = FileSaver$1;
 exports.default = index;
 exports.request = request;
+exports.withTable = withTable;
 //# sourceMappingURL=index.cjs.js.map
