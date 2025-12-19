@@ -22648,10 +22648,10 @@ const refresh = async _ref => {
     }
   });
   if (result.code === 0) {
-    scopeThis.tableData = {
+    unclassified.deepClone.deepMerge(scopeThis.tableData, {
       data: result.data,
       total: result.total
-    };
+    });
     if (!!message) {
       ElMessage('数据已刷新');
     }
