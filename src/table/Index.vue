@@ -39,8 +39,8 @@ const props = defineProps({
 })
 
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
-let tableData_box = reactive(beanUnclass.deepClone.deepMerge(props.modelValue, ly0default.modelValue))
-const tableProps_box = reactive(beanUnclass.deepClone.deepMerge(props.myProps, ly0default.myProps))
+let tableData_box = reactive(beanUnclass.deepClone.deepDefaults(props.modelValue, ly0default.modelValue))
+const tableProps_box = reactive(beanUnclass.deepClone.deepDefaults(props.myProps, ly0default.myProps))
 
 const scopeThis_box = reactive(props.scopeThis)
 </script>

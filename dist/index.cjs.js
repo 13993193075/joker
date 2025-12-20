@@ -16198,7 +16198,7 @@ const isNumber = typeOfTest('number');
  *
  * @returns {boolean} True if value is an Object, otherwise false
  */
-const isObject = (thing) => thing !== null && typeof thing === 'object';
+const isObject$1 = (thing) => thing !== null && typeof thing === 'object';
 
 /**
  * Determine if a value is a Boolean
@@ -16233,7 +16233,7 @@ const isPlainObject = (val) => {
  */
 const isEmptyObject = (val) => {
   // Early return for non-objects or Buffers to prevent RangeError
-  if (!isObject(val) || isBuffer$1(val)) {
+  if (!isObject$1(val) || isBuffer$1(val)) {
     return false;
   }
 
@@ -16288,7 +16288,7 @@ const isFileList = kindOfTest('FileList');
  *
  * @returns {boolean} True if value is a Stream, otherwise false
  */
-const isStream = (val) => isObject(val) && isFunction$1(val.pipe);
+const isStream = (val) => isObject$1(val) && isFunction$1(val.pipe);
 
 /**
  * Determine if a value is a FormData
@@ -16739,7 +16739,7 @@ const toJSONObject = (obj) => {
 
   const visit = (source, i) => {
 
-    if (isObject(source)) {
+    if (isObject$1(source)) {
       if (stack.indexOf(source) >= 0) {
         return;
       }
@@ -16773,7 +16773,7 @@ const toJSONObject = (obj) => {
 const isAsyncFn = kindOfTest('AsyncFunction');
 
 const isThenable = (thing) =>
-  thing && (isObject(thing) || isFunction$1(thing)) && isFunction$1(thing.then) && isFunction$1(thing.catch);
+  thing && (isObject$1(thing) || isFunction$1(thing)) && isFunction$1(thing.then) && isFunction$1(thing.catch);
 
 // original code
 // https://github.com/DigitalBrainJS/AxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
@@ -16818,7 +16818,7 @@ var utils$1 = {
   isString,
   isNumber,
   isBoolean,
-  isObject,
+  isObject: isObject$1,
   isPlainObject,
   isEmptyObject,
   isReadableStream,
@@ -22318,6 +22318,13 @@ function typeOfValue(value) {
 }
 
 /**
+ * 判断是否为普通对象（排除 null 和 Array）
+ */
+function isObject(val) {
+    return typeof val === 'object' && val !== null && !Array.isArray(val);
+}
+
+/**
  * 判断一个字符串是否是有效的 JSON 格式
  *
  * @param {string} strValue - 要检查的字符串值
@@ -22572,47 +22579,66 @@ function getNodeValue(tree, nodeName) {
 }
 
 /**
- * 深度非侵入式合并函数 (Deep Non-Destructive Merge)
- * * 特点：
- * 1. 深度递归地合并对象属性。
- * 2. 源对象中缺失的属性不会删除或覆盖目标对象中已存在的对应属性。
- * 3. 数组会被源对象中的数组完全覆盖。
- * * @param {Object} target 目标对象（将被修改）
+ * 深度合并 (Deep Merge)
+ * 1. 深度递归地合并对象属性
+ * 2. 目标对象中已存在的属性会被源对象中对应（同级、同名）的属性覆盖，缺失的，会从源对象中获取
+ * 3. 数组视同简单值不进行递归处理
+ * 适用场景：配置更新、状态同步
+ * @param {Object} target 目标对象（将被修改）
  * @param {Object} source 源对象
  * @returns {Object} 修改后的目标对象
  */
 function deepMerge(target, source) {
-    // 确保源对象是一个有效的对象，如果不是则直接返回目标对象
-    if (typeof source !== 'object' || source === null) {
-        return target;
-    }
+    if (!isObject(source)) return target;
+    if (!isObject(target)) return source;
 
     for (const key in source) {
-        // 确保只处理源对象自身的属性
         if (Object.prototype.hasOwnProperty.call(source, key)) {
             const sourceValue = source[key];
             const targetValue = target[key];
 
-            // 1. 如果源属性的值是对象且目标属性的值也是对象，则递归合并
-            if (
-                typeof sourceValue === 'object' && sourceValue !== null &&
-                !Array.isArray(sourceValue) &&
-                typeof targetValue === 'object' && targetValue !== null &&
-                !Array.isArray(targetValue)
-            ) {
-                // 递归调用自身进行深度合并
+            if (isObject(sourceValue) && isObject(targetValue)) {
+                // 递归合并
                 target[key] = deepMerge(targetValue, sourceValue);
-            }
-            // 2. 对于其他类型（基本类型、数组、null），直接覆盖
-            else {
-                // 这里的关键是：只有源对象中存在的属性，才会覆盖目标对象的属性。
-                // 如果源对象中不存在某个键（key），则不会进入此循环，
-                // 从而目标对象中已有的该属性得以保留。
+            } else {
+                // 覆盖：包含基本类型、数组或目标缺失的情况
                 target[key] = sourceValue;
             }
         }
     }
+    return target;
+}
 
+/**
+ * 深度默认值 (Deep Defaults)
+ * 1. 深度递归地合并对象属性
+ * 2. 目标对象中已存在的属性不会被源对象影响，缺失的，会从源对象中获取
+ * 3. 数组视同简单值不进行递归处理
+ * 适用场景：初始化配置，并确保目标对象结构的完整性
+ * @param {Object} target 目标对象（将被修改）
+ * @param {Object} source 源对象（提供默认值的参考对象）
+ * @returns {Object} 修改后的目标对象
+ */
+function deepDefaults(target, source) {
+    if (!isObject(source)) return target;
+    // 如果 target 不是对象，为了填充属性，需将其初始化为对象
+    if (!isObject(target)) target = {};
+
+    for (const key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+            const sourceValue = source[key];
+            const targetValue = target[key];
+
+            if (!(key in target)) {
+                // 目标完全没有这个键，直接取源的值
+                target[key] = sourceValue;
+            } else if (isObject(sourceValue) && isObject(targetValue)) {
+                // 目标和源都有此对象，递归检查内部缺失
+                deepDefaults(targetValue, sourceValue);
+            }
+            // 目标已有基本类型值或数组，跳过
+        }
+    }
     return target;
 }
 var deepClone = {
@@ -22624,7 +22650,8 @@ var deepClone = {
     arrayToTree,
     getLeafValue,
     getNodeValue,
-    deepMerge
+    deepMerge,
+    deepDefaults
 };
 
 var unclassified = {
@@ -24371,10 +24398,7 @@ const props = __props;
 
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
 let formData_box = vue.reactive(props.modelValue);
-const formProps_box = vue.reactive(unclassified.deepClone.deepMerge(
-    unclassified.deepClone.deepClone(ly0default$3.myProps),
-    props.myProps
-));
+const formProps_box = vue.reactive(unclassified.deepClone.deepDefaults(props.myProps, ly0default$3.myProps));
 const scopeThis_box = vue.reactive(props.scopeThis);
 
 return (_ctx, _cache) => {
@@ -42149,6 +42173,9 @@ return (_ctx, _cache) => {
       data: vue.unref(tableData_box).data,
       stripe: "",
       border: "",
+      "element-loading-text": "tableProps_box.table.loading.text",
+      "element-loading-spinner": " tableProps_box.table.loading.spinner",
+      "element-loading-background": "tableProps_box.table.loading.background",
       onCellMouseEnter: hdl.cellMouseEnter,
       onRowClick: hdl.rowClick,
       onSelectionChange: hdl.selectionChange,
@@ -42348,25 +42375,7 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["data", "onCellMouseEnter", "onRowClick", "onSelectionChange", "onSortChange"])), [
-      [_directive_loading, vue.unref(tableProps_box).table.loading.visible],
-      [
-        _directive_loading,
-        vue.unref(tableProps_box).table.loading.text,
-        void 0,
-        { text: true }
-      ],
-      [
-        _directive_loading,
-         vue.unref(tableProps_box).table.loading.spinner,
-        void 0,
-        { spinner: true }
-      ],
-      [
-        _directive_loading,
-        vue.unref(tableProps_box).table.loading.background,
-        void 0,
-        { background: true }
-      ]
+      [_directive_loading, vue.unref(tableProps_box).table.loading.visible]
     ]),
     vue.createCommentVNode(" 分页 "),
     vue.createVNode(_component_el_pagination, {
@@ -42496,8 +42505,8 @@ var script$c = {
 const props = __props;
 
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
-let tableData_box = vue.reactive(unclassified.deepClone.deepMerge(props.modelValue, ly0default$1.modelValue));
-const tableProps_box = vue.reactive(unclassified.deepClone.deepMerge(props.myProps, ly0default$1.myProps));
+let tableData_box = vue.reactive(unclassified.deepClone.deepDefaults(props.modelValue, ly0default$1.modelValue));
+const tableProps_box = vue.reactive(unclassified.deepClone.deepDefaults(props.myProps, ly0default$1.myProps));
 
 const scopeThis_box = vue.reactive(props.scopeThis);
 

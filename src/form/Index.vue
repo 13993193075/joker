@@ -40,9 +40,6 @@ const props = defineProps({
 
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
 let formData_box = reactive(props.modelValue)
-const formProps_box = reactive(beanUnclass.deepClone.deepMerge(
-    beanUnclass.deepClone.deepClone(ly0default.myProps),
-    props.myProps
-))
+const formProps_box = reactive(beanUnclass.deepClone.deepDefaults(props.myProps, ly0default.myProps))
 const scopeThis_box = reactive(props.scopeThis)
 </script>
