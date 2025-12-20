@@ -41999,12 +41999,12 @@ const hdl = {
     },
     pageSizeChange(pageSize) {
         // 重新分页
-        tableProps_box.query.pageSize = pageSize;
-        tableProps_box.query.currentPage = 1;
+        tableData_box.pageSize = pageSize;
+        tableData_box.currentPage = 1;
     },
     currentPageChange(currentPage) {
         // 修改当前页号
-        tableProps_box.query.currentPage = currentPage;
+        tableData_box.currentPage = currentPage;
     }
 };
 
@@ -42369,9 +42369,9 @@ return (_ctx, _cache) => {
     vue.createCommentVNode(" 分页 "),
     vue.createVNode(_component_el_pagination, {
       total: vue.unref(tableData_box).total,
-      "page-size": vue.unref(tableProps_box).query.pageSize,
-      "page-sizes": [vue.unref(tableProps_box).query.pageSize],
-      "current-page": vue.unref(tableProps_box).query.currentPage,
+      "page-size": vue.unref(tableData_box).pageSize,
+      "page-sizes": [vue.unref(tableData_box).pageSize],
+      "current-page": vue.unref(tableData_box).currentPage,
       style: vue.normalizeStyle(style.pagination),
       onSizeChange: hdl.pageSizeChange,
       onCurrentChange: hdl.currentPageChange,

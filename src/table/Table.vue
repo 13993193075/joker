@@ -208,9 +208,9 @@
         <!-- 分页 -->
         <el-pagination
             :total="tableData_box.total"
-            :page-size="tableProps_box.query.pageSize"
-            :page-sizes="[tableProps_box.query.pageSize]"
-            :current-page="tableProps_box.query.currentPage"
+            :page-size="tableData_box.pageSize"
+            :page-sizes="[tableData_box.pageSize]"
+            :current-page="tableData_box.currentPage"
             :style="style.pagination"
             @size-change="hdl.pageSizeChange"
             @current-change="hdl.currentPageChange"
@@ -327,12 +327,12 @@ const hdl = {
     },
     pageSizeChange(pageSize) {
         // 重新分页
-        tableProps_box.query.pageSize = pageSize
-        tableProps_box.query.currentPage = 1
+        tableData_box.pageSize = pageSize
+        tableData_box.currentPage = 1
     },
     currentPageChange(currentPage) {
         // 修改当前页号
-        tableProps_box.query.currentPage = currentPage
+        tableData_box.currentPage = currentPage
     }
 }
 

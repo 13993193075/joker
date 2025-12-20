@@ -41995,12 +41995,12 @@ const hdl = {
     },
     pageSizeChange(pageSize) {
         // 重新分页
-        tableProps_box.query.pageSize = pageSize;
-        tableProps_box.query.currentPage = 1;
+        tableData_box.pageSize = pageSize;
+        tableData_box.currentPage = 1;
     },
     currentPageChange(currentPage) {
         // 修改当前页号
-        tableProps_box.query.currentPage = currentPage;
+        tableData_box.currentPage = currentPage;
     }
 };
 
@@ -42365,9 +42365,9 @@ return (_ctx, _cache) => {
     createCommentVNode(" 分页 "),
     createVNode(_component_el_pagination, {
       total: unref(tableData_box).total,
-      "page-size": unref(tableProps_box).query.pageSize,
-      "page-sizes": [unref(tableProps_box).query.pageSize],
-      "current-page": unref(tableProps_box).query.currentPage,
+      "page-size": unref(tableData_box).pageSize,
+      "page-sizes": [unref(tableData_box).pageSize],
+      "current-page": unref(tableData_box).currentPage,
       style: normalizeStyle(style.pagination),
       onSizeChange: hdl.pageSizeChange,
       onCurrentChange: hdl.currentPageChange,
