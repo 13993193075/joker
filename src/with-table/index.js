@@ -118,11 +118,11 @@ const init = async ({scopeThis}) => {
 const popupFind = async ({scopeThis}) => {
     scopeThis.formData = scopeThis.query && scopeThis.query.formData
         ? beanUnclass.deepClone.deepClone(scopeThis.query.formData) : null
-    scopeThis.TableProps.query.sort = scopeThis.query && scopeThis.query.sort
+    scopeThis.tableData.query.sort = scopeThis.query && scopeThis.query.sort
         ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null
-    scopeThis.TableProps.query.pageSize = scopeThis.query && scopeThis.query.pageSize
+    scopeThis.tableData.query.pageSize = scopeThis.query && scopeThis.query.pageSize
         ? scopeThis.query.pageSize : ly0default.pageSize
-    scopeThis.TableProps.query.currentPage = scopeThis.query && scopeThis.query.currentPage
+    scopeThis.tableData.query.currentPage = scopeThis.query && scopeThis.query.currentPage
         ? scopeThis.query.currentPage : 1
     scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.find.formProps)
     // 弹出窗口

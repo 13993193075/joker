@@ -22751,9 +22751,9 @@ const popupFind = async _ref5 => {
     scopeThis
   } = _ref5;
   scopeThis.formData = scopeThis.query && scopeThis.query.formData ? unclassified.deepClone.deepClone(scopeThis.query.formData) : null;
-  scopeThis.TableProps.query.sort = scopeThis.query && scopeThis.query.sort ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null;
-  scopeThis.TableProps.query.pageSize = scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize;
-  scopeThis.TableProps.query.currentPage = scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1;
+  scopeThis.tableData.query.sort = scopeThis.query && scopeThis.query.sort ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null;
+  scopeThis.tableData.query.pageSize = scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize;
+  scopeThis.tableData.query.currentPage = scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1;
   scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.find.formProps);
   // 弹出窗口
   scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
