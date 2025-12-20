@@ -22642,6 +22642,7 @@ const refresh = async _ref => {
     scopeThis,
     message
   } = _ref;
+  scopeThis.tableProps.table.loading.visible = true;
   const result = await ly0request$1.storpro({
     storproName: scopeThis.storpro.refresh,
     data: {
@@ -22651,6 +22652,7 @@ const refresh = async _ref => {
       page: scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1
     }
   });
+  scopeThis.tableProps.table.loading.visible = false;
   if (result.code === 0) {
     unclassified.deepClone.deepMerge(scopeThis.tableData, {
       data: result.data,
@@ -42349,19 +42351,19 @@ return (_ctx, _cache) => {
       [_directive_loading, vue.unref(tableProps_box).table.loading.visible],
       [
         _directive_loading,
-        vue.unref(tableProps_box).table.loading.visible ? vue.unref(tableProps_box).table.loading.text : '',
+        vue.unref(tableProps_box).table.loading.text,
         void 0,
         { text: true }
       ],
       [
         _directive_loading,
-        vue.unref(tableProps_box).table.loading.visible ? vue.unref(tableProps_box).table.loading.spinner : '',
+         vue.unref(tableProps_box).table.loading.spinner,
         void 0,
         { spinner: true }
       ],
       [
         _directive_loading,
-        vue.unref(tableProps_box).table.loading.visible ? vue.unref(tableProps_box).table.loading.background : '',
+        vue.unref(tableProps_box).table.loading.background,
         void 0,
         { background: true }
       ]
@@ -42459,17 +42461,19 @@ var ly0default$1 = {
       excel: {
         fileName: "table-to-excel.xlsx" // 另存excel文件名}
       }
-    },
-    query: {
-      // 查询体
-      sort: {
-        label: "",
-        order: ""
-      },
-      pageSize: 10,
-      currentPage: 1
     }
-  }};
+  },
+  modelValue: {
+    data: [],
+    total: 0,
+    sort: {
+      label: "",
+      order: ""
+    },
+    pageSize: 10,
+    currentPage: 1
+  }
+};
 
 var script$c = {
   __name: 'Index',
@@ -42492,7 +42496,13 @@ var script$c = {
 const props = __props;
 
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
-let tableData_box = vue.reactive(props.modelValue);
+let tableData_box = vue.reactive(unclassified.deepClone.deepMerge(props.modelValue, {
+    data: props.modelValue.data ?? ly0default$1.modelValue.data,
+    total: props.modelValue.total ?? ly0default$1.modelValue.total,
+    sort: props.modelValue.sort ?? ly0default$1.modelValue.sort,
+    pageSize: props.modelValue.pageSize ?? ly0default$1.modelValue.pageSize,
+    currentPage: props.modelValue.currentPage ?? ly0default$1.modelValue.currentPage,
+}));
 const tableProps_box = vue.reactive(unclassified.deepClone.deepMerge(
     unclassified.deepClone.deepClone(ly0default$1.myProps),
     props.myProps

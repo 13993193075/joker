@@ -57,6 +57,7 @@ const ly0default = {
 
 // 数据刷新
 const refresh = async ({scopeThis, message}) => {
+    scopeThis.tableProps.table.loading.visible = true
     const result = await ly0request.storpro({
         storproName: scopeThis.storpro.refresh,
         data: {
@@ -66,6 +67,7 @@ const refresh = async ({scopeThis, message}) => {
             page: scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1,
         }
     })
+    scopeThis.tableProps.table.loading.visible = false
     if(result.code === 0){
         beanUnclass.deepClone.deepMerge(scopeThis.tableData, {
             data: result.data,

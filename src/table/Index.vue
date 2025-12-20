@@ -39,7 +39,13 @@ const props = defineProps({
 })
 
 // 顶层组件的props属性需做响应性包装，页面和js可以使用相同的命名
-let tableData_box = reactive(props.modelValue)
+let tableData_box = reactive(beanUnclass.deepClone.deepMerge(props.modelValue, {
+    data: props.modelValue.data ?? ly0default.modelValue.data,
+    total: props.modelValue.total ?? ly0default.modelValue.total,
+    sort: props.modelValue.sort ?? ly0default.modelValue.sort,
+    pageSize: props.modelValue.pageSize ?? ly0default.modelValue.pageSize,
+    currentPage: props.modelValue.currentPage ?? ly0default.modelValue.currentPage,
+}))
 const tableProps_box = reactive(beanUnclass.deepClone.deepMerge(
     beanUnclass.deepClone.deepClone(ly0default.myProps),
     props.myProps

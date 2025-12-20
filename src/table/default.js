@@ -59,18 +59,16 @@ export default {
             excel: {
                 fileName: "table-to-excel.xlsx" // 另存excel文件名}
             }
-        },
-        query: { // 查询体
-            sort: {
-                label: "",
-                order: ""
-            },
-            pageSize: 10,
-            currentPage: 1,
         }
     },
     modelValue: {
         data: [],
-        total: 0
+        total: 0,
+        sort: {
+            label: "",
+            order: ""
+        },
+        pageSize: 10,
+        currentPage: 1,
     }
 }
