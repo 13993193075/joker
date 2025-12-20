@@ -169,12 +169,12 @@ const popupDoc = async ({scopeThis, formData}) => {
 const submitFind = async ({scopeThis}) => {
     scopeThis.query.formData = scopeThis.formData
         ? beanUnclass.deepClone.deepClone(scopeThis.formData) : null
-    scopeThis.query.sort = scopeThis.tableProps.query && scopeThis.tableProps.query.sort
-        ? JSON.parse(JSON.stringify(scopeThis.tableProps.query.sort)) : null
-    scopeThis.query.pageSize = scopeThis.tableProps.query && scopeThis.tableProps.query.pageSize
-        ? scopeThis.tableProps.query.pageSize : ly0default.pageSize
-    scopeThis.query.currentPage = scopeThis.tableProps.query && scopeThis.tableProps.query.currentPage
-        ? scopeThis.tableProps.query.currentPage : 1
+    scopeThis.query.sort = scopeThis.tableData.query && scopeThis.tableData.query.sort
+        ? JSON.parse(JSON.stringify(scopeThis.tableData.query.sort)) : null
+    scopeThis.query.pageSize = scopeThis.tableData.query && scopeThis.tableData.query.pageSize
+        ? scopeThis.tableData.query.pageSize : ly0default.pageSize
+    scopeThis.query.currentPage = scopeThis.tableData.query && scopeThis.tableData.query.currentPage
+        ? scopeThis.tableData.query.currentPage : 1
     const result = await refresh({scopeThis})
     if(result.code === 0){
         // 关闭表单窗口

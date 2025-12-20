@@ -22808,9 +22808,9 @@ const submitFind = async _ref9 => {
     scopeThis
   } = _ref9;
   scopeThis.query.formData = scopeThis.formData ? unclassified.deepClone.deepClone(scopeThis.formData) : null;
-  scopeThis.query.sort = scopeThis.tableProps.query && scopeThis.tableProps.query.sort ? JSON.parse(JSON.stringify(scopeThis.tableProps.query.sort)) : null;
-  scopeThis.query.pageSize = scopeThis.tableProps.query && scopeThis.tableProps.query.pageSize ? scopeThis.tableProps.query.pageSize : ly0default$4.pageSize;
-  scopeThis.query.currentPage = scopeThis.tableProps.query && scopeThis.tableProps.query.currentPage ? scopeThis.tableProps.query.currentPage : 1;
+  scopeThis.query.sort = scopeThis.tableData.query && scopeThis.tableData.query.sort ? JSON.parse(JSON.stringify(scopeThis.tableData.query.sort)) : null;
+  scopeThis.query.pageSize = scopeThis.tableData.query && scopeThis.tableData.query.pageSize ? scopeThis.tableData.query.pageSize : ly0default$4.pageSize;
+  scopeThis.query.currentPage = scopeThis.tableData.query && scopeThis.tableData.query.currentPage ? scopeThis.tableData.query.currentPage : 1;
   const result = await refresh({
     scopeThis
   });
@@ -42475,12 +42475,15 @@ var ly0default$1 = {
   modelValue: {
     data: [],
     total: 0,
-    sort: {
-      label: "",
-      order: ""
-    },
-    pageSize: 10,
-    currentPage: 1
+    query: {
+      formData: null,
+      sort: {
+        label: "",
+        order: ""
+      },
+      pageSize: 10,
+      currentPage: 1
+    }
   }
 };
 
