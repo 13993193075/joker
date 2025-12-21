@@ -22719,7 +22719,7 @@ const reload = async _ref2 => {
   let {
     scopeThis
   } = _ref2;
-  unclassified.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit);
+  unclassified.deepClone.replaceObject(scopeThis.query.formData, scopeThis.queryInit);
   const result = await refresh({
     scopeThis
   });
@@ -22766,9 +22766,9 @@ const popupFind = async _ref5 => {
     scopeThis
   } = _ref5;
   unclassified.deepClone.replaceObject(scopeThis.formData, scopeThis.query.formData);
-  scopeThis.tableData.sort = scopeThis.query && scopeThis.query.sort ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null;
-  scopeThis.tableData.pageSize = scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize;
-  scopeThis.tableData.currentPage = scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1;
+  scopeThis.tableData.sort = JSON.parse(JSON.stringify(scopeThis.query.sort));
+  scopeThis.tableData.pageSize = scopeThis.query.pageSize;
+  scopeThis.tableData.currentPage = scopeThis.query.currentPage;
   unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.find.formProps);
   // 弹出窗口
   unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
@@ -22823,9 +22823,9 @@ const submitFind = async _ref9 => {
     scopeThis
   } = _ref9;
   unclassified.deepClone.replaceObject(scopeThis.query.formData, scopeThis.formData);
-  scopeThis.query.sort = !!scopeThis.tableData.sort ? JSON.parse(JSON.stringify(scopeThis.tableData.sort)) : null;
-  scopeThis.query.pageSize = !!scopeThis.tableData.pageSize ? scopeThis.tableData.pageSize : ly0default$4.pageSize;
-  scopeThis.query.currentPage = !!scopeThis.tableData.currentPage ? scopeThis.tableData.currentPage : ly0default$4.currentPage;
+  scopeThis.query.sort = JSON.parse(JSON.stringify(scopeThis.tableData.sort));
+  scopeThis.query.pageSize = scopeThis.tableData.pageSize;
+  scopeThis.query.currentPage = scopeThis.tableData.currentPage;
   const result = await refresh({
     scopeThis
   });

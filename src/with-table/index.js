@@ -86,7 +86,7 @@ const refresh = async ({scopeThis, message}) => {
 
 // 数据重载
 const reload = async ({scopeThis}) => {
-    beanUnclass.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit)
+    beanUnclass.deepClone.replaceObject(scopeThis.query.formData, scopeThis.queryInit)
     const result = await refresh({scopeThis})
     ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误')
 }
@@ -116,12 +116,9 @@ const init = async ({scopeThis}) => {
 // 弹出 - 查询
 const popupFind = async ({scopeThis}) => {
     beanUnclass.deepClone.replaceObject(scopeThis.formData, scopeThis.query.formData)
-    scopeThis.tableData.sort = scopeThis.query && scopeThis.query.sort
-        ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null
-    scopeThis.tableData.pageSize = scopeThis.query && scopeThis.query.pageSize
-        ? scopeThis.query.pageSize : ly0default.pageSize
-    scopeThis.tableData.currentPage = scopeThis.query && scopeThis.query.currentPage
-        ? scopeThis.query.currentPage : 1
+    scopeThis.tableData.sort = JSON.parse(JSON.stringify(scopeThis.query.sort))
+    scopeThis.tableData.pageSize = scopeThis.query.pageSize
+    scopeThis.tableData.currentPage = scopeThis.query.currentPage
     beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.find.formProps)
     // 弹出窗口
     beanUnclass.deepClone.deepMerge(
@@ -166,12 +163,9 @@ const popupDoc = async ({scopeThis, formData}) => {
 // 提交 - 查询
 const submitFind = async ({scopeThis}) => {
     beanUnclass.deepClone.replaceObject(scopeThis.query.formData, scopeThis.formData)
-    scopeThis.query.sort = !!scopeThis.tableData.sort
-        ? JSON.parse(JSON.stringify(scopeThis.tableData.sort)) : null
-    scopeThis.query.pageSize = !!scopeThis.tableData.pageSize
-        ? scopeThis.tableData.pageSize : ly0default.pageSize
-    scopeThis.query.currentPage = !!scopeThis.tableData.currentPage
-        ? scopeThis.tableData.currentPage : ly0default.currentPage
+    scopeThis.query.sort = JSON.parse(JSON.stringify(scopeThis.tableData.sort))
+    scopeThis.query.pageSize = scopeThis.tableData.pageSize
+    scopeThis.query.currentPage = scopeThis.tableData.currentPage
     const result = await refresh({scopeThis})
     if(result.code === 0){
         // 关闭表单窗口
