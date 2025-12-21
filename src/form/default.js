@@ -15,11 +15,7 @@ export default {
         },
         cols: [],
         submit: {
-            switch: false, // true - 提交模式, false - 组件模式
-            watch: false, // 提交监听
-            async handle({formData, scopeThis}){}, // 异步用户句柄
-            url: '', // 后台提交 - URL地址
-            storpro: '', // 后台提交 - 存储过程
+            switch: true, // true - 提交模式, false - 组件模式
         },
         para: {
             inputWidth: '200px',

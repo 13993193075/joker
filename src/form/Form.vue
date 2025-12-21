@@ -79,7 +79,6 @@ import {reactive} from "vue";
 import compLabelBox from './LabelBox.vue'
 import compInputBox from './InputBox.vue'
 import styleModule from './style.js'
-import ly0request from '../request/index.js'
 
 const props = defineProps({
     modelValue: {
@@ -114,40 +113,10 @@ const hdl = {
     async submit(){
         if(formProps_box.submit.handle){
             // 执行用户句柄
-            const result = await formProps_box.submit.handle({
+            await formProps_box.submit.handle({
                 formData: formData_box,
                 scopeThis: scopeThis_box
             })
-            if(result.code !== 0){
-                return
-            }
-        }
-        
-        // 后台提交 - URL地址
-        if(formProps_box.submit.url){
-            const result = await ly0request.ly0.ly0request({
-                url: formProps_box.submit.url,
-                data: formData_box
-            })
-            if(result.code !== 0){
-                return
-            }
-        }
-        
-        // 后台提交 - 存储过程
-        if(formProps_box.submit.storpro){
-            const result = await ly0request.ly0.storpro({
-                storproName: formProps_box.submit.storpro,
-                data: formData_box
-            })
-            if(result.code !== 0){
-                return
-            }
-        }
-        
-        if(formProps_box.popup){
-            // 关闭表单窗口
-            formProps_box.popup.visible = false
         }
     }
 }

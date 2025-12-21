@@ -22637,17 +22637,32 @@ function deepDefaults(target, source) {
     }
     return target;
 }
+
+// 替换对象中的内容，不改变指针
+function replaceObject(target, source) {
+    // 清空 target 的所有自身属性（包括不可枚举和 Symbol）
+    Reflect.ownKeys(target).forEach(key => delete target[key]);
+
+    if(!!source){
+        // 将 source 的属性复制过去
+        Object.assign(target, source);
+    }
+
+    return target;
+}
 var deepClone = {
     deepClone: deepClone$1,
     deepCloneAndMap,
     typeOfValue,
+    isObject,
     isJsonString,
     flattenTreeValues,
     arrayToTree,
     getLeafValue,
     getNodeValue,
     deepMerge,
-    deepDefaults
+    deepDefaults,
+    replaceObject
 };
 
 var unclassified = {
@@ -22700,7 +22715,7 @@ const reload = async _ref2 => {
   let {
     scopeThis
   } = _ref2;
-  scopeThis.query = scopeThis.queryInit ? unclassified.deepClone.deepClone(scopeThis.queryInit) : null;
+  unclassified.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit);
   const result = await refresh({
     scopeThis
   });
@@ -22746,13 +22761,13 @@ const popupFind = async _ref5 => {
   let {
     scopeThis
   } = _ref5;
-  scopeThis.formData = scopeThis.query && scopeThis.query.formData ? unclassified.deepClone.deepClone(scopeThis.query.formData) : null;
-  scopeThis.tableData.query.sort = scopeThis.query && scopeThis.query.sort ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null;
-  scopeThis.tableData.query.pageSize = scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize;
-  scopeThis.tableData.query.currentPage = scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1;
-  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.find.formProps);
+  unclassified.deepClone.replaceObject(scopeThis.formData, scopeThis.query.formData);
+  scopeThis.tableData.sort = scopeThis.query && scopeThis.query.sort ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null;
+  scopeThis.tableData.pageSize = scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default$4.pageSize;
+  scopeThis.tableData.currentPage = scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1;
+  unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.find.formProps);
   // 弹出窗口
-  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+  unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
     visible: true
   });
 };
@@ -22762,10 +22777,10 @@ const popupInsertOne = async _ref6 => {
   let {
     scopeThis
   } = _ref6;
-  scopeThis.formData = unclassified.deepClone.deepClone(scopeThis.insertOne.formData);
-  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.insertOne.formProps);
+  unclassified.deepClone.replaceObject(scopeThis.formData, scopeThis.insertOne.formData);
+  unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.insertOne.formProps);
   // 弹出窗口
-  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+  unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
     visible: true
   });
 };
@@ -22776,10 +22791,10 @@ const popupUpdateOne = async _ref7 => {
     scopeThis,
     formData
   } = _ref7;
-  scopeThis.formData = unclassified.deepClone.deepClone(formData); // 继承行记录的值
-  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.UpdateOne.formProps);
+  unclassified.deepClone.replaceObject(scopeThis.formData, formData); // 继承行记录的值
+  unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.UpdateOne.formProps);
   // 弹出窗口
-  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+  unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
     visible: true
   });
 };
@@ -22790,10 +22805,10 @@ const popupDoc = async _ref8 => {
     scopeThis,
     formData
   } = _ref8;
-  scopeThis.formData = unclassified.deepClone.deepClone(formData); // 继承行记录的值
-  scopeThis.formProps = unclassified.deepClone.deepClone(scopeThis.doc.formProps);
+  unclassified.deepClone.replaceObject(scopeThis.formData, formData); // 继承行记录的值
+  unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.doc.formProps);
   // 弹出窗口
-  scopeThis.formProps.popup = unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
+  unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
     visible: true
   });
 };
@@ -22803,10 +22818,10 @@ const submitFind = async _ref9 => {
   let {
     scopeThis
   } = _ref9;
-  scopeThis.query.formData = scopeThis.formData ? unclassified.deepClone.deepClone(scopeThis.formData) : null;
-  scopeThis.query.sort = scopeThis.tableData.query && scopeThis.tableData.query.sort ? JSON.parse(JSON.stringify(scopeThis.tableData.query.sort)) : null;
-  scopeThis.query.pageSize = scopeThis.tableData.query && scopeThis.tableData.query.pageSize ? scopeThis.tableData.query.pageSize : ly0default$4.pageSize;
-  scopeThis.query.currentPage = scopeThis.tableData.query && scopeThis.tableData.query.currentPage ? scopeThis.tableData.query.currentPage : 1;
+  unclassified.deepClone.replaceObject(scopeThis.query.formData, scopeThis.formData);
+  scopeThis.query.sort = !!scopeThis.tableData.sort ? JSON.parse(JSON.stringify(scopeThis.tableData.sort)) : null;
+  scopeThis.query.pageSize = !!scopeThis.tableData.pageSize ? scopeThis.tableData.pageSize : ly0default$4.pageSize;
+  scopeThis.query.currentPage = !!scopeThis.tableData.currentPage ? scopeThis.tableData.currentPage : ly0default$4.currentPage;
   const result = await refresh({
     scopeThis
   });
@@ -22950,20 +22965,7 @@ var ly0default$3 = {
     },
     cols: [],
     submit: {
-      switch: false,
-      // true - 提交模式, false - 组件模式
-      watch: false,
-      // 提交监听
-      async handle(_ref) {
-        let {
-          formData,
-          scopeThis
-        } = _ref;
-      },
-      // 异步用户句柄
-      url: '',
-      // 后台提交 - URL地址
-      storpro: '' // 后台提交 - 存储过程
+      switch: true // true - 提交模式, false - 组件模式
     },
     para: {
       inputWidth: '200px',
@@ -24168,40 +24170,10 @@ const hdl = {
     async submit(){
         if(formProps_box.submit.handle){
             // 执行用户句柄
-            const result = await formProps_box.submit.handle({
+            await formProps_box.submit.handle({
                 formData: formData_box,
                 scopeThis: scopeThis_box
             });
-            if(result.code !== 0){
-                return
-            }
-        }
-        
-        // 后台提交 - URL地址
-        if(formProps_box.submit.url){
-            const result = await request.ly0.ly0request({
-                url: formProps_box.submit.url,
-                data: formData_box
-            });
-            if(result.code !== 0){
-                return
-            }
-        }
-        
-        // 后台提交 - 存储过程
-        if(formProps_box.submit.storpro){
-            const result = await request.ly0.storpro({
-                storproName: formProps_box.submit.storpro,
-                data: formData_box
-            });
-            if(result.code !== 0){
-                return
-            }
-        }
-        
-        if(formProps_box.popup){
-            // 关闭表单窗口
-            formProps_box.popup.visible = false;
         }
     }
 };
@@ -42471,15 +42443,12 @@ var ly0default$1 = {
   modelValue: {
     data: [],
     total: 0,
-    query: {
-      formData: null,
-      sort: {
-        label: "",
-        order: ""
-      },
-      pageSize: 10,
-      currentPage: 1
-    }
+    sort: {
+      label: "",
+      order: ""
+    },
+    pageSize: 10,
+    currentPage: 1
   }
 };
 

@@ -86,8 +86,7 @@ const refresh = async ({scopeThis, message}) => {
 
 // 数据重载
 const reload = async ({scopeThis}) => {
-    scopeThis.query = scopeThis.queryInit
-        ? beanUnclass.deepClone.deepClone(scopeThis.queryInit) : null
+    beanUnclass.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit)
     const result = await refresh({scopeThis})
     ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误')
 }
@@ -116,17 +115,16 @@ const init = async ({scopeThis}) => {
 
 // 弹出 - 查询
 const popupFind = async ({scopeThis}) => {
-    scopeThis.formData = scopeThis.query && scopeThis.query.formData
-        ? beanUnclass.deepClone.deepClone(scopeThis.query.formData) : null
-    scopeThis.tableData.query.sort = scopeThis.query && scopeThis.query.sort
+    beanUnclass.deepClone.replaceObject(scopeThis.formData, scopeThis.query.formData)
+    scopeThis.tableData.sort = scopeThis.query && scopeThis.query.sort
         ? JSON.parse(JSON.stringify(scopeThis.query.sort)) : null
-    scopeThis.tableData.query.pageSize = scopeThis.query && scopeThis.query.pageSize
+    scopeThis.tableData.pageSize = scopeThis.query && scopeThis.query.pageSize
         ? scopeThis.query.pageSize : ly0default.pageSize
-    scopeThis.tableData.query.currentPage = scopeThis.query && scopeThis.query.currentPage
+    scopeThis.tableData.currentPage = scopeThis.query && scopeThis.query.currentPage
         ? scopeThis.query.currentPage : 1
-    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.find.formProps)
+    beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.find.formProps)
     // 弹出窗口
-    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+    beanUnclass.deepClone.deepMerge(
         scopeThis.formProps.popup,
         {visible: true}
     )
@@ -134,10 +132,10 @@ const popupFind = async ({scopeThis}) => {
 
 // 弹出 - 新增一条记录
 const popupInsertOne = async ({scopeThis}) => {
-    scopeThis.formData = beanUnclass.deepClone.deepClone(scopeThis.insertOne.formData)
-    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.insertOne.formProps)
+    beanUnclass.deepClone.replaceObject(scopeThis.formData, scopeThis.insertOne.formData)
+    beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.insertOne.formProps)
     // 弹出窗口
-    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+    beanUnclass.deepClone.deepMerge(
         scopeThis.formProps.popup,
         {visible: true}
     )
@@ -145,10 +143,10 @@ const popupInsertOne = async ({scopeThis}) => {
 
 // 弹出 - 修改一条记录
 const popupUpdateOne = async ({scopeThis, formData}) => {
-    scopeThis.formData = beanUnclass.deepClone.deepClone(formData) // 继承行记录的值
-    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.UpdateOne.formProps)
+    beanUnclass.deepClone.replaceObject(scopeThis.formData, formData) // 继承行记录的值
+    beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.UpdateOne.formProps)
     // 弹出窗口
-    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+    beanUnclass.deepClone.deepMerge(
         scopeThis.formProps.popup,
         {visible: true}
     )
@@ -156,10 +154,10 @@ const popupUpdateOne = async ({scopeThis, formData}) => {
 
 // 弹出 - 详细信息
 const popupDoc = async ({scopeThis, formData}) => {
-    scopeThis.formData = beanUnclass.deepClone.deepClone(formData) // 继承行记录的值
-    scopeThis.formProps = beanUnclass.deepClone.deepClone(scopeThis.doc.formProps)
+    beanUnclass.deepClone.replaceObject(scopeThis.formData, formData) // 继承行记录的值
+    beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.doc.formProps)
     // 弹出窗口
-    scopeThis.formProps.popup = beanUnclass.deepClone.deepMerge(
+    beanUnclass.deepClone.deepMerge(
         scopeThis.formProps.popup,
         {visible: true}
     )
@@ -167,14 +165,13 @@ const popupDoc = async ({scopeThis, formData}) => {
 
 // 提交 - 查询
 const submitFind = async ({scopeThis}) => {
-    scopeThis.query.formData = scopeThis.formData
-        ? beanUnclass.deepClone.deepClone(scopeThis.formData) : null
-    scopeThis.query.sort = scopeThis.tableData.query && scopeThis.tableData.query.sort
-        ? JSON.parse(JSON.stringify(scopeThis.tableData.query.sort)) : null
-    scopeThis.query.pageSize = scopeThis.tableData.query && scopeThis.tableData.query.pageSize
-        ? scopeThis.tableData.query.pageSize : ly0default.pageSize
-    scopeThis.query.currentPage = scopeThis.tableData.query && scopeThis.tableData.query.currentPage
-        ? scopeThis.tableData.query.currentPage : 1
+    beanUnclass.deepClone.replaceObject(scopeThis.query.formData, scopeThis.formData)
+    scopeThis.query.sort = !!scopeThis.tableData.sort
+        ? JSON.parse(JSON.stringify(scopeThis.tableData.sort)) : null
+    scopeThis.query.pageSize = !!scopeThis.tableData.pageSize
+        ? scopeThis.tableData.pageSize : ly0default.pageSize
+    scopeThis.query.currentPage = !!scopeThis.tableData.currentPage
+        ? scopeThis.tableData.currentPage : ly0default.currentPage
     const result = await refresh({scopeThis})
     if(result.code === 0){
         // 关闭表单窗口

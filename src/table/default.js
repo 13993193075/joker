@@ -64,14 +64,11 @@ export default {
     modelValue: {
         data: [],
         total: 0,
-        query: {
-            formData: null,
-            sort: {
-                label: "",
-                order: ""
-            },
-            pageSize: 10,
-            currentPage: 1,
+        sort: {
+            label: "",
+            order: ""
         },
+        pageSize: 10,
+        currentPage: 1,
     }
 }
