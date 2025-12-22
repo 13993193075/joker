@@ -22953,79 +22953,6 @@ var withTable = {
   submitDeleteOne
 };
 
-// 默认值
-
-var ly0default$3 = {
-  myProps: {
-    popup: {
-      visible: false,
-      title: '',
-      width: '800px',
-      top: '15vh'
-    },
-    menu: {
-      mode: 'horizontal',
-      menu: []
-    },
-    cols: [],
-    submit: {
-      switch: true // true - 提交模式, false - 组件模式
-    },
-    para: {
-      inputWidth: '200px',
-      placeholder: {
-        input: '请输入',
-        select: '请选择',
-        datetime: '请选择时间',
-        date: '请选择日期'
-      },
-      image: {
-        width: '400px',
-        height: '300px'
-      },
-      thumb: {
-        width: '40px',
-        height: '30px'
-      },
-      video: {
-        width: '300px',
-        height: '200px'
-      },
-      upload: {
-        uploadUrl: ly0request$1.domain + ly0request$1.upload,
-        uploadUrl_image: ly0request$1.domain + ly0request$1.upload_image,
-        uploadUrl_carplate: ly0request$1.domain + ly0request$1.upload_carplate
-      },
-      richtext: {
-        editorWidth: '500px',
-        // 富文本编辑器宽度
-        size: 200 // 可上传的图片大小，单位为KB, 1M = 1024KB
-      },
-      download: {
-        // 行内下载
-        fileName: 'new-file',
-        // 下载文件名
-        downloadLabel: '点击这里下载',
-        // 下载标签
-        downloadLabelNoSrc: '没有可供下载的资源' // 下载标签
-      },
-      ly0d7thumb: {
-        thumb: {
-          fieldName: 'thumb',
-          width: '100px',
-          height: '100px'
-        },
-        name: {
-          fieldName: 'name'
-        },
-        number: {
-          fieldName: 'number'
-        }
-      }
-    }
-  }
-};
-
 function box$1(item) {
   let result = {
     'text-align': 'right',
@@ -23072,14 +22999,14 @@ function box(item) {
 }
 
 // inputType: "text"
-function text(item, formProps) {
+function text(item) {
   return {
     'white-space': 'pre-line',
     // 保留换行符
     'border-left': '#ababab solid 1px',
     'border-top': '#ababab solid 1px',
     'padding-left': '10px',
-    width: item.inputWidth ? item.inputWidth : formProps.para.inputWidth
+    height: '40px'
   };
 }
 
@@ -23093,11 +23020,8 @@ function text0(item) {
 }
 
 // inputType: "input", "select", "date-picker"
-function input(item, formProps) {
-  return {
-    width: item.inputWidth ? item.inputWidth : formProps.para.inputWidth,
-    height: '40px'
-  };
+function input(item) {
+  return item.style || '';
 }
 
 // inputType: "input-number"
@@ -23164,39 +23088,30 @@ function button_group(item, groupItem, buttonItem) {
 
 // inputType: "image"
 function image(item, formProps) {
-  return {
-    width: item.imageWidth ? item.imageWidth : formProps.para.image.width,
-    height: item.imageHeight ? item.imageHeight : formProps.para.image.height
-  };
+  return item.style || '';
 }
 
 // inputType: "images"
-function images(item, formProps) {
+function images(item) {
   return {
     itemBox: {
       display: 'inline-block',
       margin: '10px'
     },
-    itemThumb: {
-      width: item.imageWidth ? item.imageWidth : formProps.para.thumb.width,
-      height: item.imageHeight ? item.imageHeight : formProps.para.thumb.height
-    }
+    itemThumb: item.style || ''
   };
 }
 
 // inputType: "richtext"
-function richtext(item, formProps) {
-  return {
-    // 富文本编辑器宽度
-    width: item.editorWidth ? item.editorWidth : formProps.para.richtext.editorWidth
-  };
+function richtext(item) {
+  return item.style || '';
 }
 
 // inputType: "video"
-function video(item, formProps) {
+function video(item) {
   return {
-    width: item.videoWidth ? item.videoWidth : formProps.para.video.width,
-    height: item.videoHeight ? item.videoHeight : formProps.para.video.height
+    width: item.width || '',
+    height: item.height || ''
   };
 }
 
@@ -23660,7 +23575,7 @@ return (_ctx, _cache) => {
       (vue.unref(propsItem_box).inputType === 'text')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 0,
-            style: vue.normalizeStyle(style.text(vue.unref(propsItem_box), vue.unref(formProps_box)))
+            style: vue.normalizeStyle(style.text(vue.unref(propsItem_box)))
           }, vue.toDisplayString(vue.unref(formData_box)[vue.unref(propsItem_box).fieldName] ? vue.unref(formData_box)[vue.unref(propsItem_box).fieldName] : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (vue.unref(propsItem_box).inputType === 'text0')
@@ -23672,13 +23587,13 @@ return (_ctx, _cache) => {
       (!vue.unref(propsItem_box).inputType)
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 2,
-            style: vue.normalizeStyle(style.text(vue.unref(propsItem_box), vue.unref(formProps_box)))
+            style: vue.normalizeStyle(style.text(vue.unref(propsItem_box)))
           }, vue.toDisplayString(vue.unref(formData_box)[vue.unref(propsItem_box).fieldName] ? vue.unref(formData_box)[vue.unref(propsItem_box).fieldName] : ' '), 5 /* TEXT, STYLE */))
         : vue.createCommentVNode("v-if", true),
       (vue.unref(propsItem_box).inputType === 'expression')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 3,
-            style: vue.normalizeStyle(style.text(vue.unref(propsItem_box), vue.unref(formProps_box)))
+            style: vue.normalizeStyle(style.text(vue.unref(propsItem_box)))
           }, vue.toDisplayString(vue.unref(propsItem_box).hdlExpression && vue.unref(propsItem_box).hdlExpression({formData: vue.unref(formData_box), scopeThis: __props.scopeThis})
                 ? vue.unref(propsItem_box).hdlExpression({formData: vue.unref(formData_box), scopeThis: vue.unref(scopeThis_box)})
                 : ' '), 5 /* TEXT, STYLE */))
@@ -23704,7 +23619,7 @@ return (_ctx, _cache) => {
             modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
             "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((vue.unref(formData_box)[vue.unref(propsItem_box).fieldName]) = $event)),
             placeholder: input.placeholder,
-            style: vue.normalizeStyle(style.input(vue.unref(propsItem_box), vue.unref(formProps_box))),
+            style: vue.normalizeStyle(style.input(vue.unref(propsItem_box))),
             onInput: input.hdlCannotInput,
             "show-password": input.showPassword
           }, null, 8 /* PROPS */, ["modelValue", "placeholder", "style", "onInput", "show-password"]))
@@ -23712,12 +23627,11 @@ return (_ctx, _cache) => {
       (vue.unref(propsItem_box).inputType === 'select')
         ? (vue.openBlock(), vue.createBlock(_component_el_select, {
             key: 7,
-            class: "deep-input",
             modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
             "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((vue.unref(formData_box)[vue.unref(propsItem_box).fieldName]) = $event)),
             placeholder: select.placeholder,
             filterable: "",
-            style: vue.normalizeStyle(style.input(vue.unref(propsItem_box), vue.unref(formProps_box))),
+            style: vue.normalizeStyle(style.input(vue.unref(propsItem_box))),
             onChange: select.hdlChange
           }, {
             default: vue.withCtx(() => [
@@ -23735,13 +23649,12 @@ return (_ctx, _cache) => {
       (vue.unref(propsItem_box).inputType === 'date-picker')
         ? (vue.openBlock(), vue.createBlock(_component_el_date_picker, {
             key: 8,
-            class: "deep-input",
             modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
             "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((vue.unref(formData_box)[vue.unref(propsItem_box).fieldName]) = $event)),
             type: vue.unref(propsItem_box).type ? vue.unref(propsItem_box).type : 'datetime',
             placeholder: datePicker.placeholder,
             format: datePicker.format,
-            style: vue.normalizeStyle(style.input(vue.unref(propsItem_box), vue.unref(formProps_box))),
+            style: vue.normalizeStyle(style.input(vue.unref(propsItem_box))),
             onChange: datePicker.hdlChange
           }, null, 8 /* PROPS */, ["modelValue", "type", "placeholder", "format", "style", "onChange"]))
         : vue.createCommentVNode("v-if", true),
@@ -23846,7 +23759,7 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_3$7, [
             vue.createElementVNode("div", null, [
               vue.createVNode(_component_el_image, {
-                style: vue.normalizeStyle(style.image(vue.unref(propsItem_box), vue.unref(formProps_box))),
+                style: vue.normalizeStyle(style.image(vue.unref(propsItem_box))),
                 src: image.getSrc[0],
                 "preview-src-list": image.getSrc,
                 "preview-teleported": true,
@@ -23876,11 +23789,11 @@ return (_ctx, _cache) => {
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(formData_box)[vue.unref(propsItem_box).fieldName], (itemImages, indexImages) => {
               return (vue.openBlock(), vue.createElementBlock("div", {
                 key: indexImages,
-                style: vue.normalizeStyle(style.images(vue.unref(propsItem_box), vue.unref(formProps_box)).itemBox)
+                style: vue.normalizeStyle(style.images(vue.unref(propsItem_box)).itemBox)
               }, [
                 vue.createElementVNode("div", null, [
                   vue.createVNode(_component_el_image, {
-                    style: vue.normalizeStyle(style.images(vue.unref(propsItem_box), vue.unref(formProps_box)).itemThumb),
+                    style: vue.normalizeStyle(style.images(vue.unref(propsItem_box)).itemThumb),
                     src: images.getSrc(itemImages, indexImages),
                     "preview-src-list": images.show
                   }, null, 8 /* PROPS */, ["style", "src", "preview-src-list"])
@@ -23907,7 +23820,7 @@ return (_ctx, _cache) => {
       (vue.unref(propsItem_box).inputType === 'richtext')
         ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 15,
-            style: vue.normalizeStyle(style.richtext(vue.unref(propsItem_box), vue.unref(formProps_box)))
+            style: vue.normalizeStyle(style.richtext(vue.unref(propsItem_box)))
           }, [
             vue.createVNode(_component_ly0Richtext, {
               modelValue: vue.unref(formData_box)[vue.unref(propsItem_box).fieldName],
@@ -23929,8 +23842,8 @@ return (_ctx, _cache) => {
         ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9, [
             vue.createElementVNode("div", null, [
               vue.createElementVNode("video", {
-                width: style.video(vue.unref(propsItem_box), vue.unref(formProps_box)).width,
-                height: style.video(vue.unref(propsItem_box), vue.unref(formProps_box)).height,
+                width: style.video(vue.unref(propsItem_box)).width,
+                height: style.video(vue.unref(propsItem_box)).height,
                 controls: "",
                 poster: video.poster
               }, [
@@ -24105,15 +24018,15 @@ return (_ctx, _cache) => {
               "onUpdate:modelValue": _cache[18] || (_cache[18] = $event => (vue.isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
               myProps: {
                     thumb: {
-                        fieldName: vue.unref(propsItem_box).thumb.fieldName || vue.unref(formProps_box).para.ly0d7thumb.thumb.fieldName,
-                        width: vue.unref(propsItem_box).thumb.width || vue.unref(formProps_box).para.ly0d7thumb.thumb.width,
-                        height: vue.unref(propsItem_box).thumb.height || vue.unref(formProps_box).para.ly0d7thumb.thumb.height
+                        fieldName: vue.unref(propsItem_box).thumb.fieldName,
+                        width: vue.unref(propsItem_box).thumb.width || '',
+                        height: vue.unref(propsItem_box).thumb.height || ''
                     },
                     name: {
-                        fieldName: vue.unref(propsItem_box).name.fieldName || vue.unref(formProps_box).para.ly0d7thumb.name.fieldName,
+                        fieldName: vue.unref(propsItem_box).name.fieldName,
                     },
                     number: {
-                        fieldName: vue.unref(propsItem_box).number.fieldName || vue.unref(formProps_box).para.ly0d7thumb.number.fieldName,
+                        fieldName: vue.unref(propsItem_box).number.fieldName,
                     },
                     readOnly: vue.unref(propsItem_box).readOnly
                 }
@@ -24127,7 +24040,6 @@ return (_ctx, _cache) => {
 
 };
 
-script$j.__scopeId = "data-v-a94fa4ba";
 script$j.__file = "src/form/InputBox.vue";
 
 const _hoisted_1$e = { key: 0 };
@@ -24347,6 +24259,48 @@ return (_ctx, _cache) => {
 };
 
 script$i.__file = "src/form/Form.vue";
+
+// 默认值
+
+var ly0default$3 = {
+  myProps: {
+    popup: {
+      visible: false,
+      title: '',
+      width: '800px',
+      top: '15vh'
+    },
+    menu: {
+      mode: 'horizontal',
+      menu: []
+    },
+    cols: [],
+    submit: {
+      switch: true // true - 提交模式, false - 组件模式
+    },
+    para: {
+      placeholder: {
+        input: '请输入',
+        select: '请选择',
+        datetime: '请选择时间',
+        date: '请选择日期'
+      },
+      upload: {
+        uploadUrl: ly0request$1.domain + ly0request$1.upload,
+        uploadUrl_image: ly0request$1.domain + ly0request$1.upload_image,
+        uploadUrl_carplate: ly0request$1.domain + ly0request$1.upload_carplate
+      },
+      download: {
+        // 行内下载
+        fileName: 'new-file',
+        // 下载文件名
+        downloadLabel: '点击这里下载',
+        // 下载标签
+        downloadLabelNoSrc: '没有可供下载的资源' // 下载标签
+      }
+    }
+  }
+};
 
 var script$h = {
   __name: 'index',

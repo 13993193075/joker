@@ -18,10 +18,10 @@
 <style lang="scss" scoped></style>
 
 <script setup>
-import ly0default from './default.js'
 import {reactive} from "vue";
-import compForm from './Form.vue'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
+import compForm from './Form.vue'
+import ly0default from './default.js'
 
 const props = defineProps({
     modelValue: {

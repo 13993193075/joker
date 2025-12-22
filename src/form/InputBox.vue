@@ -2,16 +2,16 @@
     <!-- input-box -->
     <div :style="style.box(propsItem_box)">
         <!-- 只读 -->
-        <div v-if="propsItem_box.inputType === 'text'" :style="style.text(propsItem_box, formProps_box)">
+        <div v-if="propsItem_box.inputType === 'text'" :style="style.text(propsItem_box)">
             {{ formData_box[propsItem_box.fieldName] ? formData_box[propsItem_box.fieldName] : '&nbsp;' }}
         </div>
         <div v-if="propsItem_box.inputType === 'text0'" :style="style.text0(propsItem_box)">
             {{ formData_box[propsItem_box.fieldName] ? formData_box[propsItem_box.fieldName] : '&nbsp;' }}
         </div>
-        <div v-if="!propsItem_box.inputType" :style="style.text(propsItem_box, formProps_box)">
+        <div v-if="!propsItem_box.inputType" :style="style.text(propsItem_box)">
             {{ formData_box[propsItem_box.fieldName] ? formData_box[propsItem_box.fieldName] : '&nbsp;' }}
         </div>
-        <div v-if="propsItem_box.inputType === 'expression'" :style="style.text(propsItem_box, formProps_box)">
+        <div v-if="propsItem_box.inputType === 'expression'" :style="style.text(propsItem_box)">
             {{
                 propsItem_box.hdlExpression && propsItem_box.hdlExpression({formData: formData_box, scopeThis})
                 ? propsItem_box.hdlExpression({formData: formData_box, scopeThis: scopeThis_box})
@@ -32,17 +32,16 @@
             v-if="propsItem_box.inputType === 'input'"
             v-model="formData_box[propsItem_box.fieldName]"
             :placeholder="input.placeholder"
-            :style="style.input(propsItem_box, formProps_box)"
+            :style="style.input(propsItem_box)"
             @input="input.hdlCannotInput"
             :show-password="input.showPassword"
         ></el-input>
         <el-select
             v-if="propsItem_box.inputType === 'select'"
-            class="deep-input"
             v-model="formData_box[propsItem_box.fieldName]"
             :placeholder="select.placeholder"
             filterable
-            :style="style.input(propsItem_box, formProps_box)"
+            :style="style.input(propsItem_box)"
             @change="select.hdlChange"
         >
             <el-option
@@ -54,12 +53,11 @@
         </el-select>
         <el-date-picker
             v-if="propsItem_box.inputType === 'date-picker'"
-            class="deep-input"
             v-model="formData_box[propsItem_box.fieldName]"
             :type="propsItem_box.type ? propsItem_box.type : 'datetime'"
             :placeholder="datePicker.placeholder"
             :format="datePicker.format"
-            :style="style.input(propsItem_box, formProps_box)"
+            :style="style.input(propsItem_box)"
             @change="datePicker.hdlChange"
         ></el-date-picker>
         <el-input-number
@@ -128,7 +126,7 @@
         <div v-if="propsItem_box.inputType === 'image'">
             <div>
                 <el-image
-                    :style="style.image(propsItem_box, formProps_box)"
+                    :style="style.image(propsItem_box)"
                     :src="image.getSrc[0]"
                     :preview-src-list="image.getSrc"
                     :preview-teleported="true"
@@ -149,11 +147,11 @@
             <div
                 v-for="(itemImages, indexImages) in formData_box[propsItem_box.fieldName]"
                 :key="indexImages"
-                :style="style.images(propsItem_box, formProps_box).itemBox"
+                :style="style.images(propsItem_box).itemBox"
             >
                 <div>
                     <el-image
-                        :style="style.images(propsItem_box, formProps_box).itemThumb"
+                        :style="style.images(propsItem_box).itemThumb"
                         :src="images.getSrc(itemImages, indexImages)"
                         :preview-src-list="images.show"
                     ></el-image>
@@ -170,7 +168,7 @@
             </div>
         </div>
         <!-- 富文本 -->
-        <div v-if="propsItem_box.inputType === 'richtext'" :style="style.richtext(propsItem_box, formProps_box)">
+        <div v-if="propsItem_box.inputType === 'richtext'" :style="style.richtext(propsItem_box)">
             <ly0Richtext v-model="formData_box[propsItem_box.fieldName]" :myProps="richtextProps"></ly0Richtext>
         </div>
         <!-- 富文本show -->
@@ -181,8 +179,8 @@
         <div v-if="propsItem_box.inputType === 'video'">
             <div>
                 <video
-                    :width="style.video(propsItem_box, formProps_box).width"
-                    :height="style.video(propsItem_box, formProps_box).height"
+                    :width="style.video(propsItem_box).width"
+                    :height="style.video(propsItem_box).height"
                     controls
                     :poster="video.poster"
                 >
@@ -302,15 +300,15 @@
                 v-model="formData_box"
                 :myProps="{
                     thumb: {
-                        fieldName: propsItem_box.thumb.fieldName || formProps_box.para.ly0d7thumb.thumb.fieldName,
-                        width: propsItem_box.thumb.width || formProps_box.para.ly0d7thumb.thumb.width,
-                        height: propsItem_box.thumb.height || formProps_box.para.ly0d7thumb.thumb.height
+                        fieldName: propsItem_box.thumb.fieldName,
+                        width: propsItem_box.thumb.width || '',
+                        height: propsItem_box.thumb.height || ''
                     },
                     name: {
-                        fieldName: propsItem_box.name.fieldName || formProps_box.para.ly0d7thumb.name.fieldName,
+                        fieldName: propsItem_box.name.fieldName,
                     },
                     number: {
-                        fieldName: propsItem_box.number.fieldName || formProps_box.para.ly0d7thumb.number.fieldName,
+                        fieldName: propsItem_box.number.fieldName,
                     },
                     readOnly: propsItem_box.readOnly
                 }"
@@ -556,6 +554,4 @@ const style = reactive({
 })
 </script>
 
-<style scoped lang="scss">
-@use 'deep-input.scss';
-</style>
+<style scoped lang="scss"></style>
