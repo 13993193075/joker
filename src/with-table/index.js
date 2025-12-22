@@ -51,27 +51,26 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import { ly0 as ly0request } from '../request/index.js'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
-const ly0default = {
-    pageSize: 10
-}
-
 // 数据刷新
 const refresh = async ({scopeThis, message}) => {
     scopeThis.tableProps.table.loading.visible = true
     const result = await ly0request.storpro({
         storproName: scopeThis.storpro.refresh,
         data: {
-            query: scopeThis.query && scopeThis.query.formData ? scopeThis.query.formData : null,
-            sort: scopeThis.query && scopeThis.query.sort ? scopeThis.query.sort : null,
-            limit: scopeThis.query && scopeThis.query.pageSize ? scopeThis.query.pageSize : ly0default.pageSize,
-            page: scopeThis.query && scopeThis.query.currentPage ? scopeThis.query.currentPage : 1,
+            query: scopeThis.query.formData,
+            sort: scopeThis.query.sort,
+            limit: scopeThis.query.pageSize,
+            page: scopeThis.query.currentPage,
         }
     })
     scopeThis.tableProps.table.loading.visible = false
     if(result.code === 0){
         beanUnclass.deepClone.deepMerge(scopeThis.tableData, {
             data: result.data,
-            total: result.total
+            total: result.total,
+            sort: scopeThis.query.sort,
+            pageSize: scopeThis.query.pageSize,
+            currentPage: scopeThis.query.currentPage
         })
         if(!!message){
             ElMessage('数据已刷新')
@@ -192,13 +191,20 @@ const submitInsertOne = async ({scopeThis}) => {
             // 关闭表单窗口
             scopeThis.formProps.popup.visible = false
             ElMessage('新增一条记录成功')
-            scopeThis.query.currentPage = 1
-            scopeThis.tableData = {
-                data: result.dataNew,
-                total: 1
+
+            scopeThis.tableData.data = [result.dataNew]
+            scopeThis.tableData.total = 1
+            scopeThis.tableData.currentPage = 1
+            scopeThis.query.formData = {
+                _id: result.dataNew._id
             }
+            scopeThis.query.currentPage = 1
         }else{
-            ElMessage('新增一条记录失败')
+            if(result.message){
+                ElMessage(result.message)
+            }else{
+                ElMessage('新增一条记录失败')
+            }
         }
     }catch(error){
         ElMessage('已取消')
@@ -221,14 +227,13 @@ const submitUpdateOne = async ({scopeThis}) => {
             // 关闭表单窗口
             scopeThis.formProps.popup.visible = false
             ElMessage('修改一条记录成功')
-            const resultRefresh = await refresh({scopeThis})
-            if(resultRefresh.code === 0){
-                ElMessage('已刷新数据')
-            }else{
-                ElMessage('刷新错误')
-            }
+            await refresh({scopeThis})
         }else{
-            ElMessage('修改一条记录失败')
+            if(result.message){
+                ElMessage(result.message)
+            }else{
+                ElMessage('修改一条记录失败')
+            }
         }
     }catch(error){
         ElMessage('已取消')
@@ -249,14 +254,13 @@ const submitDeleteOne = async ({scopeThis, formData}) => {
         })
         if(result.code === 0){
             ElMessage('删除一条记录成功')
-            const resultRefresh = await refresh({scopeThis})
-            if(resultRefresh.code === 0){
-                ElMessage('已刷新数据')
-            }else{
-                ElMessage('刷新错误')
-            }
+            await refresh({scopeThis})
         }else{
-            ElMessage('删除一条记录失败')
+            if(result.message){
+                ElMessage(result.message)
+            }else{
+                ElMessage('删除一条记录失败')
+            }
         }
     }catch(error){
         ElMessage('已取消')
