@@ -1,3 +1,5 @@
+import {unclassified as beanUnclass} from '@yoooloo42/bean'
+
 function box(item){
     let result = {'text-align': 'left'}
     if(item.inputBox && item.inputBox.style){
@@ -14,20 +16,26 @@ function box(item){
 
 // inputType: "text"
 function text(item){
-    return item.style || {
+    if(item.cover){
+        return item.style
+    }
+    return beanUnclass.deepClone.deepMerge({
         'white-space': 'pre-line', // 保留换行符
         'border-left': '#ababab solid 1px',
         'border-top': '#ababab solid 1px',
         'padding-left': '10px'
-    }
+    }, item.style)
 }
 
 // inputType: "text0"
 function text0(item){
-    return item.style || {
+    if(item.cover){
+        return item.style
+    }
+    return beanUnclass.deepClone.deepMerge({
         'white-space': 'pre-line', // 保留换行符
         color: 'blue'
-    }
+    }, item.style)
 }
 
 // inputType: "input", "select", "date-picker"
