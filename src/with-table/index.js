@@ -212,7 +212,7 @@ const submitInsertOne = async ({scopeThis}) => {
 }
 
 // 提交 - 修改一条记录
-const submitUpdateOne = async ({scopeThis}) => {
+const submitUpdateOne = async ({scopeThis, row}) => {
     try{
         await ElMessageBox.confirm('修改一条记录, 提交?', '提示', {
             confirmButtonText: '确认',
@@ -221,7 +221,7 @@ const submitUpdateOne = async ({scopeThis}) => {
         })
         const result = await ly0request.storpro({
             storproName: scopeThis.storpro.updateOne,
-            data: scopeThis.formData
+            data: row
         })
         if(result.code === 0){
             // 关闭表单窗口
@@ -241,7 +241,7 @@ const submitUpdateOne = async ({scopeThis}) => {
 }
 
 // 提交 - 删除一条记录
-const submitDeleteOne = async ({scopeThis, formData}) => {
+const submitDeleteOne = async ({scopeThis, row}) => {
     try{
         await ElMessageBox.confirm('删除一条记录, 提交?', '警告', {
             confirmButtonText: '确认',
@@ -250,7 +250,7 @@ const submitDeleteOne = async ({scopeThis, formData}) => {
         })
         const result = await ly0request.storpro({
             storproName: scopeThis.storpro.deleteOne,
-            data: formData // 继承行记录的值
+            data: row // 继承行记录的值
         })
         if(result.code === 0){
             ElMessage('删除一条记录成功')
