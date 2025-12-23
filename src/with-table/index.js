@@ -138,9 +138,9 @@ const popupInsertOne = async ({scopeThis}) => {
 }
 
 // 弹出 - 修改一条记录
-const popupUpdateOne = async ({scopeThis, formData}) => {
-    beanUnclass.deepClone.replaceObject(scopeThis.formData, formData) // 继承行记录的值
-    beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.UpdateOne.formProps)
+const popupUpdateOne = async ({scopeThis, row}) => {
+    beanUnclass.deepClone.replaceObject(scopeThis.formData, row) // 继承行记录的值
+    beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.updateOne.formProps)
     // 弹出窗口
     beanUnclass.deepClone.deepMerge(
         scopeThis.formProps.popup,
@@ -149,8 +149,8 @@ const popupUpdateOne = async ({scopeThis, formData}) => {
 }
 
 // 弹出 - 详细信息
-const popupDoc = async ({scopeThis, formData}) => {
-    beanUnclass.deepClone.replaceObject(scopeThis.formData, formData) // 继承行记录的值
+const popupDoc = async ({scopeThis, row}) => {
+    beanUnclass.deepClone.replaceObject(scopeThis.formData, row) // 继承行记录的值
     beanUnclass.deepClone.replaceObject(scopeThis.formProps, scopeThis.doc.formProps)
     // 弹出窗口
     beanUnclass.deepClone.deepMerge(
@@ -212,7 +212,7 @@ const submitInsertOne = async ({scopeThis}) => {
 }
 
 // 提交 - 修改一条记录
-const submitUpdateOne = async ({scopeThis, row}) => {
+const submitUpdateOne = async ({scopeThis}) => {
     try{
         await ElMessageBox.confirm('修改一条记录, 提交?', '提示', {
             confirmButtonText: '确认',
@@ -221,7 +221,7 @@ const submitUpdateOne = async ({scopeThis, row}) => {
         })
         const result = await ly0request.storpro({
             storproName: scopeThis.storpro.updateOne,
-            data: row
+            data: scopeThis.formData
         })
         if(result.code === 0){
             // 关闭表单窗口

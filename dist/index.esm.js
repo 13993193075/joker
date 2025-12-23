@@ -22789,10 +22789,10 @@ const popupInsertOne = async _ref6 => {
 const popupUpdateOne = async _ref7 => {
   let {
     scopeThis,
-    formData
+    row
   } = _ref7;
-  unclassified.deepClone.replaceObject(scopeThis.formData, formData); // 继承行记录的值
-  unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.UpdateOne.formProps);
+  unclassified.deepClone.replaceObject(scopeThis.formData, row); // 继承行记录的值
+  unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.updateOne.formProps);
   // 弹出窗口
   unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
     visible: true
@@ -22803,9 +22803,9 @@ const popupUpdateOne = async _ref7 => {
 const popupDoc = async _ref8 => {
   let {
     scopeThis,
-    formData
+    row
   } = _ref8;
-  unclassified.deepClone.replaceObject(scopeThis.formData, formData); // 继承行记录的值
+  unclassified.deepClone.replaceObject(scopeThis.formData, row); // 继承行记录的值
   unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.doc.formProps);
   // 弹出窗口
   unclassified.deepClone.deepMerge(scopeThis.formProps.popup, {
@@ -22875,8 +22875,7 @@ const submitInsertOne = async _ref0 => {
 // 提交 - 修改一条记录
 const submitUpdateOne = async _ref1 => {
   let {
-    scopeThis,
-    row
+    scopeThis
   } = _ref1;
   try {
     await ElMessageBox.confirm('修改一条记录, 提交?', '提示', {
@@ -22886,7 +22885,7 @@ const submitUpdateOne = async _ref1 => {
     });
     const result = await ly0request.storpro({
       storproName: scopeThis.storpro.updateOne,
-      data: row
+      data: scopeThis.formData
     });
     if (result.code === 0) {
       // 关闭表单窗口
@@ -23001,19 +23000,18 @@ function box(item) {
 
 // inputType: "text"
 function text(item) {
-  return {
+  return item.style || {
     'white-space': 'pre-line',
     // 保留换行符
     'border-left': '#ababab solid 1px',
     'border-top': '#ababab solid 1px',
-    'padding-left': '10px',
-    height: '40px'
+    'padding-left': '10px'
   };
 }
 
 // inputType: "text0"
 function text0(item) {
-  return {
+  return item.style || {
     'white-space': 'pre-line',
     // 保留换行符
     color: 'blue'

@@ -14,18 +14,17 @@ function box(item){
 
 // inputType: "text"
 function text(item){
-    return {
+    return item.style || {
         'white-space': 'pre-line', // 保留换行符
         'border-left': '#ababab solid 1px',
         'border-top': '#ababab solid 1px',
-        'padding-left': '10px',
-        height: '40px'
+        'padding-left': '10px'
     }
 }
 
 // inputType: "text0"
 function text0(item){
-    return {
+    return item.style || {
         'white-space': 'pre-line', // 保留换行符
         color: 'blue'
     }
