@@ -126,6 +126,7 @@ function ly0sessionLose() {
             break
         }
     }
+
     if (lose) {
         router.replace({ path: route })
     }
@@ -160,6 +161,20 @@ function ly0sessionLoseWithUsertbl(usertbl) {
     return lose
 }
 
+// 导航（路由跳转）
+function navigate({
+    code = '1', // 路由跳转类型
+    path // 路由地址
+}){
+    if(code === '0'){
+        window.location.href = path
+    }else if(code === '1'){
+        router.push(path)
+    }else{
+        router.push(path)
+    }
+}
+
 export default {
     domain: domainPara,
     upload,
@@ -173,4 +188,5 @@ export default {
     ly0sessionClear,
     ly0sessionLose,
     ly0sessionLoseWithUsertbl,
+    navigate
 }

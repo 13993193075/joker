@@ -115,6 +115,7 @@ const hdl = {
             // 执行用户句柄
             await formProps_box.submit.handle({
                 formData: formData_box,
+                formProps: formProps_box,
                 scopeThis: scopeThis_box
             })
         }

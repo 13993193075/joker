@@ -22117,6 +22117,22 @@ function ly0sessionLoseWithUsertbl(usertbl) {
   }
   return lose;
 }
+
+// 导航（路由跳转）
+function navigate(_ref4) {
+  let {
+    code = '1',
+    // 路由跳转类型
+    path // 路由地址
+  } = _ref4;
+  if (code === '0') {
+    window.location.href = path;
+  } else if (code === '1') {
+    router.push(path);
+  } else {
+    router.push(path);
+  }
+}
 var ly0request = {
   domain: domainPara,
   upload: upload$1,
@@ -22129,7 +22145,8 @@ var ly0request = {
   ly0sessionLoad,
   ly0sessionClear,
   ly0sessionLose,
-  ly0sessionLoseWithUsertbl
+  ly0sessionLoseWithUsertbl,
+  navigate
 };
 
 var request = {
@@ -23244,6 +23261,7 @@ const props = __props;
 
 // props属性包装，使得页面和js使用相同的命名
 let formData_box = props.modelValue;
+const formProps_box = props.myProps;
 const scopeThis_box = props.scopeThis;
 const propsItem_box = props.item;
 
@@ -23254,7 +23272,7 @@ const style = ref({
 
 const hdlClick = () => {
     if(propsItem_box.hdlLabelClick){
-        propsItem_box.hdlLabelClick({formData: formData_box, scopeThis: scopeThis_box});
+        propsItem_box.hdlLabelClick({formData: formData_box, formProps: formProps_box, scopeThis: scopeThis_box});
     }
 };
 
@@ -24093,6 +24111,7 @@ const hdl = {
             // 执行用户句柄
             await formProps_box.submit.handle({
                 formData: formData_box,
+                formProps: formProps_box,
                 scopeThis: scopeThis_box
             });
         }
