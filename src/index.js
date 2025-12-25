@@ -1,5 +1,6 @@
 import FileSaver from './FileSaver/index.js'
 import request from './request/index.js'
+import WeChat from './WeChat/index.js'
 import withTable from './with-table/index.js'
 
 import Form from './form/index.vue'
@@ -17,6 +18,7 @@ import ly0d7thumb from './ly0d7thumb/index.vue'
 export {
     FileSaver,
     request,
+    WeChat,
     withTable
 }
 export default {
@@ -42,5 +44,6 @@ export default {
 
     FileSaver,
     request,
+    WeChat,
     withTable
 }
