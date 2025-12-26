@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        v-if="formProps_box.popup && formProps_box.popup.visible"
+        v-if="formProps_box.popup"
         v-model="formProps_box.popup.visible"
         custom-class="code-template-dialog"
         :close-on-press-escape="true"

@@ -24392,7 +24392,7 @@ const scopeThis_box = vue.reactive(props.scopeThis);
 return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (formProps_box.popup && formProps_box.popup.visible)
+  return (formProps_box.popup)
     ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
         key: 0,
         modelValue: formProps_box.popup.visible,
@@ -42501,7 +42501,7 @@ const scopeThis_box = vue.reactive(props.scopeThis);
 return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (tableProps_box.popup.visible)
+  return (tableProps_box.popup)
     ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
         key: 0,
         modelValue: tableProps_box.popup.visible,
