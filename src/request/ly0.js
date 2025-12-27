@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { useRouter } from 'vue-router';
 const domainPara = 'http://127.0.0.1:443'
 const upload = '/ly0/upload-req/file'
 const upload_image = '/ly0/upload-req/image'
@@ -36,8 +35,8 @@ async function ly0request({
         const response = await request({domain, url, data})
 
         // session 异常
-        if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
-            console.log('session异常', response.data.sessionStatusMessage)
+        if (response.data.session && response.data.session.code !== 0) {
+            console.log('session异常', response.data.session.message)
 
             const ly0session = ly0sessionLoad()
             ly0sessionSave({
@@ -49,7 +48,10 @@ async function ly0request({
                 },
             })
             ly0sessionLose()
-            return { code: 1, message: 'session 异常' }
+
+            return { code: 1, message: 'session 异常',
+                session: response.data.session
+            }
         }
 
         return response.data
@@ -105,7 +107,7 @@ function ly0sessionClear() {
 }
 
 // session丢失
-function ly0sessionLose() {
+function ly0sessionLose({router}) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -133,7 +135,7 @@ function ly0sessionLose() {
 }
 
 // session丢失
-function ly0sessionLoseWithUsertbl(usertbl) {
+function ly0sessionLoseWithUsertbl({router, usertbl}) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''

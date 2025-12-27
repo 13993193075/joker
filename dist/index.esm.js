@@ -22000,8 +22000,8 @@ async function ly0request$1(_ref2) {
     });
 
     // session 异常
-    if (response.data.sessionStatusCode && response.data.sessionStatusCode !== 0) {
-      console.log('session异常', response.data.sessionStatusMessage);
+    if (response.data.session && response.data.session.code !== 0) {
+      console.log('session异常', response.data.session.message);
       const ly0session = ly0sessionLoad();
       ly0sessionSave({
         session: {
@@ -22011,7 +22011,8 @@ async function ly0request$1(_ref2) {
       ly0sessionLose();
       return {
         code: 1,
-        message: 'session 异常'
+        message: 'session 异常',
+        session: response.data.session
       };
     }
     return response.data;
@@ -22069,7 +22070,10 @@ function ly0sessionClear() {
 }
 
 // session丢失
-function ly0sessionLose() {
+function ly0sessionLose(_ref4) {
+  let {
+    router
+  } = _ref4;
   let ly0session = ly0sessionLoad(),
     lose = false,
     route = '';
@@ -22093,7 +22097,11 @@ function ly0sessionLose() {
 }
 
 // session丢失
-function ly0sessionLoseWithUsertbl(usertbl) {
+function ly0sessionLoseWithUsertbl(_ref5) {
+  let {
+    router,
+    usertbl
+  } = _ref5;
   let ly0session = ly0sessionLoad(),
     lose = false,
     route = '';
