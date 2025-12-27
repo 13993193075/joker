@@ -24468,7 +24468,16 @@ var ly0default$2 = {
 
 var script$g = {
   __name: 'index',
-  props: ["myProps", "scopeThis"],
+  props: {
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    }
+},
   setup(__props) {
 
 const props = __props;
@@ -24668,48 +24677,47 @@ return (_ctx, _cache) => {
                                                     ]),
                                                     _: 2 /* DYNAMIC */
                                                   }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-                                                : vue.createCommentVNode("v-if", true),
-                                              vue.createVNode(_component_el_sub_menu, {
-                                                else: "",
-                                                index: 
+                                                : (vue.openBlock(), vue.createBlock(_component_el_sub_menu, {
+                                                    key: 1,
+                                                    index: 
                                             item2.index
                                             ? item2.index
                                             : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2)
                                         
-                                              }, {
-                                                title: vue.withCtx(() => [
-                                                  vue.createTextVNode(vue.toDisplayString(item2.title), 1 /* TEXT */)
-                                                ]),
-                                                default: vue.withCtx(() => [
-                                                  (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item2.menu, (item3, index3) => {
-                                                    return (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
-                                                      key: 
+                                                  }, {
+                                                    title: vue.withCtx(() => [
+                                                      vue.createTextVNode(vue.toDisplayString(item2.title), 1 /* TEXT */)
+                                                    ]),
+                                                    default: vue.withCtx(() => [
+                                                      (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item2.menu, (item3, index3) => {
+                                                        return (vue.openBlock(), vue.createBlock(_component_el_menu_item, {
+                                                          key: 
                                                 item3.index
                                                 ? item3.index
                                                 : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
                                             ,
-                                                      index: 
+                                                          index: 
                                                     item3.index
                                                     ? item3.index
                                                     : String(index) + '-' + String(index0) + '-' + String(index1) + '-' + String(index2) + '-' + String(index3)
                                                 ,
-                                                      disabled: 
+                                                          disabled: 
                                                     'disabled' in item3
                                                     ? item3.disabled
                                                     : 'hdlDisabled' in item3
                                                         ? item3.hdlDisabled(scopeThis_box, item3, index3)
                                                         : false
                                                 
-                                                    }, {
-                                                      default: vue.withCtx(() => [
-                                                        vue.createTextVNode(vue.toDisplayString(item3.title), 1 /* TEXT */)
-                                                      ]),
-                                                      _: 2 /* DYNAMIC */
-                                                    }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
-                                                  }), 128 /* KEYED_FRAGMENT */))
-                                                ]),
-                                                _: 2 /* DYNAMIC */
-                                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"])
+                                                        }, {
+                                                          default: vue.withCtx(() => [
+                                                            vue.createTextVNode(vue.toDisplayString(item3.title), 1 /* TEXT */)
+                                                          ]),
+                                                          _: 2 /* DYNAMIC */
+                                                        }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index", "disabled"]))
+                                                      }), 128 /* KEYED_FRAGMENT */))
+                                                    ]),
+                                                    _: 2 /* DYNAMIC */
+                                                  }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["index"]))
                                             ], 64 /* STABLE_FRAGMENT */))
                                           }), 128 /* KEYED_FRAGMENT */))
                                         ]),

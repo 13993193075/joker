@@ -110,7 +110,7 @@
                                         "
                                     >{{ item2.title }}</el-menu-item>
                                     <el-sub-menu
-                                        else
+                                        v-else
                                         :index="
                                             item2.index
                                             ? item2.index
@@ -160,7 +160,16 @@ import {reactive} from "vue";
 import ly0default from './default.js'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
-const props = defineProps(["myProps", "scopeThis"]);
+const props = defineProps({
+    myProps: {
+        type: Object,
+        default: () => ({})
+    },
+    scopeThis: {
+        type: Object,
+        default: () => ({})
+    }
+})
 const myProps_box = reactive(beanUnclass.deepClone.deepDefaults(props.myProps, ly0default.myProps))
 const scopeThis_box = reactive(props.scopeThis)
 
