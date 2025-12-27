@@ -1,8 +1,8 @@
 <template>
     <el-dialog
-        v-if="tableProps_box.popup"
+        v-if="tableProps_box.popup.switch"
         v-model="tableProps_box.popup.visible"
-        :custom-class="'code-template-dialog'"
+        custom-class="code-template-dialog"
         :close-on-press-escape="true"
         append-to-body
         :title="tableProps_box.popup.title"

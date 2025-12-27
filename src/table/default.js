@@ -3,6 +3,7 @@
 export default {
     myProps : {
         popup: {
+            switch: false,
             visible: false,
             title: '',
             width: "1024px",

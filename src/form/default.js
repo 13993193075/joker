@@ -4,6 +4,7 @@ import {ly0 as ly0resquest} from '../request/index.js'
 export default {
     myProps: {
         popup: {
+            switch: false,
             visible: false,
             title: '',
             width: '800px',

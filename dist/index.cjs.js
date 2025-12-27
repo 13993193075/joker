@@ -24349,6 +24349,7 @@ script$i.__file = "src/form/Form.vue";
 var ly0default$3 = {
   myProps: {
     popup: {
+      switch: false,
       visible: false,
       title: '',
       width: '800px',
@@ -24414,7 +24415,7 @@ const scopeThis_box = vue.reactive(props.scopeThis);
 return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (formProps_box.popup)
+  return (formProps_box.popup.switch)
     ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
         key: 0,
         modelValue: formProps_box.popup.visible,
@@ -42414,6 +42415,7 @@ script$d.__file = "src/table/Table.vue";
 var ly0default$1 = {
   myProps: {
     popup: {
+      switch: false,
       visible: false,
       title: '',
       width: "1024px",
@@ -42523,12 +42525,12 @@ const scopeThis_box = vue.reactive(props.scopeThis);
 return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (tableProps_box.popup)
+  return (tableProps_box.popup.switch)
     ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
         key: 0,
         modelValue: tableProps_box.popup.visible,
         "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((tableProps_box.popup.visible) = $event)),
-        "custom-class": 'code-template-dialog',
+        "custom-class": "code-template-dialog",
         "close-on-press-escape": true,
         "append-to-body": "",
         title: tableProps_box.popup.title,
