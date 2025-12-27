@@ -21990,7 +21990,9 @@ async function ly0request$1(_ref2) {
     domain = '',
     url = '',
     // 路由
-    data = null // 请求数据
+    data = null,
+    // 请求数据
+    router = null // 页面路由，用于处理session异常
   } = _ref2;
   try {
     const response = await request$1({
@@ -22008,7 +22010,7 @@ async function ly0request$1(_ref2) {
           usertbl: ly0session && ly0session.session && ly0session.session.usertbl ? ly0session.session.usertbl : 'ly0d0user'
         }
       });
-      ly0sessionLose();
+      ly0sessionLose(router);
       return {
         code: 1,
         message: 'session 异常',
@@ -22025,11 +22027,13 @@ async function ly0request$1(_ref2) {
 // 存储过程
 async function storpro(_ref3) {
   let {
-    domain = domainPara,
     storproName = '',
     // 存储过程名称
     data = null,
-    noSession = false // 不进行session验证
+    domain = domainPara,
+    noSession = false,
+    // 不进行session验证
+    router = null // 页面路由，用于处理session异常
   } = _ref3;
   try {
     if (!storproName) {
@@ -22039,13 +22043,14 @@ async function storpro(_ref3) {
       domain,
       url: '/ly0/storpro/exec',
       data: {
-        noSession,
-        ly0session: ly0sessionLoad(),
         storproBody: {
           storproName,
           data: data !== null && data !== void 0 ? data : null
-        }
-      }
+        },
+        noSession,
+        ly0session: ly0sessionLoad()
+      },
+      router
     });
     return result;
   } catch (err) {
@@ -22072,7 +22077,7 @@ function ly0sessionClear() {
 // session丢失
 function ly0sessionLose(_ref4) {
   let {
-    router
+    router = null
   } = _ref4;
   let ly0session = ly0sessionLoad(),
     lose = false,
@@ -22088,7 +22093,7 @@ function ly0sessionLose(_ref4) {
         break;
     }
   }
-  if (lose) {
+  if (router && lose) {
     router.replace({
       path: route
     });
@@ -22099,7 +22104,7 @@ function ly0sessionLose(_ref4) {
 // session丢失
 function ly0sessionLoseWithUsertbl(_ref5) {
   let {
-    router,
+    router = null,
     usertbl
   } = _ref5;
   let ly0session = ly0sessionLoad(),
@@ -22116,7 +22121,7 @@ function ly0sessionLoseWithUsertbl(_ref5) {
         break;
     }
   }
-  if (lose) {
+  if (router && lose) {
     router.replace({
       path: route
     });

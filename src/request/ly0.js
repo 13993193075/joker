@@ -30,6 +30,7 @@ async function ly0request({
     domain = '',
     url = '', // 路由
     data = null, // 请求数据
+    router = null // 页面路由，用于处理session异常
 }){
     try {
         const response = await request({domain, url, data})
@@ -47,7 +48,7 @@ async function ly0request({
                         : 'ly0d0user',
                 },
             })
-            ly0sessionLose()
+            ly0sessionLose(router)
 
             return { code: 1, message: 'session 异常',
                 session: response.data.session
@@ -63,10 +64,11 @@ async function ly0request({
 
 // 存储过程
 async function storpro({
-    domain = domainPara,
     storproName = '', // 存储过程名称
     data = null,
+    domain = domainPara,
     noSession = false, // 不进行session验证
+    router = null // 页面路由，用于处理session异常
 }) {
     try {
         if(!storproName){
@@ -76,13 +78,14 @@ async function storpro({
             domain,
             url: '/ly0/storpro/exec',
             data: {
-                noSession,
-                ly0session: ly0sessionLoad(),
                 storproBody: {
                     storproName,
                     data: data ?? null,
                 },
+                noSession,
+                ly0session: ly0sessionLoad(),
             },
+            router
         })
         return result
     } catch (err) {
@@ -107,7 +110,7 @@ function ly0sessionClear() {
 }
 
 // session丢失
-function ly0sessionLose({router}) {
+function ly0sessionLose({router = null}) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -128,14 +131,14 @@ function ly0sessionLose({router}) {
         }
     }
 
-    if (lose) {
+    if (router && lose) {
         router.replace({ path: route })
     }
     return lose
 }
 
 // session丢失
-function ly0sessionLoseWithUsertbl({router, usertbl}) {
+function ly0sessionLoseWithUsertbl({router = null, usertbl}) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -156,7 +159,7 @@ function ly0sessionLoseWithUsertbl({router, usertbl}) {
                 break
         }
     }
-    if (lose) {
+    if (router && lose) {
         router.replace({ path: route })
     }
     return lose
