@@ -1,5 +1,5 @@
-import { inject, ref, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, unref, reactive, computed, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, isRef, defineComponent, h, onMounted, onBeforeUnmount, watch, nextTick as nextTick$1, resolveDirective, withDirectives } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
+import { ref, createElementBlock, openBlock, Fragment, createCommentVNode, createElementVNode, normalizeStyle, toDisplayString, unref, reactive, computed, resolveComponent, createBlock, withCtx, renderList, createTextVNode, createVNode, isRef, defineComponent, h, onMounted, onBeforeUnmount, watch, nextTick as nextTick$1, resolveDirective, withDirectives } from 'vue';
 
 function _mergeNamespaces(n, m) {
 	m.forEach(function (e) {
@@ -21957,69 +21957,6 @@ const {
   mergeConfig
 } = axios;
 
-/*!
- * vue-router v4.6.4
- * (c) 2025 Eduardo San Martin Morote
- * @license MIT
- */
-Symbol(process.env.NODE_ENV !== "production" ? "navigation failure" : "");
-
-//#endregion
-//#region src/injectionSymbols.ts
-/**
-* RouteRecord being rendered by the closest ancestor Router View. Used for
-* `onBeforeRouteUpdate` and `onBeforeRouteLeave`. rvlm stands for Router View
-* Location Matched
-*
-* @internal
-*/
-Symbol(process.env.NODE_ENV !== "production" ? "router view location matched" : "");
-/**
-* Allows overriding the router view depth to control which component in
-* `matched` is rendered. rvd stands for Router View Depth
-*
-* @internal
-*/
-Symbol(process.env.NODE_ENV !== "production" ? "router view depth" : "");
-/**
-* Allows overriding the router instance returned by `useRouter` in tests. r
-* stands for router
-*
-* @internal
-*/
-const routerKey = Symbol(process.env.NODE_ENV !== "production" ? "router" : "");
-/**
-* Allows overriding the current route returned by `useRoute` in tests. rl
-* stands for route location
-*
-* @internal
-*/
-Symbol(process.env.NODE_ENV !== "production" ? "route location" : "");
-/**
-* Allows overriding the current route used by router-view. Internally this is
-* used when the `route` prop is passed.
-*
-* @internal
-*/
-Symbol(process.env.NODE_ENV !== "production" ? "router view location" : "");
-
-/*!
- * vue-router v4.6.4
- * (c) 2025 Eduardo San Martin Morote
- * @license MIT
- */
-
-//#endregion
-//#region src/useApi.ts
-/**
-* Returns the router instance. Equivalent to using `$router` inside
-* templates.
-*/
-function useRouter() {
-	return inject(routerKey);
-}
-
-const router = useRouter();
 const domainPara = 'http://127.0.0.1:443';
 const upload$1 = '/ly0/upload-req/file';
 const upload_image = '/ly0/upload-req/image';
@@ -22178,22 +22115,6 @@ function ly0sessionLoseWithUsertbl(usertbl) {
   }
   return lose;
 }
-
-// 导航（路由跳转）
-function navigate(_ref4) {
-  let {
-    code = '1',
-    // 路由跳转类型
-    path // 路由地址
-  } = _ref4;
-  if (code === '0') {
-    window.location.href = path;
-  } else if (code === '1') {
-    router.push(path);
-  } else {
-    router.push(path);
-  }
-}
 var ly0request = {
   domain: domainPara,
   upload: upload$1,
@@ -22206,8 +22127,7 @@ var ly0request = {
   ly0sessionLoad,
   ly0sessionClear,
   ly0sessionLose,
-  ly0sessionLoseWithUsertbl,
-  navigate
+  ly0sessionLoseWithUsertbl
 };
 
 var request = {
