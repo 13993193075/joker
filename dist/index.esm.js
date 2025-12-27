@@ -24468,10 +24468,7 @@ var script$g = {
   setup(__props) {
 
 const props = __props;
-const myProps_box = reactive(unclassified.deepClone.deepMerge(
-    unclassified.deepClone.deepClone(ly0default$2.myProps),
-    props.myProps
-));
+const myProps_box = reactive(unclassified.deepClone.deepDefaults(props.myProps, ly0default$2.myProps));
 const scopeThis_box = reactive(props.scopeThis);
 
 const handleRun = (
