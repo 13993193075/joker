@@ -21965,7 +21965,7 @@ const upload_carplate = '/ly0/upload-req/carplate';
 // 后端请求
 async function request$1(_ref) {
   let {
-    domain = '',
+    domain = domainPara,
     url = '',
     // 路由
     data = null // 请求数据
@@ -21987,12 +21987,12 @@ async function request$1(_ref) {
 // ly0后端请求，需要处理session异常
 async function ly0request$1(_ref2) {
   let {
-    domain = '',
+    domain = domainPara,
     url = '',
     // 路由
     data = null,
     // 请求数据
-    router = null // 页面路由，用于处理session异常
+    routerInstance = null // 路由实例
   } = _ref2;
   try {
     const response = await request$1({
@@ -22010,7 +22010,9 @@ async function ly0request$1(_ref2) {
           usertbl: ly0session && ly0session.session && ly0session.session.usertbl ? ly0session.session.usertbl : 'ly0d0user'
         }
       });
-      ly0sessionLose(router);
+      ly0sessionLose({
+        routerInstance
+      });
       return {
         code: 1,
         message: 'session 异常',
@@ -22033,7 +22035,7 @@ async function storpro(_ref3) {
     domain = domainPara,
     noSession = false,
     // 不进行session验证
-    router = null // 页面路由，用于处理session异常
+    routerInstance = null // 路由实例
   } = _ref3;
   try {
     if (!storproName) {
@@ -22050,7 +22052,7 @@ async function storpro(_ref3) {
         noSession,
         ly0session: ly0sessionLoad()
       },
-      router
+      routerInstance
     });
     return result;
   } catch (err) {
@@ -22077,7 +22079,7 @@ function ly0sessionClear() {
 // session丢失
 function ly0sessionLose(_ref4) {
   let {
-    router = null
+    routerInstance
   } = _ref4;
   let ly0session = ly0sessionLoad(),
     lose = false,
@@ -22093,10 +22095,10 @@ function ly0sessionLose(_ref4) {
         break;
     }
   }
-  if (router && lose) {
-    router.replace({
-      path: route
-    });
+  if (lose) {
+    if (routerInstance) {
+      routerInstance.replace(route);
+    }
   }
   return lose;
 }
@@ -22104,7 +22106,7 @@ function ly0sessionLose(_ref4) {
 // session丢失
 function ly0sessionLoseWithUsertbl(_ref5) {
   let {
-    router = null,
+    routerInstance,
     usertbl
   } = _ref5;
   let ly0session = ly0sessionLoad(),
@@ -22121,12 +22123,37 @@ function ly0sessionLoseWithUsertbl(_ref5) {
         break;
     }
   }
-  if (router && lose) {
-    router.replace({
-      path: route
-    });
+  if (lose) {
+    if (routerInstance) {
+      routerInstance.replace(route);
+    }
   }
   return lose;
+}
+
+// 导航
+function navigate(_ref6) {
+  let {
+    code = '1',
+    // 页面跳转类型
+    path,
+    // 跳转路径
+    routerInstance // 路由实例
+  } = _ref6;
+  if (code === '0') {
+    // 页面跳转
+    window.location.href = path;
+  } else if (code === '1') {
+    // VUE路由
+    if (routerInstance) {
+      routerInstance.push(path);
+    }
+  } else {
+    // 默认VUE路由
+    if (routerInstance) {
+      routerInstance.push(path);
+    }
+  }
 }
 var ly0request = {
   domain: domainPara,
@@ -22140,7 +22167,8 @@ var ly0request = {
   ly0sessionLoad,
   ly0sessionClear,
   ly0sessionLose,
-  ly0sessionLoseWithUsertbl
+  ly0sessionLoseWithUsertbl,
+  navigate
 };
 
 var request = {

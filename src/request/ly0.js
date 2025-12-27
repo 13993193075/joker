@@ -6,7 +6,7 @@ const upload_carplate = '/ly0/upload-req/carplate'
 
 // 后端请求
 async function request({
-    domain = '',
+    domain = domainPara,
     url = '', // 路由
     data = null // 请求数据
 }) {
@@ -27,10 +27,10 @@ async function request({
 
 // ly0后端请求，需要处理session异常
 async function ly0request({
-    domain = '',
+    domain = domainPara,
     url = '', // 路由
     data = null, // 请求数据
-    router = null // 页面路由，用于处理session异常
+    routerInstance = null // 路由实例
 }){
     try {
         const response = await request({domain, url, data})
@@ -48,8 +48,7 @@ async function ly0request({
                         : 'ly0d0user',
                 },
             })
-            ly0sessionLose(router)
-
+            ly0sessionLose({routerInstance})
             return { code: 1, message: 'session 异常',
                 session: response.data.session
             }
@@ -68,7 +67,7 @@ async function storpro({
     data = null,
     domain = domainPara,
     noSession = false, // 不进行session验证
-    router = null // 页面路由，用于处理session异常
+    routerInstance = null // 路由实例
 }) {
     try {
         if(!storproName){
@@ -85,7 +84,7 @@ async function storpro({
                 noSession,
                 ly0session: ly0sessionLoad(),
             },
-            router
+            routerInstance
         })
         return result
     } catch (err) {
@@ -110,7 +109,7 @@ function ly0sessionClear() {
 }
 
 // session丢失
-function ly0sessionLose({router = null}) {
+function ly0sessionLose({routerInstance}) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -131,14 +130,16 @@ function ly0sessionLose({router = null}) {
         }
     }
 
-    if (router && lose) {
-        router.replace({ path: route })
+    if (lose) {
+        if(routerInstance){
+            routerInstance.replace(route)
+        }
     }
     return lose
 }
 
 // session丢失
-function ly0sessionLoseWithUsertbl({router = null, usertbl}) {
+function ly0sessionLoseWithUsertbl({routerInstance, usertbl}) {
     let ly0session = ly0sessionLoad(),
         lose = false,
         route = ''
@@ -159,10 +160,31 @@ function ly0sessionLoseWithUsertbl({router = null, usertbl}) {
                 break
         }
     }
-    if (router && lose) {
-        router.replace({ path: route })
+    if (lose) {
+        if(routerInstance){
+            routerInstance.replace(route)
+        }
     }
     return lose
+}
+
+// 导航
+function navigate({
+    code = '1', // 页面跳转类型
+    path, // 跳转路径
+    routerInstance // 路由实例
+}){
+    if(code === '0'){ // 页面跳转
+        window.location.href = path
+    }else if(code === '1'){ // VUE路由
+        if(routerInstance){
+            routerInstance.push(path)
+        }
+    }else{ // 默认VUE路由
+        if(routerInstance){
+            routerInstance.push(path)
+        }
+    }
 }
 
 export default {
@@ -177,5 +199,6 @@ export default {
     ly0sessionLoad,
     ly0sessionClear,
     ly0sessionLose,
-    ly0sessionLoseWithUsertbl
+    ly0sessionLoseWithUsertbl,
+    navigate
 }
