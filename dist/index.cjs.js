@@ -22800,11 +22800,36 @@ const reload = async _ref2 => {
   elementPlus.ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误');
 };
 
-// 获取页面数据附加
-const getPgData = async _ref3 => {
+// 页记录数改变
+const pageSizeChange = async _ref3 => {
   let {
+    pageSize,
     scopeThis
   } = _ref3;
+  scopeThis.query.pageSize = pageSize;
+  scopeThis.query.currentPage = 1;
+  await reload({
+    scopeThis
+  });
+};
+
+// 当前页码改变
+const currentPageChange = async _ref4 => {
+  let {
+    currentPage,
+    scopeThis
+  } = _ref4;
+  scopeThis.query.currentPage = currentPage;
+  await reload({
+    scopeThis
+  });
+};
+
+// 获取页面数据附加
+const getPgData = async _ref5 => {
+  let {
+    scopeThis
+  } = _ref5;
   const result = await ly0request$1.storpro({
     storproName: scopeThis.storpro.getPgData,
     data: scopeThis.pgData && scopeThis.pgData.query ? scopeThis.pgData.query : null
@@ -22820,10 +22845,12 @@ const getPgData = async _ref3 => {
 };
 
 // 初始化
-const init = async _ref4 => {
+const init = async _ref6 => {
   let {
     scopeThis
-  } = _ref4;
+  } = _ref6;
+  scopeThis.tableProps.table.hdlPageSizeChange = pageSizeChange;
+  scopeThis.tableProps.table.hdlCurrentPageChange = currentPageChange;
   if (scopeThis.pgData) {
     await getPgData({
       scopeThis
@@ -22835,10 +22862,10 @@ const init = async _ref4 => {
 };
 
 // 弹出 - 查询
-const popupFind = async _ref5 => {
+const popupFind = async _ref7 => {
   let {
     scopeThis
-  } = _ref5;
+  } = _ref7;
   unclassified.deepClone.replaceObject(scopeThis.formData, scopeThis.query.formData);
   scopeThis.tableData.sort = JSON.parse(JSON.stringify(scopeThis.query.sort));
   scopeThis.tableData.pageSize = scopeThis.query.pageSize;
@@ -22851,10 +22878,10 @@ const popupFind = async _ref5 => {
 };
 
 // 弹出 - 新增一条记录
-const popupInsertOne = async _ref6 => {
+const popupInsertOne = async _ref8 => {
   let {
     scopeThis
-  } = _ref6;
+  } = _ref8;
   unclassified.deepClone.replaceObject(scopeThis.formData, scopeThis.insertOne.formData);
   unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.insertOne.formProps);
   // 弹出窗口
@@ -22864,11 +22891,11 @@ const popupInsertOne = async _ref6 => {
 };
 
 // 弹出 - 修改一条记录
-const popupUpdateOne = async _ref7 => {
+const popupUpdateOne = async _ref9 => {
   let {
     scopeThis,
     row
-  } = _ref7;
+  } = _ref9;
   unclassified.deepClone.replaceObject(scopeThis.formData, row); // 继承行记录的值
   unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.updateOne.formProps);
   // 弹出窗口
@@ -22878,11 +22905,11 @@ const popupUpdateOne = async _ref7 => {
 };
 
 // 弹出 - 详细信息
-const popupDoc = async _ref8 => {
+const popupDoc = async _ref0 => {
   let {
     scopeThis,
     row
-  } = _ref8;
+  } = _ref0;
   unclassified.deepClone.replaceObject(scopeThis.formData, row); // 继承行记录的值
   unclassified.deepClone.replaceObject(scopeThis.formProps, scopeThis.doc.formProps);
   // 弹出窗口
@@ -22892,10 +22919,10 @@ const popupDoc = async _ref8 => {
 };
 
 // 提交 - 查询
-const submitFind = async _ref9 => {
+const submitFind = async _ref1 => {
   let {
     scopeThis
-  } = _ref9;
+  } = _ref1;
   unclassified.deepClone.replaceObject(scopeThis.query.formData, scopeThis.formData);
   scopeThis.query.sort = JSON.parse(JSON.stringify(scopeThis.tableData.sort));
   scopeThis.query.pageSize = scopeThis.tableData.pageSize;
@@ -22913,10 +22940,10 @@ const submitFind = async _ref9 => {
 };
 
 // 提交 - 新增一条记录
-const submitInsertOne = async _ref0 => {
+const submitInsertOne = async _ref10 => {
   let {
     scopeThis
-  } = _ref0;
+  } = _ref10;
   try {
     await elementPlus.ElMessageBox.confirm('新增一条记录, 提交?', '提示', {
       confirmButtonText: '确认',
@@ -22952,10 +22979,10 @@ const submitInsertOne = async _ref0 => {
 };
 
 // 提交 - 修改一条记录
-const submitUpdateOne = async _ref1 => {
+const submitUpdateOne = async _ref11 => {
   let {
     scopeThis
-  } = _ref1;
+  } = _ref11;
   try {
     await elementPlus.ElMessageBox.confirm('修改一条记录, 提交?', '提示', {
       confirmButtonText: '确认',
@@ -22987,11 +23014,11 @@ const submitUpdateOne = async _ref1 => {
 };
 
 // 提交 - 删除一条记录
-const submitDeleteOne = async _ref10 => {
+const submitDeleteOne = async _ref12 => {
   let {
     scopeThis,
     row
-  } = _ref10;
+  } = _ref12;
   try {
     await elementPlus.ElMessageBox.confirm('删除一条记录, 提交?', '警告', {
       confirmButtonText: '确认',
@@ -23023,6 +23050,8 @@ const submitDeleteOne = async _ref10 => {
 var withTable = {
   refresh,
   reload,
+  pageSizeChange,
+  currentPageChange,
   getPgData,
   init,
   popupFind,
@@ -41970,6 +41999,21 @@ const scopeThis_box = props.scopeThis;
 tableProps_box.table.pickCol.colsInit = unclassified.deepClone.deepClone(tableProps_box.table.cols);
 
 const hdl = {
+    async pageSizeChange(pageSize) {
+        // 页记录数改变
+        tableData_box.pageSize = pageSize;
+        tableData_box.currentPage = 1;
+        if(tableProps_box.table.hdlPageSizeChange){
+            await tableProps_box.table.hdlPageSizeChange({pageSize, scopeThis: scopeThis_box});
+        }
+    },
+    async currentPageChange(currentPage) {
+        // 当前页码改变
+        tableData_box.currentPage = currentPage;
+        if(tableProps_box.table.hdlCurrentPageChange){
+            await tableProps_box.table.hdlCurrentPageChange({currentPage, scopeThis: scopeThis_box});
+        }
+    },
     cellMouseEnter(row, column, cell, event) {
         // 当单元格hover进入时会触发该事件
         if (tableProps_box.table.hdlCellMouseEnter) {
@@ -42044,15 +42088,6 @@ const hdl = {
             fileName: src ? fileName : tableProps_box.table.colShow.download.fileName
         }
     },
-    pageSizeChange(pageSize) {
-        // 重新分页
-        tableData_box.pageSize = pageSize;
-        tableData_box.currentPage = 1;
-    },
-    currentPageChange(currentPage) {
-        // 修改当前页号
-        tableData_box.currentPage = currentPage;
-    }
 };
 
 const style = {

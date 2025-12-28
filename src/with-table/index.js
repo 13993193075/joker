@@ -91,6 +91,19 @@ const reload = async ({scopeThis}) => {
     ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误')
 }
 
+// 页记录数改变
+const pageSizeChange = async ({pageSize, scopeThis}) => {
+    scopeThis.query.pageSize = pageSize
+    scopeThis.query.currentPage = 1
+    await reload({scopeThis})
+}
+
+// 当前页码改变
+const currentPageChange = async ({currentPage, scopeThis}) => {
+    scopeThis.query.currentPage = currentPage
+    await reload({scopeThis})
+}
+
 // 获取页面数据附加
 const getPgData = async ({scopeThis}) => {
     const result = await ly0request.storpro({
@@ -107,6 +120,9 @@ const getPgData = async ({scopeThis}) => {
 
 // 初始化
 const init = async ({scopeThis}) => {
+    scopeThis.tableProps.table.hdlPageSizeChange = pageSizeChange
+    scopeThis.tableProps.table.hdlCurrentPageChange = currentPageChange
+
     if(scopeThis.pgData) {
         await getPgData({scopeThis})
     }
@@ -274,6 +290,8 @@ const submitDeleteOne = async ({scopeThis, row}) => {
 export default {
     refresh,
     reload,
+    pageSizeChange,
+    currentPageChange,
     getPgData,
     init,
     popupFind,

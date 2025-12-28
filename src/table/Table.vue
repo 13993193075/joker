@@ -251,6 +251,21 @@ const scopeThis_box = props.scopeThis
 tableProps_box.table.pickCol.colsInit = beanUnclass.deepClone.deepClone(tableProps_box.table.cols)
 
 const hdl = {
+    async pageSizeChange(pageSize) {
+        // 页记录数改变
+        tableData_box.pageSize = pageSize
+        tableData_box.currentPage = 1
+        if(tableProps_box.table.hdlPageSizeChange){
+            await tableProps_box.table.hdlPageSizeChange({pageSize, scopeThis: scopeThis_box})
+        }
+    },
+    async currentPageChange(currentPage) {
+        // 当前页码改变
+        tableData_box.currentPage = currentPage
+        if(tableProps_box.table.hdlCurrentPageChange){
+            await tableProps_box.table.hdlCurrentPageChange({currentPage, scopeThis: scopeThis_box})
+        }
+    },
     cellMouseEnter(row, column, cell, event) {
         // 当单元格hover进入时会触发该事件
         if (tableProps_box.table.hdlCellMouseEnter) {
@@ -325,15 +340,6 @@ const hdl = {
             fileName: src ? fileName : tableProps_box.table.colShow.download.fileName
         }
     },
-    pageSizeChange(pageSize) {
-        // 重新分页
-        tableData_box.pageSize = pageSize
-        tableData_box.currentPage = 1
-    },
-    currentPageChange(currentPage) {
-        // 修改当前页号
-        tableData_box.currentPage = currentPage
-    }
 }
 
 const style = {
