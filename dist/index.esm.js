@@ -22758,7 +22758,8 @@ const refresh = async _ref => {
       sort: scopeThis.query.sort,
       limit: scopeThis.query.pageSize,
       page: scopeThis.query.currentPage
-    }
+    },
+    routerInstance: scopeThis.routerInstance || null
   });
   scopeThis.tableProps.table.loading.visible = false;
   if (result.code === 0) {
@@ -22920,7 +22921,8 @@ const submitInsertOne = async _ref0 => {
     });
     const result = await ly0request.storpro({
       storproName: scopeThis.storpro.insertOne,
-      data: scopeThis.formData
+      data: scopeThis.formData,
+      routerInstance: scopeThis.routerInstance || null
     });
     if (result.code === 0) {
       // 关闭表单窗口
@@ -22958,7 +22960,8 @@ const submitUpdateOne = async _ref1 => {
     });
     const result = await ly0request.storpro({
       storproName: scopeThis.storpro.updateOne,
-      data: scopeThis.formData
+      data: scopeThis.formData,
+      routerInstance: scopeThis.routerInstance || null
     });
     if (result.code === 0) {
       // 关闭表单窗口
@@ -22993,7 +22996,9 @@ const submitDeleteOne = async _ref10 => {
     });
     const result = await ly0request.storpro({
       storproName: scopeThis.storpro.deleteOne,
-      data: row // 继承行记录的值
+      data: row,
+      // 继承行记录的值
+      routerInstance: scopeThis.routerInstance || null
     });
     if (result.code === 0) {
       ElMessage('删除一条记录成功');
