@@ -247,7 +247,10 @@
         <div v-if="propsItem_box.inputType === 'upload-avatar'">
             <ly0Upload_avatar
                 v-model="formData_box[propsItem_box.fieldName]"
-                :myProps="{uploadUrl: upload.uploadUrl_image}"
+                :myProps="{
+                    uploadUrl: upload.uploadUrl_image,
+                    avatar: propsItem_box.avatar
+                }"
             ></ly0Upload_avatar>
         </div>
         <!-- 车牌识别 -->

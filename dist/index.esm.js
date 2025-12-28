@@ -22831,7 +22831,7 @@ const getPgData = async _ref5 => {
     data: scopeThis.pgData && scopeThis.pgData.query ? scopeThis.pgData.query : null
   });
   if (result.code === 0) {
-    scopeThis.pgData = unclassified.deepClone.deepMerge(scopeThis.pgData, {
+    unclassified.deepClone.deepMerge(scopeThis.pgData, {
       data: result.data
     });
     ElMessage('已获取页面数据');
@@ -24059,7 +24059,10 @@ return (_ctx, _cache) => {
             createVNode(_component_ly0Upload_avatar, {
               modelValue: unref(formData_box)[unref(propsItem_box).fieldName],
               "onUpdate:modelValue": _cache[11] || (_cache[11] = $event => ((unref(formData_box)[unref(propsItem_box).fieldName]) = $event)),
-              myProps: {uploadUrl: upload.uploadUrl_image}
+              myProps: {
+                    uploadUrl: upload.uploadUrl_image,
+                    avatar: unref(propsItem_box).avatar
+                }
             }, null, 8 /* PROPS */, ["modelValue", "myProps"])
           ]))
         : createCommentVNode("v-if", true),
