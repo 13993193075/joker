@@ -135,8 +135,8 @@
                             <template v-if="col.show === 'image'">
                                 <el-image
                                     :style="style.cell.image({col})"
-                                    :src="scope.row[col.fieldName][0] || ''"
-                                    :preview-src-list="scope.row[col.fieldName] || ['']"
+                                    :src="hdl.getImageSrc({row: scope.row, col})"
+                                    :preview-src-list="[hdl.getImageSrc({row: scope.row, col})]"
                                     :preview-teleported="true"
                                     :hide-on-click-modal="true"
                                 ></el-image>
@@ -251,21 +251,6 @@ const scopeThis_box = props.scopeThis
 tableProps_box.table.pickCol.colsInit = beanUnclass.deepClone.deepClone(tableProps_box.table.cols)
 
 const hdl = {
-    async pageSizeChange(pageSize) {
-        // 页记录数改变
-        tableData_box.pageSize = pageSize
-        tableData_box.currentPage = 1
-        if(tableProps_box.table.hdlPageSizeChange){
-            await tableProps_box.table.hdlPageSizeChange({pageSize, scopeThis: scopeThis_box})
-        }
-    },
-    async currentPageChange(currentPage) {
-        // 当前页码改变
-        tableData_box.currentPage = currentPage
-        if(tableProps_box.table.hdlCurrentPageChange){
-            await tableProps_box.table.hdlCurrentPageChange({currentPage, scopeThis: scopeThis_box})
-        }
-    },
     cellMouseEnter(row, column, cell, event) {
         // 当单元格hover进入时会触发该事件
         if (tableProps_box.table.hdlCellMouseEnter) {
@@ -279,43 +264,18 @@ const hdl = {
             tableProps_box.table.cellTooltip = []
         }
     },
-    rowClick(row, column, event) {
-        // 当某一行被点击时会触发该事件
-        if (tableProps_box.table.hdlRowClick) {
-            tableProps_box.table.hdlRowClick({scopeThis: scopeThis_box, inherit: {
-                row,
-                column,
-                event
-            }})
-        }
-    },
-    selectionChange(selection) {
-        // 当选择项发生变化时会触发该事件
-        if (tableProps_box.table.hdlSelectionChange) {
-            tableProps_box.table.hdlSelectionChange({scopeThis: scopeThis_box, inherit: {
-                selection
-            }})
-        }
-    },
-    sortChange(para) {
-        // 当表格的排序条件发生变化的时候会触发该事件，一般用于远程排序
-        // para.column
-        // para.prop
-        // para.order
-
-        if (tableProps_box.table.hdlSortChange) {
-            tableProps_box.table.hdlSortChange({scopeThis: scopeThis_box, inherit: {
-                column: para.column,
-                prop: para.prop,
-                order: para.order,
-            }})
-        }
-    },
     cellMouseover({col, row}) {
         if (col.hdlMouseover) {
             col.hdlMouseover({scopeThis: scopeThis_box, row, col})
         } else {
             tableProps_box.table.cellTooltip = []
+        }
+    },
+    async currentPageChange(currentPage) {
+        // 当前页码改变
+        tableData_box.currentPage = currentPage
+        if(tableProps_box.table.hdlCurrentPageChange){
+            await tableProps_box.table.hdlCurrentPageChange({currentPage, scopeThis: scopeThis_box})
         }
     },
     download({row, col}) {
@@ -338,6 +298,53 @@ const hdl = {
             src: src || '',
             label: src ? label : tableProps_box.table.colShow.download.downloadLabelNoSrc,
             fileName: src ? fileName : tableProps_box.table.colShow.download.fileName
+        }
+    },
+    getImageSrc({row, col}){
+        if(row[col.fieldName] && row[col.fieldName].length > 0){
+            return row[col.fieldName][0] || ''
+        }else{
+            return ''
+        }
+    },
+    async pageSizeChange(pageSize) {
+        // 页记录数改变
+        tableData_box.pageSize = pageSize
+        tableData_box.currentPage = 1
+        if(tableProps_box.table.hdlPageSizeChange){
+            await tableProps_box.table.hdlPageSizeChange({pageSize, scopeThis: scopeThis_box})
+        }
+    },
+    rowClick(row, column, event) {
+        // 当某一行被点击时会触发该事件
+        if (tableProps_box.table.hdlRowClick) {
+            tableProps_box.table.hdlRowClick({scopeThis: scopeThis_box, inherit: {
+                    row,
+                    column,
+                    event
+                }})
+        }
+    },
+    selectionChange(selection) {
+        // 当选择项发生变化时会触发该事件
+        if (tableProps_box.table.hdlSelectionChange) {
+            tableProps_box.table.hdlSelectionChange({scopeThis: scopeThis_box, inherit: {
+                    selection
+                }})
+        }
+    },
+    sortChange(para) {
+        // 当表格的排序条件发生变化的时候会触发该事件，一般用于远程排序
+        // para.column
+        // para.prop
+        // para.order
+        
+        if (tableProps_box.table.hdlSortChange) {
+            tableProps_box.table.hdlSortChange({scopeThis: scopeThis_box, inherit: {
+                    column: para.column,
+                    prop: para.prop,
+                    order: para.order,
+                }})
         }
     },
 }
