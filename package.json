@@ -1,6 +1,6 @@
 {
   "name": "@yoooloo42/joker",
-  "version": "1.0.222",
+  "version": "1.0.229",
   "description": "",
   "type": "module",
   "main": "dist/index.cjs.js",
