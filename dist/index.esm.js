@@ -42740,7 +42740,7 @@ return (_ctx, _cache) => {
   const _component_el_button = resolveComponent("el-button");
   const _component_el_upload = resolveComponent("el-upload");
 
-  return (openBlock(), createElementBlock("div", null, [
+  return (openBlock(), createElementBlock(Fragment, null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -42784,7 +42784,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -42821,7 +42821,7 @@ const myProps_box = reactive(unclassified.deepClone.deepMerge(
     unclassified.deepClone.deepClone(ly0default.myProps),
     props.myProps
 ));
-const fileList_box = ref([]);
+let fileList_box = ref([]);
 props.modelValue.forEach((item, index) => {
     fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
@@ -42832,6 +42832,16 @@ props.modelValue.forEach((item, index) => {
             }
         }
     });
+});
+
+console.log('joker测试 000', props.modelValue);
+console.log('joker测试 111', fileList_box.value);
+
+watch(()=>props.modelValue, (newVal, oldVal) => {
+    console.log('joker测试 222', newVal);
+});
+watch(()=>fileList_box.value, (newVal, oldVal) => {
+    console.log('joker测试 333', newVal);
 });
 
 const style = reactive({
@@ -42915,25 +42925,24 @@ return (_ctx, _cache) => {
   const _component_el_upload = resolveComponent("el-upload");
   const _component_el_button = resolveComponent("el-button");
 
-  return (openBlock(), createElementBlock("div", null, [
+  return (openBlock(), createElementBlock(Fragment, null, [
     createVNode(_component_el_upload, {
       class: "avatar",
       style: normalizeStyle(style.avatarBox),
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box.value,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
+      "file-list": unref(fileList_box),
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (isRef(fileList_box) ? (fileList_box).value = $event : fileList_box = $event)),
       "show-file-list": false,
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
       "on-remove": hdl.remove,
-      "on-success": hdl.success,
-      limit: 1
+      "on-success": hdl.success
     }, {
       default: withCtx(() => [
-        (fileList_box.value.length>0 && fileList_box.value[0].response && fileList_box.value[0].response.data && fileList_box.value[0].response.data.src)
+        (unref(fileList_box).length>0 && unref(fileList_box)[0].response && unref(fileList_box)[0].response.data && unref(fileList_box)[0].response.data.src)
           ? (openBlock(), createElementBlock("img", {
               key: 0,
-              src: fileList_box.value[0].response.data.src,
+              src: unref(fileList_box)[0].response.data.src,
               class: "avatar",
               style: normalizeStyle(style.avatarImage)
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$a))
@@ -42950,7 +42959,7 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
-    (fileList_box.value.length>0 && fileList_box.value[0].response && fileList_box.value[0].response.data && fileList_box.value[0].response.data.src)
+    (unref(fileList_box).length>0 && unref(fileList_box)[0].response && unref(fileList_box)[0].response.data && unref(fileList_box)[0].response.data.src)
       ? (openBlock(), createElementBlock("div", _hoisted_2$a, [
           createVNode(_component_el_button, {
             size: "small",
@@ -42965,7 +42974,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["onClick"])
         ]))
       : createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43087,7 +43096,7 @@ return (_ctx, _cache) => {
   const _component_el_upload = resolveComponent("el-upload");
   const _component_el_button = resolveComponent("el-button");
 
-  return (openBlock(), createElementBlock("div", null, [
+  return (openBlock(), createElementBlock(Fragment, null, [
     createVNode(_component_el_upload, {
       class: "avatar",
       style: normalizeStyle(style.avatarBox),
@@ -43102,11 +43111,11 @@ return (_ctx, _cache) => {
     }, {
       default: withCtx(() => [
         (
-                    fileList_box.value.length>0 && 
-                    fileList_box.value[0].response && 
-                    fileList_box.value[0].response.data && 
-                    fileList_box.value[0].response.data.src
-                )
+                fileList_box.value.length>0 &&
+                fileList_box.value[0].response &&
+                fileList_box.value[0].response.data &&
+                fileList_box.value[0].response.data.src
+            )
           ? (openBlock(), createElementBlock("img", {
               key: 0,
               class: "avatar",
@@ -43127,23 +43136,23 @@ return (_ctx, _cache) => {
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
     (
-                fileList_box.value.length>0 && 
-                fileList_box.value[0].response && 
-                fileList_box.value[0].response.data && 
-                fileList_box.value[0].response.data.result && 
-                fileList_box.value[0].response.data.result.txt
-            )
+            fileList_box.value.length>0 &&
+            fileList_box.value[0].response &&
+            fileList_box.value[0].response.data &&
+            fileList_box.value[0].response.data.result &&
+            fileList_box.value[0].response.data.result.txt
+        )
       ? (openBlock(), createElementBlock("div", _hoisted_2$9, [
           _cache[1] || (_cache[1] = createElementVNode("span", null, "车牌识别结果：", -1 /* CACHED */)),
           createElementVNode("span", _hoisted_3$4, toDisplayString(fileList_box.value[0].response.data.result.txt), 1 /* TEXT */)
         ]))
       : createCommentVNode("v-if", true),
     (
-                fileList_box.value.length>0 && 
-                fileList_box.value[0].response && 
-                fileList_box.value[0].response.data && 
-                fileList_box.value[0].response.data.src
-            )
+            fileList_box.value.length>0 &&
+            fileList_box.value[0].response &&
+            fileList_box.value[0].response.data &&
+            fileList_box.value[0].response.data.src
+        )
       ? (openBlock(), createElementBlock("div", _hoisted_4$2, [
           createVNode(_component_el_button, {
             size: "small",
@@ -43158,7 +43167,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["onClick"])
         ]))
       : createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43270,7 +43279,7 @@ return (_ctx, _cache) => {
   const _component_el_upload = resolveComponent("el-upload");
   const _component_el_button = resolveComponent("el-button");
 
-  return (openBlock(), createElementBlock("div", null, [
+  return (openBlock(), createElementBlock(Fragment, null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -43316,7 +43325,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43425,7 +43434,7 @@ return (_ctx, _cache) => {
   const _component_el_button = resolveComponent("el-button");
   const _component_el_upload = resolveComponent("el-upload");
 
-  return (openBlock(), createElementBlock("div", null, [
+  return (openBlock(), createElementBlock(Fragment, null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -43469,7 +43478,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43564,7 +43573,7 @@ return (_ctx, _cache) => {
   const _component_el_dialog = resolveComponent("el-dialog");
   const _component_el_button = resolveComponent("el-button");
 
-  return (openBlock(), createElementBlock("div", null, [
+  return (openBlock(), createElementBlock(Fragment, null, [
     createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -43618,7 +43627,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 

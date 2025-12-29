@@ -1,23 +1,21 @@
 <template>
-    <div>
-        <el-upload
-                :action="myProps_box.uploadUrl"
-                v-model:file-list="fileList_box"
-                list-type="text"
-                :before-upload="hdl.beforeUpload"
-                :on-preview="hdl.preview"
-                :on-remove="hdl.remove"
-                :on-success="hdl.success"
-                :limit="myProps_box.limit"
-        >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <template #tip>
-                <span class="el-upload__tip">&nbsp;{{myProps_box.tip ?? "可以上传" + myProps_box.limit + "个文件"}}</span>
-            </template>
-        </el-upload>
-        <div v-if="fileList_box.length>0" style="font-size:xx-small">{{"已上传"+fileList_box.length+"个文件"}}</div>
-        <el-button v-if="fileList_box.length>0" size="small" style="margin-top:10px;" @click="hdl.deleteAll">删除全部已上传文件</el-button>
-    </div>
+    <el-upload
+            :action="myProps_box.uploadUrl"
+            v-model:file-list="fileList_box"
+            list-type="text"
+            :before-upload="hdl.beforeUpload"
+            :on-preview="hdl.preview"
+            :on-remove="hdl.remove"
+            :on-success="hdl.success"
+            :limit="myProps_box.limit"
+    >
+        <el-button size="small" type="primary">点击上传</el-button>
+        <template #tip>
+            <span class="el-upload__tip">&nbsp;{{myProps_box.tip ?? "可以上传" + myProps_box.limit + "个文件"}}</span>
+        </template>
+    </el-upload>
+    <div v-if="fileList_box.length>0" style="font-size:xx-small">{{"已上传"+fileList_box.length+"个文件"}}</div>
+    <el-button v-if="fileList_box.length>0" size="small" style="margin-top:10px;" @click="hdl.deleteAll">删除全部已上传文件</el-button>
 </template>
 
 <style lang="scss" scoped>

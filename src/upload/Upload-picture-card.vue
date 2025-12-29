@@ -1,25 +1,25 @@
-<template><div>
-        <el-upload
-                :action="myProps_box.uploadUrl"
-                v-model:file-list="fileList_box"
-                list-type="picture-card"
-                :before-upload="hdl.beforeUpload"
-                :on-preview="hdl.preview"
-                :on-remove="hdl.remove"
-                :on-success="hdl.success"
-                :limit="myProps_box.limit"
-        >
-            <el-icon><Plus /></el-icon>
-            <template #tip>
-              <div class="el-upload__tip">&nbsp;{{myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"}}</div>
-            </template>
-        </el-upload>
-        <el-dialog v-model="dialogVisible">
-            <img w-full :src="dialogImageUrl" alt="Preview Image">
-        </el-dialog>
-        <div v-if="fileList_box.length>0" style="font-size:xx-small">{{"已上传"+fileList_box.length+"个图片"}}</div>
-        <el-button v-if="fileList_box.length>0" size="small" style="margin-top:10px;" @click="hdl.deleteAll">删除全部已上传图片</el-button>
-</div></template>
+<template>
+    <el-upload
+            :action="myProps_box.uploadUrl"
+            v-model:file-list="fileList_box"
+            list-type="picture-card"
+            :before-upload="hdl.beforeUpload"
+            :on-preview="hdl.preview"
+            :on-remove="hdl.remove"
+            :on-success="hdl.success"
+            :limit="myProps_box.limit"
+    >
+        <el-icon><Plus /></el-icon>
+        <template #tip>
+          <div class="el-upload__tip">&nbsp;{{myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"}}</div>
+        </template>
+    </el-upload>
+    <el-dialog v-model="dialogVisible">
+        <img w-full :src="dialogImageUrl" alt="Preview Image">
+    </el-dialog>
+    <div v-if="fileList_box.length>0" style="font-size:xx-small">{{"已上传"+fileList_box.length+"个图片"}}</div>
+    <el-button v-if="fileList_box.length>0" size="small" style="margin-top:10px;" @click="hdl.deleteAll">删除全部已上传图片</el-button>
+</template>
 
 <style lang="scss" scoped>
 </style>

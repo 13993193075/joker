@@ -1,50 +1,48 @@
 <template>
-    <div>
-        <el-upload
-                class="avatar"
-                :style="style.avatarBox"
-                :action="myProps_box.uploadUrl"
-                v-model:file-list="fileList_box"
-                :show-file-list="false"
-                :before-upload="hdl.beforeUpload"
-                :on-preview="hdl.preview"
-                :on-remove="hdl.remove"
-                :on-success="hdl.success"
-        >
-            <img
-                class="avatar"
-                v-if="
-                    fileList_box.length>0 && 
-                    fileList_box[0].response && 
-                    fileList_box[0].response.data && 
-                    fileList_box[0].response.data.src
-                " 
-                :src="fileList_box[0].response.data.src"
-                :style="style.avatarImage()"
-            >
-            <el-icon v-else class="avatar-uploader-icon" :style="style.avatarIcon"><Plus /></el-icon>
-        </el-upload>
-        <div
+    <el-upload
+            class="avatar"
+            :style="style.avatarBox"
+            :action="myProps_box.uploadUrl"
+            v-model:file-list="fileList_box"
+            :show-file-list="false"
+            :before-upload="hdl.beforeUpload"
+            :on-preview="hdl.preview"
+            :on-remove="hdl.remove"
+            :on-success="hdl.success"
+    >
+        <img
+            class="avatar"
             v-if="
-                fileList_box.length>0 && 
-                fileList_box[0].response && 
-                fileList_box[0].response.data && 
-                fileList_box[0].response.data.result && 
-                fileList_box[0].response.data.result.txt
-            "
-        >
-            <span>车牌识别结果：</span>
-            <span style="color: blue;">{{fileList_box[0].response.data.result.txt}}</span></div>
-        <div 
-            v-if="
-                fileList_box.length>0 && 
-                fileList_box[0].response && 
-                fileList_box[0].response.data && 
+                fileList_box.length>0 &&
+                fileList_box[0].response &&
+                fileList_box[0].response.data &&
                 fileList_box[0].response.data.src
             "
+            :src="fileList_box[0].response.data.src"
+            :style="style.avatarImage()"
         >
-            <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdl.deleteAll">删除</el-button>
-        </div>
+        <el-icon v-else class="avatar-uploader-icon" :style="style.avatarIcon"><Plus /></el-icon>
+    </el-upload>
+    <div
+        v-if="
+            fileList_box.length>0 &&
+            fileList_box[0].response &&
+            fileList_box[0].response.data &&
+            fileList_box[0].response.data.result &&
+            fileList_box[0].response.data.result.txt
+        "
+    >
+        <span>车牌识别结果：</span>
+        <span style="color: blue;">{{fileList_box[0].response.data.result.txt}}</span></div>
+    <div
+        v-if="
+            fileList_box.length>0 &&
+            fileList_box[0].response &&
+            fileList_box[0].response.data &&
+            fileList_box[0].response.data.src
+        "
+    >
+        <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdl.deleteAll">删除</el-button>
     </div>
 </template>
 

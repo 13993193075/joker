@@ -1,28 +1,24 @@
 <template>
-    <div>
-        <el-upload
-                class="avatar"
-                :style="style.avatarBox"
-                :action="myProps_box.uploadUrl"
-                v-model:file-list="fileList_box"
-                :show-file-list="false"
-                :before-upload="hdl.beforeUpload"
-                :on-preview="hdl.preview"
-                :on-remove="hdl.remove"
-                :on-success="hdl.success"
-                :limit="1"
-        >
-            <img
-                v-if="fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src"
-                :src="fileList_box[0].response.data.src"
-                class="avatar"
-                :style="style.avatarImage">
-            <el-icon v-else class="avatar-uploader-icon" :style="style.avatarIcon"><Plus /></el-icon>
-        </el-upload>
-        <div v-if="fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src">
-            <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdl.deleteAll">删除</el-button>
-        </div>
-
+    <el-upload
+        class="avatar"
+        :style="style.avatarBox"
+        :action="myProps_box.uploadUrl"
+        v-model:file-list="fileList_box"
+        :show-file-list="false"
+        :before-upload="hdl.beforeUpload"
+        :on-preview="hdl.preview"
+        :on-remove="hdl.remove"
+        :on-success="hdl.success"
+    >
+        <img
+            v-if="fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src"
+            :src="fileList_box[0].response.data.src"
+            class="avatar"
+            :style="style.avatarImage">
+        <el-icon v-else class="avatar-uploader-icon" :style="style.avatarIcon"><Plus /></el-icon>
+    </el-upload>
+    <div v-if="fileList_box.length>0 && fileList_box[0].response && fileList_box[0].response.data && fileList_box[0].response.data.src">
+        <el-button size="small" icon="el-icon-delete" style="margin-top:10px;" @click="hdl.deleteAll">删除</el-button>
     </div>
 </template>
 
@@ -36,7 +32,7 @@
 </style>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import { ElMessage } from 'element-plus';
 import ly0default from "./default.js"
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
@@ -60,7 +56,7 @@ const myProps_box = reactive(beanUnclass.deepClone.deepMerge(
     beanUnclass.deepClone.deepClone(ly0default.myProps),
     props.myProps
 ))
-const fileList_box = ref([])
+let fileList_box = ref([])
 props.modelValue.forEach((item, index) => {
     fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
@@ -71,6 +67,16 @@ props.modelValue.forEach((item, index) => {
             }
         }
     })
+})
+
+console.log('joker测试 000', props.modelValue);
+console.log('joker测试 111', fileList_box.value);
+
+watch(()=>props.modelValue, (newVal, oldVal) => {
+    console.log('joker测试 222', newVal)
+})
+watch(()=>fileList_box.value, (newVal, oldVal) => {
+    console.log('joker测试 333', newVal)
 })
 
 const style = reactive({

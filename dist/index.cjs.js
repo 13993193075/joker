@@ -42744,7 +42744,7 @@ return (_ctx, _cache) => {
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_el_upload = vue.resolveComponent("el-upload");
 
-  return (vue.openBlock(), vue.createElementBlock("div", null, [
+  return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -42788,7 +42788,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : vue.createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -42825,7 +42825,7 @@ const myProps_box = vue.reactive(unclassified.deepClone.deepMerge(
     unclassified.deepClone.deepClone(ly0default.myProps),
     props.myProps
 ));
-const fileList_box = vue.ref([]);
+let fileList_box = vue.ref([]);
 props.modelValue.forEach((item, index) => {
     fileList_box.value.push({
         name: item.substring(item.lastIndexOf('/') + 1) ?? 'Old_' + index,
@@ -42836,6 +42836,16 @@ props.modelValue.forEach((item, index) => {
             }
         }
     });
+});
+
+console.log('joker测试 000', props.modelValue);
+console.log('joker测试 111', fileList_box.value);
+
+vue.watch(()=>props.modelValue, (newVal, oldVal) => {
+    console.log('joker测试 222', newVal);
+});
+vue.watch(()=>fileList_box.value, (newVal, oldVal) => {
+    console.log('joker测试 333', newVal);
 });
 
 const style = vue.reactive({
@@ -42919,25 +42929,24 @@ return (_ctx, _cache) => {
   const _component_el_upload = vue.resolveComponent("el-upload");
   const _component_el_button = vue.resolveComponent("el-button");
 
-  return (vue.openBlock(), vue.createElementBlock("div", null, [
+  return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createVNode(_component_el_upload, {
       class: "avatar",
       style: vue.normalizeStyle(style.avatarBox),
       action: myProps_box.uploadUrl,
-      "file-list": fileList_box.value,
-      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => ((fileList_box).value = $event)),
+      "file-list": vue.unref(fileList_box),
+      "onUpdate:fileList": _cache[0] || (_cache[0] = $event => (vue.isRef(fileList_box) ? (fileList_box).value = $event : fileList_box = $event)),
       "show-file-list": false,
       "before-upload": hdl.beforeUpload,
       "on-preview": hdl.preview,
       "on-remove": hdl.remove,
-      "on-success": hdl.success,
-      limit: 1
+      "on-success": hdl.success
     }, {
       default: vue.withCtx(() => [
-        (fileList_box.value.length>0 && fileList_box.value[0].response && fileList_box.value[0].response.data && fileList_box.value[0].response.data.src)
+        (vue.unref(fileList_box).length>0 && vue.unref(fileList_box)[0].response && vue.unref(fileList_box)[0].response.data && vue.unref(fileList_box)[0].response.data.src)
           ? (vue.openBlock(), vue.createElementBlock("img", {
               key: 0,
-              src: fileList_box.value[0].response.data.src,
+              src: vue.unref(fileList_box)[0].response.data.src,
               class: "avatar",
               style: vue.normalizeStyle(style.avatarImage)
             }, null, 12 /* STYLE, PROPS */, _hoisted_1$a))
@@ -42954,7 +42963,7 @@ return (_ctx, _cache) => {
       ]),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
-    (fileList_box.value.length>0 && fileList_box.value[0].response && fileList_box.value[0].response.data && fileList_box.value[0].response.data.src)
+    (vue.unref(fileList_box).length>0 && vue.unref(fileList_box)[0].response && vue.unref(fileList_box)[0].response.data && vue.unref(fileList_box)[0].response.data.src)
       ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$a, [
           vue.createVNode(_component_el_button, {
             size: "small",
@@ -42969,7 +42978,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["onClick"])
         ]))
       : vue.createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43091,7 +43100,7 @@ return (_ctx, _cache) => {
   const _component_el_upload = vue.resolveComponent("el-upload");
   const _component_el_button = vue.resolveComponent("el-button");
 
-  return (vue.openBlock(), vue.createElementBlock("div", null, [
+  return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createVNode(_component_el_upload, {
       class: "avatar",
       style: vue.normalizeStyle(style.avatarBox),
@@ -43106,11 +43115,11 @@ return (_ctx, _cache) => {
     }, {
       default: vue.withCtx(() => [
         (
-                    fileList_box.value.length>0 && 
-                    fileList_box.value[0].response && 
-                    fileList_box.value[0].response.data && 
-                    fileList_box.value[0].response.data.src
-                )
+                fileList_box.value.length>0 &&
+                fileList_box.value[0].response &&
+                fileList_box.value[0].response.data &&
+                fileList_box.value[0].response.data.src
+            )
           ? (vue.openBlock(), vue.createElementBlock("img", {
               key: 0,
               class: "avatar",
@@ -43131,23 +43140,23 @@ return (_ctx, _cache) => {
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["style", "action", "file-list", "before-upload", "on-preview", "on-remove", "on-success"]),
     (
-                fileList_box.value.length>0 && 
-                fileList_box.value[0].response && 
-                fileList_box.value[0].response.data && 
-                fileList_box.value[0].response.data.result && 
-                fileList_box.value[0].response.data.result.txt
-            )
+            fileList_box.value.length>0 &&
+            fileList_box.value[0].response &&
+            fileList_box.value[0].response.data &&
+            fileList_box.value[0].response.data.result &&
+            fileList_box.value[0].response.data.result.txt
+        )
       ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2$9, [
           _cache[1] || (_cache[1] = vue.createElementVNode("span", null, "车牌识别结果：", -1 /* CACHED */)),
           vue.createElementVNode("span", _hoisted_3$4, vue.toDisplayString(fileList_box.value[0].response.data.result.txt), 1 /* TEXT */)
         ]))
       : vue.createCommentVNode("v-if", true),
     (
-                fileList_box.value.length>0 && 
-                fileList_box.value[0].response && 
-                fileList_box.value[0].response.data && 
-                fileList_box.value[0].response.data.src
-            )
+            fileList_box.value.length>0 &&
+            fileList_box.value[0].response &&
+            fileList_box.value[0].response.data &&
+            fileList_box.value[0].response.data.src
+        )
       ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_4$2, [
           vue.createVNode(_component_el_button, {
             size: "small",
@@ -43162,7 +43171,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["onClick"])
         ]))
       : vue.createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43274,7 +43283,7 @@ return (_ctx, _cache) => {
   const _component_el_upload = vue.resolveComponent("el-upload");
   const _component_el_button = vue.resolveComponent("el-button");
 
-  return (vue.openBlock(), vue.createElementBlock("div", null, [
+  return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -43320,7 +43329,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : vue.createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43429,7 +43438,7 @@ return (_ctx, _cache) => {
   const _component_el_button = vue.resolveComponent("el-button");
   const _component_el_upload = vue.resolveComponent("el-upload");
 
-  return (vue.openBlock(), vue.createElementBlock("div", null, [
+  return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -43473,7 +43482,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : vue.createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
@@ -43568,7 +43577,7 @@ return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
   const _component_el_button = vue.resolveComponent("el-button");
 
-  return (vue.openBlock(), vue.createElementBlock("div", null, [
+  return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createVNode(_component_el_upload, {
       action: myProps_box.uploadUrl,
       "file-list": fileList_box.value,
@@ -43622,7 +43631,7 @@ return (_ctx, _cache) => {
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["onClick"]))
       : vue.createCommentVNode("v-if", true)
-  ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 
