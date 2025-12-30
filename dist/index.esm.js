@@ -42834,16 +42834,6 @@ props.modelValue.forEach((item, index) => {
     });
 });
 
-console.log('joker测试 000', props.modelValue);
-console.log('joker测试 111', fileList_box.value);
-
-watch(()=>props.modelValue, (newVal, oldVal) => {
-    console.log('joker测试 222', newVal);
-});
-watch(()=>fileList_box.value, (newVal, oldVal) => {
-    console.log('joker测试 333', newVal);
-});
-
 const style = reactive({
     avatarBox: {
         width: myProps_box.avatar.width,
@@ -42897,7 +42887,7 @@ const hdl = {
     success (response, file, fileList) { // 上传
         // 重置文件列表， 注意：通过使用splice保持响应性
         // 只能上传一个图片
-        fileList_box.value.splice(0, fileList_box.value.length, ...JSON.parse(JSON.stringify(fileList)));
+        fileList_box.value.splice(0, fileList_box.value.length, file);
         if (response.code === 0) {
             const arr = [];
             fileList_box.value.forEach(i=>{
