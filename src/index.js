@@ -3,17 +3,18 @@ import request from './request/index.js'
 import WeChat from './WeChat/index.js'
 import withTable from './with-table/index.js'
 
-import Form from './form/index.vue'
-import Menu from './menu/index.vue'
+import Form from './form/Index.vue'
+import Menu from './menu/Index.vue'
 import Richtext from './richtext/index.vue'
 import Table from './table/Index.vue'
 import upload from './upload/index.js'
-import gbt2260 from './gbt2260/index.vue'
-import ly0d7group from './ly0d7group/index.vue'
-import ly0d7postal from './ly0d7postal/index.vue'
-import ly0d7price from './ly0d7price/index.vue'
-import ly0d7size from './ly0d7size/index.vue'
-import ly0d7thumb from './ly0d7thumb/index.vue'
+import gbt2260 from './gbt2260/Index.vue'
+import ly0d2cash from './ly0d2cash/Index.vue'
+import ly0d7group from './ly0d7group/Index.vue'
+import ly0d7postal from './ly0d7postal/Index.vue'
+import ly0d7price from './ly0d7price/Index.vue'
+import ly0d7size from './ly0d7size/Index.vue'
+import ly0d7thumb from './ly0d7thumb/Index.vue'
 
 export {
     FileSaver,
@@ -35,6 +36,7 @@ export default {
         app.component('ly0Upload_picture', upload.Upload_picture);
         app.component('ly0Upload_pictureCard', upload.Upload_pictureCard);
         app.component('ly0gbt2260', gbt2260);
+        app.component('ly0d2cash', ly0d2cash);
         app.component('ly0d7group', ly0d7group);
         app.component('ly0d7price', ly0d7price);
         app.component('ly0d7postal', ly0d7postal);
