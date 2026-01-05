@@ -1,0 +1,154 @@
+import {withTable, request as ly0request} from '@yoooloo42/joker'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {unclassified as beanUnclass} from '@yoooloo42/bean'
+export default {
+    // 置顶菜单
+    menu: [
+        {
+            title: "查询",
+            menu: [
+                {
+                    title: "全部",
+                    async handle({scopeThis, index}){
+                        await withTable.reload({scopeThis})
+                    }
+                },
+                {
+                    title: "刷新",
+                    async handle({scopeThis, index}){
+                        await withTable.refresh({scopeThis})
+                    }
+                },
+                {
+                    title: "查询",
+                    handle({scopeThis, index}){
+                        withTable.popupFind({scopeThis})
+                    }
+                },
+                {
+                    title: "新增",
+                    hdlDisabled({scopeThis, item, index}){
+                        return scopeThis.initBox.readOnly
+                    },
+                    handle({scopeThis, index}){
+                        withTable.popupInsertOne({scopeThis})
+                    }
+                }
+            ]
+        },
+        {
+            title: "收银",
+            hdlDisabled({scopeThis, item, index}){
+                return scopeThis.initBox.readOnly
+            },
+            menu: [
+                {
+                    title: "收银",
+                    handle({scopeThis, index}){
+                        scopeThis.cashBox.formData.amount = Math.floor(
+                            scopeThis.initBox.deal -
+                            scopeThis.amountBox.succeeded -
+                            scopeThis.amountBox.started
+                        ) / 100
+                        scopeThis.cashBox.formProps.popup.visible = true
+                    }
+                },
+                {
+                    title: "退款",
+                    handle({scopeThis, index}){
+                        ElMessageBox.confirm('退款?', '警告', {
+                            confirmButtonText: '确认',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(()=>{
+                            ly0request.ly0.storpro({
+                                storproName: "ly0d2.wxzf.refund",
+                                data: {id_business: scopeThis.initBox.id_business}
+                            }).then(()=>{
+                                ElMessage("已退款")
+                                withTable.refresh({scopeThis})
+                            })
+                        }).catch(err=>{
+                            ElMessage({type: 'info', message: '取消退款'})
+                        })
+                    }
+                },
+                {
+                    title: "中止支付",
+                    handle({scopeThis, index}){
+                        ly0request.ly0.storpro({
+                            storproName: "ly0d2.wxzf.setFail",
+                            data: {
+                                mchid: scopeThis.initBox.mchid,
+                                id_business: scopeThis.initBox.id_business
+                            }
+                        }).then(()=>{
+                            ElMessage("已中止支付")
+                            withTable.refresh({scopeThis})
+                        })
+                    }
+                }
+            ]
+        }
+    ],
+    table: {
+        cols: [
+            {
+                label: '金额',
+                show: 'expression',
+                hdlExpression({scopeThis, row}){
+                    return row.amount ? Math.floor(row.amount) / 100 : 0
+                },
+                width: "75px"
+            },
+            {
+                label: '支付方式',
+                show: 'expression',
+                hdlExpression({scopeThis, row}){
+                    return row.process_text + (row.process_code==='0' ? "/" + row.method_text : "")
+                }
+            },
+            {
+                label: '支付状态',
+                show: 'expression',
+                hdlExpression({scopeThis, row}){
+                    return row.status_text + "\n" + beanUnclass.dateFormat.dateFormat(row.time, 'yyyy/MM/dd hh:mm:ss')
+                }
+            },
+            {
+                label: '操作',
+                show: 'button-group',
+                buttonGroup: [
+                    {
+                        text: "详细",
+                        size: "small",
+                        hdlClick({scopeThis, row}){
+                            withTable.popupDoc({scopeThis, row})
+                        }
+                    },
+                    {
+                        text: "修改",
+                        size: "small",
+                        hdlClick({scopeThis, row}){
+                            withTable.popupUpdateOne({scopeThis, row})
+                        }
+                    },
+                    {
+                        text: "删除",
+                        hdlVisible({scopeThis, row}){
+                            return scopeThis.initBox.readOnly
+                        },
+                        size: "small",
+                        hdlClick({scopeThis, row}){
+                            withTable.submitDeleteOne({scopeThis, row})
+                        },
+                        style: {
+                            'background-color': '#ff640a',
+                            'color': '#ffffff'
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
