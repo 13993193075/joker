@@ -207,7 +207,7 @@ var p2_32 = /*#__PURE__*/Math.pow(2,32);
 function pad0r(v/*:any*/,d/*:number*/)/*:string*/{if(v>p2_32||v<-p2_32) return pad0r1(v,d); var i = Math.round(v); return pad0r2(i,d); }
 /* yes, in 2022 this is still faster than string compare */
 function SSF_isgeneral(s/*:string*/, i/*:?number*/)/*:boolean*/ { i = i || 0; return s.length >= 7 + i && (s.charCodeAt(i)|32) === 103 && (s.charCodeAt(i+1)|32) === 101 && (s.charCodeAt(i+2)|32) === 110 && (s.charCodeAt(i+3)|32) === 101 && (s.charCodeAt(i+4)|32) === 114 && (s.charCodeAt(i+5)|32) === 97 && (s.charCodeAt(i+6)|32) === 108; }
-var days/*:Array<Array<string> >*/ = [
+var days$1/*:Array<Array<string> >*/ = [
 	['Sun', 'Sunday'],
 	['Mon', 'Monday'],
 	['Tue', 'Tuesday'],
@@ -500,8 +500,8 @@ function SSF_write_date(type/*:number*/, fmt/*:string*/, val, ss0/*:?number*/)/*
 		case 100: /* 'd' day */
 		switch(fmt.length) {
 			case 1: case 2: out = val.d; outl = fmt.length; break;
-			case 3: return days[val.q][0];
-			default: return days[val.q][1];
+			case 3: return days$1[val.q][0];
+			default: return days$1[val.q][1];
 		} break;
 		case 104: /* 'h' 12-hour */
 		switch(fmt.length) {
@@ -22027,7 +22027,7 @@ async function ly0request$1(_ref2) {
 }
 
 // 存储过程
-async function storpro(_ref3) {
+async function storpro$1(_ref3) {
   let {
     storproName = '',
     // 存储过程名称
@@ -22162,7 +22162,7 @@ var ly0request = {
   upload_carplate,
   request: request$1,
   ly0request: ly0request$1,
-  storpro,
+  storpro: storpro$1,
   ly0sessionSave,
   ly0sessionLoad,
   ly0sessionClear,
@@ -22210,6 +22210,83 @@ var WeChat = {
 };
 
 // 引用标准：GB/T 2260
+
+/**
+ * 将Date对象格式化为指定的字符串格式
+ *
+ * @param {Date} date - 要格式化的日期对象
+ * @param {string} format - 目标格式字符串，例如："yyyy年MM月dd日", "yyyy/MM/dd HH:mm:ss", "MM-dd HH:mm"
+ * @returns {string} 格式化后的日期字符串
+ */
+function dateFormat$1(date, format) {
+    // 有效的 Date 对象一致性
+    const Date0 = new Date(date);
+
+    const o = {
+        'M+': Date0.getMonth() + 1, // 月份
+        'd+': Date0.getDate(), // 日
+        'h+': Date0.getHours() % 12 === 0 ? 12 : Date0.getHours() % 12, // 12小时制
+        'H+': Date0.getHours(), // 24小时制
+        'm+': Date0.getMinutes(), // 分
+        's+': Date0.getSeconds(), // 秒
+        'q+': Math.floor((Date0.getMonth() + 3) / 3), // 季度
+        'S': Date0.getMilliseconds() // 毫秒
+    };
+
+    // 替换年份 'yyyy'
+    if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, (Date0.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+
+    // 替换 'AM/PM'
+    if (/(A|a)/.test(format)) {
+        const ampm = Date0.getHours() < 12 ? 'AM' : 'PM';
+        format = format.replace(RegExp.$1, RegExp.$1 === 'a' ? ampm.toLowerCase() : ampm);
+    }
+
+    // 替换其他时间单位 'MM', 'dd', 'HH' 等
+    for (let k in o) {
+        if (new RegExp("(" + k + ")").test(format)) {
+            const value = o[k];
+            // $1 匹配到的字符串，例如 'MM'
+            // 如果是毫秒 'S'，则不补零
+            format = format.replace(RegExp.$1, (RegExp.$1.length === 1) ? (value) : (("00" + value).substr(("" + value).length)));
+        }
+    }
+
+    return format;
+}
+
+/**
+ * 计算两个日期之间相差的天数
+ *
+ * @param {Date} dateFrom - 开始日期 (Date 对象)
+ * @param {Date} dateTo - 结束日期 (Date 对象)
+ * @returns {number | null} 相差的天数（向下取整）。如果日期无效，则返回 null。
+ * 结果为正数表示 dateTo 在 dateFrom 之后；负数表示 dateFrom 在 dateTo 之后。
+ */
+function days(dateFrom, dateTo) {
+    // 1. 有效的 Date 对象一致性
+    const DateFrom0 = new Date(dateFrom);
+    const DateTo0 = new Date(dateTo);
+
+    // 2. 计算两个日期的时间戳差值 (毫秒)
+    // Date.getTime() 返回从 1970 年 1 月 1 日 00:00:00 UTC 至今的毫秒数
+    const timeDifference = DateTo0.getTime() - DateFrom0.getTime();
+
+    // 3. 定义一天对应的毫秒数
+    const msPerDay = 1000 * 60 * 60 * 24;
+
+    // 4. 将毫秒差值转换为天数
+    // Math.floor() 用于向下取整，确保得到完整的经过天数
+    const dayDifference = Math.floor(timeDifference / msPerDay);
+
+    return dayDifference;
+}
+var dateFormat = {
+    dateFormat: dateFormat$1,
+    days
+};
 
 /**
  * 深度拷贝函数
@@ -22739,6 +22816,7 @@ var deepClone = {
 };
 
 var unclassified = {
+    dateFormat,
     deepClone};
 
 // with-table数据模板
@@ -23325,7 +23403,7 @@ var styleModule = {
   input
 };
 
-var script$m = {
+var script$o = {
   __name: 'LabelBox',
   props: {
     modelValue: {
@@ -23383,7 +23461,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$m.__file = "src/form/LabelBox.vue";
+script$o.__file = "src/form/LabelBox.vue";
 
 const _hoisted_1$h = { key: 12 };
 const _hoisted_2$e = { key: 0 };
@@ -23415,7 +23493,7 @@ const _hoisted_27 = { key: 29 };
 const _hoisted_28 = { key: 30 };
 
 
-var script$l = {
+var script$n = {
   __name: 'InputBox',
   props: {
     modelValue: {
@@ -24156,7 +24234,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$l.__file = "src/form/InputBox.vue";
+script$n.__file = "src/form/InputBox.vue";
 
 const _hoisted_1$g = { key: 0 };
 const _hoisted_2$d = ["colspan"];
@@ -24164,7 +24242,7 @@ const _hoisted_3$6 = { key: 0 };
 const _hoisted_4$4 = ["colspan"];
 
 
-var script$k = {
+var script$m = {
   __name: 'Form',
   props: {
     modelValue: {
@@ -24243,7 +24321,7 @@ return (_ctx, _cache) => {
                               key: 0,
                               style: normalizeStyle(style.field_box.left)
                             }, [
-                              createVNode(script$m, {
+                              createVNode(script$o, {
                                 modelValue: unref(formData_box),
                                 "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                                 myProps: unref(formProps_box),
@@ -24293,7 +24371,7 @@ return (_ctx, _cache) => {
                                                                 key: 0,
                                                                 style: normalizeStyle(style.field_box.left)
                                                               }, [
-                                                                createVNode(script$m, {
+                                                                createVNode(script$o, {
                                                                   modelValue: unref(formData_box),
                                                                   "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                                                                   myProps: unref(formProps_box),
@@ -24306,7 +24384,7 @@ return (_ctx, _cache) => {
                                                             style: normalizeStyle(style.field_box.right),
                                                             colspan: style.no_field_label(item2)
                                                           }, [
-                                                            createVNode(script$l, {
+                                                            createVNode(script$n, {
                                                               modelValue: unref(formData_box),
                                                               "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                                                               myProps: unref(formProps_box),
@@ -24329,7 +24407,7 @@ return (_ctx, _cache) => {
                                 _: 2 /* DYNAMIC */
                               }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
                             : createCommentVNode("v-if", true),
-                          createVNode(script$l, {
+                          createVNode(script$n, {
                             modelValue: unref(formData_box),
                             "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
                             myProps: unref(formProps_box),
@@ -24375,7 +24453,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$k.__file = "src/form/Form.vue";
+script$m.__file = "src/form/Form.vue";
 
 // 默认值
 
@@ -24420,7 +24498,7 @@ var ly0default$3 = {
   }
 };
 
-var script$j = {
+var script$l = {
   __name: 'Index',
   props: {
     modelValue: {
@@ -24462,7 +24540,7 @@ return (_ctx, _cache) => {
         "destroy-on-close": true
       }, {
         default: withCtx(() => [
-          createVNode(script$k, {
+          createVNode(script$m, {
             modelValue: unref(formData_box),
             "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
             myProps: formProps_box,
@@ -24471,7 +24549,7 @@ return (_ctx, _cache) => {
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (openBlock(), createBlock(script$k, {
+    : (openBlock(), createBlock(script$m, {
         key: 1,
         modelValue: unref(formData_box),
         "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(formData_box) ? (formData_box).value = $event : formData_box = $event)),
@@ -24483,7 +24561,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$j.__file = "src/form/Index.vue";
+script$l.__file = "src/form/Index.vue";
 
 var ly0default$2 = {
   myProps: {
@@ -24499,7 +24577,7 @@ var ly0default$2 = {
   }
 };
 
-var script$i = {
+var script$k = {
   __name: 'Index',
   props: {
     myProps: {
@@ -24776,7 +24854,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$i.__file = "src/menu/Index.vue";
+script$k.__file = "src/menu/Index.vue";
 
 var quill$1 = {exports: {}};
 
@@ -41632,7 +41710,7 @@ v-model 是一个语法糖（syntactic sugar）。当你在一个自定义组件
     2. 监听一个名为 update:modelValue 的自定义事件（用于更新值）
 */
 
-var script$h = {
+var script$j = {
   __name: 'index',
   props: {
     // v-model 对应的 prop
@@ -41774,12 +41852,12 @@ return (_ctx, _cache) => {
 
 };
 
-script$h.__file = "src/richtext/index.vue";
+script$j.__file = "src/richtext/index.vue";
 
 const _hoisted_1$f = { style: {"text-align":"center"} };
 
 
-var script$g = {
+var script$i = {
   __name: 'PickCol',
   props: {
     tableProps: {
@@ -41958,7 +42036,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$g.__file = "src/table/PickCol.vue";
+script$i.__file = "src/table/PickCol.vue";
 
 const _hoisted_1$e = { style: {"padding":"10px"} };
 const _hoisted_2$c = { key: 0 };
@@ -41970,7 +42048,7 @@ const _hoisted_5$1 = {
 };
 
 
-var script$f = {
+var script$h = {
   __name: 'Table',
   props: {
     modelValue: {
@@ -42452,14 +42530,14 @@ return (_ctx, _cache) => {
     }, null, 8 /* PROPS */, ["total", "page-size", "page-sizes", "current-page", "style", "onSizeChange", "onCurrentChange"]),
     createCommentVNode(" 选择列 "),
     createCommentVNode(" 使用该组件，必须设置每一列的唯一标识：key "),
-    createVNode(script$g, { tableProps: unref(tableProps_box) }, null, 8 /* PROPS */, ["tableProps"])
+    createVNode(script$i, { tableProps: unref(tableProps_box) }, null, 8 /* PROPS */, ["tableProps"])
   ]))
 }
 }
 
 };
 
-script$f.__file = "src/table/Table.vue";
+script$h.__file = "src/table/Table.vue";
 
 // 默认值
 
@@ -42547,7 +42625,7 @@ var ly0default$1 = {
   }
 };
 
-var script$e = {
+var script$g = {
   __name: 'Index',
   props: {
     modelValue: {
@@ -42590,7 +42668,7 @@ return (_ctx, _cache) => {
         "destroy-on-close": true
       }, {
         default: withCtx(() => [
-          createVNode(script$f, {
+          createVNode(script$h, {
             modelValue: unref(tableData_box),
             "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => (isRef(tableData_box) ? (tableData_box).value = $event : tableData_box = $event)),
             myProps: tableProps_box,
@@ -42599,7 +42677,7 @@ return (_ctx, _cache) => {
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
-    : (openBlock(), createBlock(script$f, {
+    : (openBlock(), createBlock(script$h, {
         key: 1,
         modelValue: unref(tableData_box),
         "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (isRef(tableData_box) ? (tableData_box).value = $event : tableData_box = $event)),
@@ -42611,7 +42689,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$e.__file = "src/table/Index.vue";
+script$g.__file = "src/table/Index.vue";
 
 var ly0default = {
   myProps: {
@@ -42646,7 +42724,7 @@ const _hoisted_2$b = {
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$d = {
+var script$f = {
   __name: 'Upload',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -42790,14 +42868,14 @@ return (_ctx, _cache) => {
 
 };
 
-script$d.__file = "src/upload/Upload.vue";
+script$f.__file = "src/upload/Upload.vue";
 
 const _hoisted_1$c = ["src"];
 const _hoisted_2$a = { key: 0 };
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$c = {
+var script$e = {
   __name: 'Upload-avatar',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -42970,8 +43048,8 @@ return (_ctx, _cache) => {
 
 };
 
-script$c.__scopeId = "data-v-0b647a60";
-script$c.__file = "src/upload/Upload-avatar.vue";
+script$e.__scopeId = "data-v-0b647a60";
+script$e.__file = "src/upload/Upload-avatar.vue";
 
 const _hoisted_1$b = ["src"];
 const _hoisted_2$9 = { key: 0 };
@@ -42980,7 +43058,7 @@ const _hoisted_4$2 = { key: 1 };
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$b = {
+var script$d = {
   __name: 'Upload-carplate',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -43163,8 +43241,8 @@ return (_ctx, _cache) => {
 
 };
 
-script$b.__scopeId = "data-v-6fc32e0e";
-script$b.__file = "src/upload/Upload-carplate.vue";
+script$d.__scopeId = "data-v-6fc32e0e";
+script$d.__file = "src/upload/Upload-carplate.vue";
 
 const _hoisted_1$a = { class: "el-upload__tip" };
 const _hoisted_2$8 = {
@@ -43174,7 +43252,7 @@ const _hoisted_2$8 = {
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$a = {
+var script$c = {
   __name: 'Upload-drag',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -43321,7 +43399,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$a.__file = "src/upload/Upload-drag.vue";
+script$c.__file = "src/upload/Upload-drag.vue";
 
 const _hoisted_1$9 = { class: "el-upload__tip" };
 const _hoisted_2$7 = {
@@ -43331,7 +43409,7 @@ const _hoisted_2$7 = {
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$9 = {
+var script$b = {
   __name: 'Upload-picture',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -43474,7 +43552,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$9.__file = "src/upload/Upload-picture.vue";
+script$b.__file = "src/upload/Upload-picture.vue";
 
 const _hoisted_1$8 = { class: "el-upload__tip" };
 const _hoisted_2$6 = ["src"];
@@ -43485,7 +43563,7 @@ const _hoisted_3$3 = {
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$8 = {
+var script$a = {
   __name: 'Upload-picture-card',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -43623,15 +43701,15 @@ return (_ctx, _cache) => {
 
 };
 
-script$8.__file = "src/upload/Upload-picture-card.vue";
+script$a.__file = "src/upload/Upload-picture-card.vue";
 
 var upload = {
-  Upload: script$d,
-  Upload_avatar: script$c,
-  Upload_carplate: script$b,
-  Upload_drag: script$a,
-  Upload_picture: script$9,
-  Upload_pictureCard: script$8
+  Upload: script$f,
+  Upload_avatar: script$e,
+  Upload_carplate: script$d,
+  Upload_drag: script$c,
+  Upload_picture: script$b,
+  Upload_pictureCard: script$a
 };
 
 const _hoisted_1$7 = { style: {"width":"100%"} };
@@ -43639,7 +43717,7 @@ const _hoisted_2$5 = { style: {"width":"30%"} };
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
 
-var script$7 = {
+var script$9 = {
   __name: 'Index',
   props: {
     // modelValue: 外部 v-model 绑定的值
@@ -44000,7 +44078,7 @@ return (_ctx, _cache) => {
 
 };
 
-script$7.__file = "src/gbt2260/Index.vue";
+script$9.__file = "src/gbt2260/Index.vue";
 
 var formData = {
   id_business: null,
@@ -47394,7 +47472,7 @@ var handles = {
 const _hoisted_1$6 = { class: "amount" };
 
 
-var script$6 = {
+var script$8 = {
   __name: 'Index',
   props: {
     myProps: {
@@ -47467,13 +47545,13 @@ return (_ctx, _cache) => {
 
 };
 
-script$6.__scopeId = "data-v-4b8e1496";
-script$6.__file = "src/ly0d2cash/qrcode/Index.vue";
+script$8.__scopeId = "data-v-4b8e1496";
+script$8.__file = "src/ly0d2cash/qrcode/Index.vue";
 
 const _hoisted_1$5 = { style: {"padding":"10px"} };
 
 
-var script$5 = {
+var script$7 = {
   __name: 'Index',
   props: {
     modelValue: {
@@ -47516,7 +47594,7 @@ return (_ctx, _cache) => {
       scopeThis: scopeThis
     }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"]),
     (!!scopeThis.qrcode.formData.code_url && scopeThis.qrcode.popup.visible)
-      ? (openBlock(), createBlock(script$6, {
+      ? (openBlock(), createBlock(script$8, {
           key: 0,
           myProps: scopeThis.qrcode
         }, null, 8 /* PROPS */, ["myProps"]))
@@ -47527,7 +47605,887 @@ return (_ctx, _cache) => {
 
 };
 
-script$5.__file = "src/ly0d2cash/Index.vue";
+script$7.__file = "src/ly0d2cash/Index.vue";
+
+var query = {
+  formData: {
+    _id: null,
+    id_business: null,
+    businesstype_code: '',
+    note: ""
+  },
+  sort: null,
+  pageSize: 10,
+  currentPage: 1
+};
+
+var tableData = {
+  data: [],
+  sort: JSON.parse(JSON.stringify(query.sort)),
+  pageSize: query.pageSize,
+  currentPage: query.currentPage
+};
+
+var tableProps = {
+  // 置顶菜单
+  menu: [{
+    title: "查询",
+    menu: [{
+      title: "全部",
+      async handle(_ref) {
+        let {
+          scopeThis,
+          index
+        } = _ref;
+        await withTable.reload({
+          scopeThis
+        });
+      }
+    }, {
+      title: "刷新",
+      async handle(_ref2) {
+        let {
+          scopeThis,
+          index
+        } = _ref2;
+        await withTable.refresh({
+          scopeThis
+        });
+      }
+    }, {
+      title: "查询",
+      handle(_ref3) {
+        let {
+          scopeThis,
+          index
+        } = _ref3;
+        withTable.popupFind({
+          scopeThis
+        });
+      }
+    }, {
+      title: "新增",
+      hdlDisabled(_ref4) {
+        let {
+          scopeThis,
+          item,
+          index
+        } = _ref4;
+        return scopeThis.initBox.readOnly;
+      },
+      handle(_ref5) {
+        let {
+          scopeThis,
+          index
+        } = _ref5;
+        withTable.popupInsertOne({
+          scopeThis
+        });
+      }
+    }]
+  }, {
+    title: "收银",
+    hdlDisabled(_ref6) {
+      let {
+        scopeThis,
+        item,
+        index
+      } = _ref6;
+      return scopeThis.initBox.readOnly;
+    },
+    menu: [{
+      title: "收银",
+      handle(_ref7) {
+        let {
+          scopeThis,
+          index
+        } = _ref7;
+        scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business;
+        scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code;
+        // 支付金额合计
+        scopeThis.cashBox.formData.amount = Math.floor(scopeThis.initBox.deal -
+        // 订单金额（应收应付）
+        scopeThis.amountBox.succeeded -
+        // 支付成功
+        scopeThis.amountBox.started // 支付中
+        ) / 100;
+        scopeThis.cashBox.formData.wx_appid = scopeThis.initBox.wx_appid;
+        scopeThis.cashBox.formData.wx_mchid = scopeThis.initBox.wx_mchid;
+        scopeThis.cashBox.formProps.popup.visible = true;
+      }
+    }, {
+      title: "退款",
+      handle(_ref8) {
+        let {
+          scopeThis,
+          index
+        } = _ref8;
+        ElMessageBox.confirm('退款?', '警告', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          ly0request.ly0.storpro({
+            storproName: "ly0d2.wxzf.refund",
+            data: {
+              id_business: scopeThis.initBox.id_business
+            }
+          }).then(() => {
+            ElMessage("已退款");
+            withTable.refresh({
+              scopeThis
+            });
+          });
+        }).catch(err => {
+          ElMessage({
+            type: 'info',
+            message: '取消退款'
+          });
+        });
+      }
+    }, {
+      title: "中止支付",
+      handle(_ref9) {
+        let {
+          scopeThis,
+          index
+        } = _ref9;
+        ly0request.ly0.storpro({
+          storproName: "ly0d2.wxzf.setFail",
+          data: {
+            mchid: scopeThis.initBox.mchid,
+            id_business: scopeThis.initBox.id_business
+          }
+        }).then(() => {
+          ElMessage("已中止支付");
+          withTable.refresh({
+            scopeThis
+          });
+        });
+      }
+    }]
+  }],
+  table: {
+    cols: [{
+      label: '金额',
+      show: 'expression',
+      hdlExpression(_ref0) {
+        let {
+          scopeThis,
+          row
+        } = _ref0;
+        return row.amount ? Math.floor(row.amount) / 100 : 0;
+      },
+      width: "75px"
+    }, {
+      label: '支付方式',
+      show: 'expression',
+      hdlExpression(_ref1) {
+        let {
+          scopeThis,
+          row
+        } = _ref1;
+        return row.process_text + (row.process_code === '0' ? "/" + row.method_text : "");
+      }
+    }, {
+      label: '支付状态',
+      show: 'expression',
+      hdlExpression(_ref10) {
+        let {
+          scopeThis,
+          row
+        } = _ref10;
+        return row.status_text + "\n" + unclassified.dateFormat.dateFormat(row.time, 'yyyy/MM/dd hh:mm:ss');
+      }
+    }, {
+      label: '操作',
+      show: 'button-group',
+      buttonGroup: [{
+        text: "详细",
+        size: "small",
+        hdlClick(_ref11) {
+          let {
+            scopeThis,
+            row
+          } = _ref11;
+          withTable.popupDoc({
+            scopeThis,
+            row
+          });
+        }
+      }, {
+        text: "修改",
+        size: "small",
+        hdlClick(_ref12) {
+          let {
+            scopeThis,
+            row
+          } = _ref12;
+          withTable.popupUpdateOne({
+            scopeThis,
+            row
+          });
+        }
+      }, {
+        text: "删除",
+        hdlVisible(_ref13) {
+          let {
+            scopeThis,
+            row
+          } = _ref13;
+          return scopeThis.initBox.readOnly;
+        },
+        size: "small",
+        hdlClick(_ref14) {
+          let {
+            scopeThis,
+            row
+          } = _ref14;
+          withTable.submitDeleteOne({
+            scopeThis,
+            row
+          });
+        },
+        style: {
+          'background-color': '#ff640a',
+          'color': '#ffffff'
+        }
+      }]
+    }]
+  }
+};
+
+var storpro = {
+  refresh: "ly0d2.record0.find",
+  insertOne: "ly0d2.record0.insertOne",
+  updateOne: "ly0d2.record0.updateOne",
+  deleteOne: "ly0d2.record0.deleteOne",
+  getPgData: "ly0d2.record0.getPgData",
+  getPayments: "ly0d2.wxzf.getPayments",
+  setFail: "ly0d2.wxzf.setFail"
+};
+
+var find = {
+  formProps: {
+    popup: {
+      switch: true,
+      visible: false,
+      title: "查询"
+    },
+    cols: [{
+      items: [{
+        inputType: "input",
+        label: "备注",
+        fieldName: "note",
+        style: {
+          width: "200px"
+        }
+      }]
+    }],
+    submit: {
+      async handle(_ref) {
+        let {
+          formData,
+          scopeThis
+        } = _ref;
+        await withTable.submitFind({
+          scopeThis
+        });
+      }
+    }
+  }
+};
+
+var insertOne = {
+  formProps: {
+    popup: {
+      switch: true,
+      visible: false,
+      title: "新增"
+    },
+    cols: [{
+      items: [{
+        inputType: "input",
+        label: "金额",
+        fieldName: "amount0",
+        style: {
+          width: "100px"
+        }
+      }, {
+        inputType: "select",
+        label: "用户自主支付方式",
+        fieldName: "method_code",
+        item_fieldLabel: "text",
+        item_fieldValue: "code",
+        hdlGetItems(_ref) {
+          let {
+            scopeThis
+          } = _ref;
+          return scopeThis.pgData.data.arrMethod;
+        },
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "input",
+        label: "备注",
+        fieldName: "note",
+        style: {
+          width: "400px"
+        }
+      }]
+    }],
+    submit: {
+      async handle(_ref2) {
+        let {
+          scopeThis
+        } = _ref2;
+        await withTable.submitInsertOne({
+          scopeThis
+        });
+      }
+    }
+  },
+  formData: {
+    _id: null,
+    id_business: null,
+    businesstype_code: "",
+    businesstype_text: "",
+    amount: 0,
+    amount0: 0,
+    process_code: "",
+    process_text: "",
+    method_code: "",
+    method_text: "",
+    status_code: "",
+    status_text: "",
+    time: null,
+    end: null,
+    note: "",
+    rec: "",
+    wxzf_appid: "",
+    wxzf_mchid: "",
+    wxzf_code_url: "",
+    wxzf_out_trade_no: "",
+    wxzf_transaction_id: "",
+    wxzf_trade_type: "",
+    wxzf_trade_state: "",
+    wxzf_trade_state_desc: "",
+    wxzf_bank_type: "",
+    wxzf_success_time: "",
+    wxzf_payer_openid: "",
+    wxzf_amount_total: 0
+  }
+};
+
+var updateOne = {
+  formProps: {
+    popup: {
+      switch: true,
+      visible: false,
+      title: "修改"
+    },
+    cols: [{
+      items: [{
+        inputType: "input",
+        label: "金额",
+        fieldName: "amount0",
+        style: {
+          width: "100px"
+        }
+      }, {
+        inputType: "select",
+        label: "用户自主支付方式",
+        fieldName: "method_code",
+        item_fieldLabel: "text",
+        item_fieldValue: "code",
+        hdlGetItems(_ref) {
+          let {
+            scopeThis
+          } = _ref;
+          return scopeThis.pgData.data.arrMethod;
+        },
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "input",
+        label: "备注",
+        fieldName: "note",
+        style: {
+          width: "400px"
+        }
+      }]
+    }],
+    submit: {
+      async handle(_ref2) {
+        let {
+          scopeThis
+        } = _ref2;
+        await withTable.submitUpdateOne({
+          scopeThis
+        });
+      }
+    }
+  }
+};
+
+var doc = {
+  formProps: {
+    popup: {
+      switch: true,
+      visible: false,
+      title: "详细"
+    },
+    cols: [{
+      items: [{
+        inputType: "text",
+        label: "数据单元id",
+        fieldName: "id_dataunit",
+        style: {
+          width: "300px"
+        }
+      }, {
+        inputType: "text",
+        label: "数据单元名称",
+        fieldName: "dataunit_name",
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "text",
+        label: "订单id",
+        fieldName: "id_business",
+        style: {
+          width: "300px"
+        }
+      }, {
+        inputType: "text",
+        label: "订单类型",
+        fieldName: "businesstype_text",
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "expression",
+        label: "金额",
+        hdlExpression(_ref) {
+          let {
+            scopeThis,
+            formData
+          } = _ref;
+          return Math.floor(formData.amount) / 100;
+        },
+        style: {
+          width: "100px"
+        }
+      }, {
+        inputType: "text",
+        label: "系统内置支付流程",
+        fieldName: "process_text",
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "text",
+        label: "用户自主支付方式",
+        fieldName: "method_text",
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: 'text',
+        label: '支付状态',
+        fieldName: "status_text",
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "expression",
+        label: "支付发起时间",
+        hdlExpression(_ref2) {
+          let {
+            scopeThis,
+            formData
+          } = _ref2;
+          return unclassified.dateFormat.dateFormat(formData.time);
+        },
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "expression",
+        label: "支付结束时间",
+        hdlExpression(_ref3) {
+          let {
+            scopeThis,
+            formData
+          } = _ref3;
+          return unclassified.dateFormat.dateFormat(formData.end);
+        },
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "text",
+        label: "备注",
+        fieldName: "note",
+        style: {
+          width: "400px"
+        }
+      }, {
+        inputType: "text",
+        label: "记录",
+        fieldName: "rec",
+        style: {
+          width: "200px"
+        }
+      }, {
+        inputType: "collapse",
+        items: [{
+          title: "微信支付",
+          items: [{
+            inputType: "text",
+            label: "应用ID(appid)",
+            fieldName: "wxzf_appid",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "商户号(mchid)",
+            fieldName: "wxzf_mchid",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "code_url",
+            fieldName: "wxzf_code_url",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "商品描述",
+            fieldName: "wxzf_description",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "商户系统内部订单号",
+            fieldName: "wxzf_out_trade_no",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "交易结束时间/订单失效时间",
+            fieldName: "wxzf_time_expire",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "附加数据",
+            fieldName: "wxzf_attach",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "通知地址",
+            fieldName: "wxzf_notify_url",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "支付者openid",
+            fieldName: "wxzf_payer_openid",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "金额",
+            fieldName: "wxzf_amount_total",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "场景信息-设备号",
+            fieldName: "wxzf_scene_info_device_id",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "预支付交易会话标识",
+            fieldName: "wxzf_prepay_id",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "微信支付订单号",
+            fieldName: "wxzf_transaction_id",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "交易类型",
+            fieldName: "wxzf_trade_type",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "交易状态",
+            fieldName: "wxzf_trade_state",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "交易状态描述",
+            fieldName: "wxzf_trade_state_desc",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "付款银行",
+            fieldName: "wxzf_bank_type",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "支付完成时间",
+            fieldName: "wxzf_success_time",
+            style: {
+              width: "200px"
+            }
+          }, {
+            inputType: "text",
+            label: "查询金额",
+            fieldName: "wxzf_amount_payer_total",
+            style: {
+              width: "200px"
+            }
+          }]
+        }]
+      }]
+    }],
+    submit: {
+      switch: false // true - 提交模式, false - 组件模式
+    }
+  }
+};
+
+var amountBox = {
+  fun(_ref) {
+    let {
+      scopeThis
+    } = _ref;
+    let unpaid = 0,
+      // 未支付
+      started = 0,
+      // 支付中
+      succeeded = 0,
+      // 支付成功
+      failed = 0; // 支付失败
+
+    scopeThis.tableData.data.forEach(i => {
+      if (i.status_code === '0') {
+        unpaid = unpaid + i.amount;
+      } else if (i.status_code === '1') {
+        started = started + i.amount;
+      } else if (i.status_code === '2') {
+        succeeded = succeeded + i.amount;
+      } else if (i.status_code === '3') {
+        failed = failed + i.amount;
+      }
+    });
+    return {
+      sum: succeeded + started + unpaid,
+      succeeded,
+      started,
+      failed,
+      unpaid
+    };
+  }
+};
+
+var cashBox = {
+  formData,
+  formProps
+};
+
+var script$6 = {
+  __name: 'main',
+  props: {
+    myProps: {
+        type: Object,
+        default: () => ({})
+    }
+},
+  setup(__props) {
+
+const props = __props;
+
+const scopeThis = reactive({
+    tableData,
+    tableProps,
+    formData: {},
+    formProps: {},
+    queryInit: query,
+    query: JSON.parse(JSON.stringify(query)),
+    storpro,
+    find,
+    insertOne,
+    updateOne,
+    doc,
+    pgData: {
+        arrBusinessType: [],
+        arrProcess: [],
+        arrMethod: [],
+        arrStatus: []
+    },
+    initBox: props.myProps,
+    amountBox: computed(()=>{
+        return amountBox.fun({scopeThis})
+    }),
+    cashBox
+});
+
+onMounted(async ()=>{
+    scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business;
+    scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code;
+    await withTable.init({scopeThis});
+});
+
+return (_ctx, _cache) => {
+  const _component_ly0Table = resolveComponent("ly0Table");
+  const _component_ly0Form = resolveComponent("ly0Form");
+  const _component_ly0d2cash = resolveComponent("ly0d2cash");
+
+  return (openBlock(), createElementBlock(Fragment, null, [
+    createCommentVNode(" 金额统计 "),
+    createElementVNode("table", null, [
+      _cache[3] || (_cache[3] = createElementVNode("thead", null, [
+        createElementVNode("tr", null, [
+          createElementVNode("th", null, "订单金额（应收应付）"),
+          createElementVNode("th", null, "支付金额合计"),
+          createElementVNode("th", null, "支付成功"),
+          createElementVNode("th", null, "支付中"),
+          createElementVNode("th", null, "支付失败"),
+          createElementVNode("th", null, "未支付")
+        ])
+      ], -1 /* CACHED */)),
+      createElementVNode("tbody", null, [
+        createElementVNode("tr", null, [
+          createElementVNode("td", null, toDisplayString(Math.floor(scopeThis.initBox.deal) / 100), 1 /* TEXT */),
+          createElementVNode("td", null, toDisplayString(Math.floor(scopeThis.amountBox.sum) / 100), 1 /* TEXT */),
+          createElementVNode("td", null, toDisplayString(Math.floor(scopeThis.amountBox.succeeded) / 100), 1 /* TEXT */),
+          createElementVNode("td", null, toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 1 /* TEXT */),
+          createElementVNode("td", null, toDisplayString(Math.floor(scopeThis.amountBox.failed) / 100), 1 /* TEXT */),
+          createElementVNode("td", null, toDisplayString(Math.floor(scopeThis.amountBox.unpaid) / 100), 1 /* TEXT */)
+        ])
+      ])
+    ]),
+    createCommentVNode(" 支付记录 "),
+    createVNode(_component_ly0Table, {
+      modelValue: scopeThis.tableData,
+      "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((scopeThis.tableData) = $event)),
+      myProps: scopeThis.tableProps,
+      scopeThis: scopeThis
+    }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"]),
+    (scopeThis.formData
+            && scopeThis.formProps
+            && scopeThis.formProps.popup
+            && scopeThis.formProps.popup.visible)
+      ? (openBlock(), createBlock(_component_ly0Form, {
+          key: 0,
+          modelValue: scopeThis.formData,
+          "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((scopeThis.formData) = $event)),
+          myProps: scopeThis.formProps,
+          scopeThis: scopeThis
+        }, null, 8 /* PROPS */, ["modelValue", "myProps", "scopeThis"]))
+      : createCommentVNode("v-if", true),
+    createCommentVNode(" 收银 "),
+    createVNode(_component_ly0d2cash, {
+      modelValue: scopeThis.cashBox.formData,
+      "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ((scopeThis.cashBox.formData) = $event)),
+      myProps: scopeThis.cashBox.formProps
+    }, null, 8 /* PROPS */, ["modelValue", "myProps"])
+  ], 64 /* STABLE_FRAGMENT */))
+}
+}
+
+};
+
+script$6.__file = "src/ly0d2busiside/main.vue";
+
+var script$5 = {
+  __name: 'Index',
+  props: {
+    myProps: {
+        type: Object,
+        default: () => ({
+            popup: {
+                switch: false,
+                visible: false,
+                title: '支付记录',
+                width: '1200px',
+                top: '15vh'
+            },
+            id_business: null, // 订单id
+            businesstype_code: '', // 订单类别
+            deal: 0, // 订单金额（应收应付）
+            wx_appid: '',
+            wx_mchid: '',
+            readOnly: false,
+        })
+    }
+},
+  setup(__props) {
+
+return (_ctx, _cache) => {
+  const _component_el_dialog = resolveComponent("el-dialog");
+
+  return (__props.myProps.popup.switch)
+    ? (openBlock(), createBlock(_component_el_dialog, {
+        key: 0,
+        modelValue: __props.myProps.popup.visible,
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((__props.myProps.popup.visible) = $event)),
+        "custom-class": 'code-template-dialog',
+        "close-on-press-escape": true,
+        "append-to-body": "",
+        title: __props.myProps.popup.title,
+        width: __props.myProps.popup.width,
+        top: __props.myProps.popup.top,
+        "destroy-on-close": true
+      }, {
+        default: withCtx(() => [
+          createVNode(script$6, { myProps: __props.myProps }, null, 8 /* PROPS */, ["myProps"])
+        ]),
+        _: 1 /* STABLE */
+      }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
+    : (openBlock(), createBlock(script$6, {
+        key: 1,
+        myProps: __props.myProps
+      }, null, 8 /* PROPS */, ["myProps"]))
+}
+}
+
+};
+
+script$5.__file = "src/ly0d2busiside/Index.vue";
 
 const _hoisted_1$4 = { key: 0 };
 const _hoisted_2$4 = { key: 1 };
@@ -48996,18 +49954,19 @@ script.__file = "src/ly0d7thumb/Index.vue";
 var index = {
   install(app, options) {
     // 全局注册组件
-    app.component('ly0Form', script$j);
-    app.component('ly0Menu', script$i);
-    app.component('ly0Table', script$e);
-    app.component('ly0Richtext', script$h);
+    app.component('ly0Form', script$l);
+    app.component('ly0Menu', script$k);
+    app.component('ly0Table', script$g);
+    app.component('ly0Richtext', script$j);
     app.component('ly0Upload', upload.Upload);
     app.component('ly0Upload_avatar', upload.Upload_avatar);
     app.component('ly0Upload_carplate', upload.Upload_carplate);
     app.component('ly0Upload_drag', upload.Upload_drag);
     app.component('ly0Upload_picture', upload.Upload_picture);
     app.component('ly0Upload_pictureCard', upload.Upload_pictureCard);
-    app.component('ly0gbt2260', script$7);
-    app.component('ly0d2cash', script$5);
+    app.component('ly0gbt2260', script$9);
+    app.component('ly0d2cash', script$7);
+    app.component('ly0d2busiside', script$5);
     app.component('ly0d7group', script$4);
     app.component('ly0d7price', script$2);
     app.component('ly0d7postal', script$3);

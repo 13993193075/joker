@@ -1,6 +1,6 @@
 <script setup>
 import {reactive, computed, onMounted} from 'vue'
-import {withTable} from '@yoooloo42/joker'
+import withTable from '../with-table/index.js'
 import tableData from './table-data.js'
 import tableProps from './table-props.js'
 import storpro from './storpro.js'

@@ -1,4 +1,4 @@
-import {withTable} from '@yoooloo42/joker'
+import withTable from '../with-table/index.js'
 export default {
     formProps: {
         popup: {

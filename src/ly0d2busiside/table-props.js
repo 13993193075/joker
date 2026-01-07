@@ -1,4 +1,5 @@
-import {withTable, request as ly0request} from '@yoooloo42/joker'
+import withTable from '../with-table/index.js'
+import ly0request from '../request/ly0.js'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 export default {

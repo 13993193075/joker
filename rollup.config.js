@@ -21,6 +21,14 @@ export default {
     // 顶层的 this 应该是什么。您可以将其设置为 'window'，因为 file-saver 是一个浏览器环境库
     context: 'window',
 
+    onwarn(warning, warn) {
+        // 忽略来自 node_modules 的循环依赖警告
+        if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids.some(id => id.includes('node_modules'))) {
+            return;
+        }
+        warn(warning);
+    },
+
     // 插件列表 (Rollup 是通过插件扩展功能的)
     // Rollup 配置的关键在于插件顺序，这对确保每个插件在正确的时间作用于代码至关重要
     plugins: [
@@ -67,6 +75,7 @@ export default {
             esmExternals: true,
             defaultIsModuleExports: true,
 
+            /*
             // 启用此选项，帮助 Rollup 更好地处理 CommonJS 模块的命名和默认导出
             // 解决 "default" is not exported 的核心选项
             transformMixedEsModules: true,
@@ -96,6 +105,7 @@ export default {
                     'default'
                 ]
             }
+            */
         }),
 
         // 7. **🚨 Node.js Polyfills 插件 :** 必须在nodeResolve解析和 CommonJS 之后
@@ -129,6 +139,14 @@ export default {
             modules: false,
             // Rollup 的 postcss 插件通常能与 url 插件配合工作，
             // 它会发现 CSS 中的 url() 并交给 url 插件处理
+            use: [
+                ['sass', {
+                    // 显式声明使用现代 API
+                    api: 'modern',
+                    // 或者使用新的编译器选项
+                    silenceDeprecations: ['legacy-js-api'],
+                }]
+            ],
         }),
 
         // --- 阶段三：优化与输出 ---
@@ -150,12 +168,14 @@ export default {
             file: 'dist/index.cjs.js',
             format: 'cjs',
             sourcemap: true,
+            exports: 'named',
         },
         {
             // ES Module 格式 (通常用于现代浏览器和Vite/Webpack 等打包工具，对应 package.json 的 "module")
             file: 'dist/index.esm.js',
             format: 'esm',
             sourcemap: true,
+            exports: 'named',
         }
     ],
 };
