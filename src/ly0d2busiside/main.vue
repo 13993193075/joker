@@ -53,7 +53,7 @@ onMounted(async ()=>{
 
 <template>
     <!-- 金额统计 -->
-    <table>
+    <table style="width: 100%;">
         <thead><tr>
             <th>订单金额（应收应付）</th>
             <th>支付金额合计</th>

@@ -48440,49 +48440,57 @@ var script$5 = {
   props: {
     myProps: {
         type: Object,
-        default: () => ({
-            popup: {
-                switch: false,
-                visible: false,
-                title: '支付记录',
-                width: '1200px',
-                top: '15vh'
-            },
-            id_business: null, // 订单id
-            businesstype_code: '', // 订单类别
-            deal: 0, // 订单金额（应收应付）
-            wx_appid: '',
-            wx_mchid: '',
-            readOnly: false,
-        })
+        default: () => ({})
     }
 },
   setup(__props) {
 
+const props = __props;
+
+const scopeThis = vue.reactive({
+    props_box: unclassified.deepClone.deepDefaults(props.myProps, {
+        popup: {
+            switch: false,
+            visible: false,
+            title: '支付记录',
+            width: '1200px',
+            top: '15vh'
+        },
+        id_business: null, // 订单id
+        businesstype_code: '', // 订单类别
+        deal: 0, // 订单金额（应收应付）
+        wx_appid: '',
+        wx_mchid: '',
+        readOnly: false,
+    })
+});
+
 return (_ctx, _cache) => {
   const _component_el_dialog = vue.resolveComponent("el-dialog");
 
-  return (__props.myProps.popup.switch)
+  return (scopeThis.props_box.popup.switch)
     ? (vue.openBlock(), vue.createBlock(_component_el_dialog, {
         key: 0,
-        modelValue: __props.myProps.popup.visible,
-        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((__props.myProps.popup.visible) = $event)),
+        modelValue: scopeThis.props_box.popup.visible,
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((scopeThis.props_box.popup.visible) = $event)),
         "custom-class": 'code-template-dialog',
         "close-on-press-escape": true,
         "append-to-body": "",
-        title: __props.myProps.popup.title,
-        width: __props.myProps.popup.width,
-        top: __props.myProps.popup.top,
+        title: scopeThis.props_box.popup.title,
+        width: scopeThis.props_box.popup.width,
+        top: scopeThis.props_box.popup.top,
         "destroy-on-close": true
       }, {
         default: vue.withCtx(() => [
-          vue.createVNode(script$6, { myProps: __props.myProps }, null, 8 /* PROPS */, ["myProps"])
+          vue.createVNode(script$6, {
+            myProps: scopeThis.props_box
+          }, null, 8 /* PROPS */, ["myProps"])
         ]),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["modelValue", "title", "width", "top"]))
     : (vue.openBlock(), vue.createBlock(script$6, {
         key: 1,
-        myProps: __props.myProps
+        myProps: scopeThis.props_box
       }, null, 8 /* PROPS */, ["myProps"]))
 }
 }
