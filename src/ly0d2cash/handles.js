@@ -44,7 +44,7 @@ function submit({scopeThis}){
                 businesstype_code: scopeThis.formData.businesstype_code,
                 amount: Math.floor(scopeThis.formData.amount * 100),
                 note: scopeThis.formData.note,
-                micropay_code: scopeThis.formData.wechat_micropay_code,
+                micropay_code: scopeThis.formData.wx_micropay_code,
                 appid: scopeThis.formData.wx_appid,
                 mchid: scopeThis.formData.wx_mchid,
                 description: scopeThis.pgData.arrBusinessType.find(i=>{
@@ -90,7 +90,7 @@ function submit({scopeThis}){
                 scopeThis.qrcode.formData.code_url = result.code_url
                 scopeThis.qrcode.formData.amount = scopeThis.formData.amount
                 scopeThis.qrcode.formData.id_business = scopeThis.formData.id_business
-                scopeThis.qrcode.formData.mchid = scopeThis.formData.wechat_mchid
+                scopeThis.qrcode.formData.mchid = scopeThis.formData.wx_mchid
             } else {
                 // 测试
                 scopeThis.qrcode.formData.code_url = "./qrcode/test-show.jpg"

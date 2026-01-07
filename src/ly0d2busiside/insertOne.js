@@ -44,8 +44,6 @@ export default {
     },
     formData: {
         _id: null,
-        id_dataunit: null,
-        dataunit_name: "",
         id_business: null,
         businesstype_code: "",
         businesstype_text: "",

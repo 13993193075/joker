@@ -2,6 +2,7 @@ export default {
     formData: {
         _id: null,
         id_business: null,
+        businesstype_code: '',
         note: ""
     },
     sort: null,

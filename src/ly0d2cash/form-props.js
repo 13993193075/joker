@@ -28,7 +28,7 @@ export default {
                 {
                     inputType: 'input',
                     label: '付款码',
-                    fieldName: 'wechat_micropay_code',
+                    fieldName: 'wx_micropay_code',
                     hdlVisible({scopeThis, formData}) {
                         return formData.process_code === 'wxzf0'
                     },

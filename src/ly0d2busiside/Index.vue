@@ -30,9 +30,12 @@ const props = defineProps({
                 width: '1200px',
                 top: '15vh'
             },
+            id_business: null, // 订单id
+            businesstype_code: '', // 订单类别
+            deal: 0, // 订单金额（应收应付）
+            wx_appid: '',
+            wx_mchid: '',
             readOnly: false,
-            id_business: null,
-            deal: 0
         })
     }
 })

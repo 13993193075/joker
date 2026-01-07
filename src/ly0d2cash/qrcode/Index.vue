@@ -27,11 +27,12 @@
 <script setup>
 import {ref, reactive, onMounted} from 'vue'
 import handles from './handles.js'
+import myProps from './myProps.js'
 
 const props = defineProps({
     myProps: {
         type: Object,
-        default: () => ({})
+        default: () => (myProps)
     }
 })
 

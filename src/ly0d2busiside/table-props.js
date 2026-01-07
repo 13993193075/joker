@@ -45,11 +45,16 @@ export default {
                 {
                     title: "收银",
                     handle({scopeThis, index}){
+                        scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business
+                        scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code
+                        // 支付金额合计
                         scopeThis.cashBox.formData.amount = Math.floor(
-                            scopeThis.initBox.deal -
-                            scopeThis.amountBox.succeeded -
-                            scopeThis.amountBox.started
+                            scopeThis.initBox.deal - // 订单金额（应收应付）
+                            scopeThis.amountBox.succeeded - // 支付成功
+                            scopeThis.amountBox.started // 支付中
                         ) / 100
+                        scopeThis.cashBox.formData.wx_appid = scopeThis.initBox.wx_appid
+                        scopeThis.cashBox.formData.wx_mchid = scopeThis.initBox.wx_mchid
                         scopeThis.cashBox.formProps.popup.visible = true
                     }
                 },

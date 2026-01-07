@@ -15,11 +15,7 @@ import cashBox from './cash-box.js'
 const props = defineProps({
     myProps: {
         type: Object,
-        default: () => ({
-            deal: 0,
-            id_business: null,
-            readOnly: false,
-        })
+        default: () => ({})
     }
 })
 
@@ -43,12 +39,14 @@ const scopeThis = reactive({
     },
     initBox: props.myProps,
     amountBox: computed(()=>{
-        return amountBox.fun({records: scopeThis.tableData.data})
+        return amountBox.fun({scopeThis})
     }),
     cashBox
 })
 
 onMounted(async ()=>{
+    scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business
+    scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code
     await withTable.init({scopeThis})
 })
 </script>
@@ -91,7 +89,10 @@ onMounted(async ()=>{
     ></ly0Form>
     
     <!-- 收银 -->
-    <ly0d2cash v-model="scopeThis.cashBox.formData" :myProps="scopeThis.cashBox.formProps"></ly0d2cash>
+    <ly0d2cash
+        v-model="scopeThis.cashBox.formData"
+        :myProps="scopeThis.cashBox.formProps"
+    ></ly0d2cash>
 </template>
 
 <style scoped lang="scss">

@@ -20,7 +20,7 @@ import { reactive, onMounted } from 'vue'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 import formData from './form-data.js'
 import formProps from './form-props.js'
-import qrcode from './qrcode.js'
+import qrcode from './qrcode/myProps.js'
 import handles from './handles.js'
 import compQrcode from './qrcode/Index.vue'
 

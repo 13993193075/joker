@@ -9,5 +9,5 @@ export default {
         visible: false,
         title: '微信支付.商户二维码收款',
         second: false,
-    },
+    }
 }
