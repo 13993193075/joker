@@ -48190,10 +48190,13 @@ const scopeThis = vue.reactive({
     find,
     doc,
     pgData: {
-        arrBusinessType: [],
-        arrProcess: [],
-        arrMethod: [],
-        arrStatus: []
+        query: null,
+        data: {
+            arrBusinessType: [],
+            arrProcess: [],
+            arrMethod: [],
+            arrStatus: []
+        }
     },
     initBox: props.myProps,
     amountBox: vue.computed(()=>{
@@ -48206,7 +48209,12 @@ vue.onMounted(async ()=>{
     scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business;
     scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code;
     await withTable.init({scopeThis});
+    const txt = scopeThis.pgData.data.arrBusinessType.find(i=>{
+        return i.code === scopeThis.initBox.businesstype_code
+    }).text;
+    scopeThis.initBox.popup.title = '支付记录[' + txt + '] - 订单id: ' + scopeThis.initBox.id_business;
 });
+
 const style = vue.ref({
     amount: {
         textAlign: 'center',
@@ -48307,7 +48315,7 @@ const scopeThis = vue.reactive({
         popup: {
             switch: false,
             visible: false,
-            title: '支付记录',
+            title: '',
             width: '1200px',
             top: '15vh'
         },

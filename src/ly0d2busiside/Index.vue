@@ -34,7 +34,7 @@ const scopeThis = reactive({
         popup: {
             switch: false,
             visible: false,
-            title: '支付记录',
+            title: '',
             width: '1200px',
             top: '15vh'
         },
