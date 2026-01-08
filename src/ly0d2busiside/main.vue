@@ -1,13 +1,11 @@
 <script setup>
-import {reactive, computed, onMounted} from 'vue'
+import {ref, reactive, computed, onMounted} from 'vue'
 import withTable from '../with-table/index.js'
 import tableData from './table-data.js'
 import tableProps from './table-props.js'
 import storpro from './storpro.js'
 import query from './query.js'
 import find from './find.js'
-import insertOne from './insertOne.js'
-import updateOne from './updateOne.js'
 import doc from './doc.js'
 import amountBox from './amount-box.js'
 import cashBox from './cash-box.js'
@@ -28,8 +26,6 @@ const scopeThis = reactive({
     query: JSON.parse(JSON.stringify(query)),
     storpro,
     find,
-    insertOne,
-    updateOne,
     doc,
     pgData: {
         arrBusinessType: [],
@@ -49,6 +45,14 @@ onMounted(async ()=>{
     scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code
     await withTable.init({scopeThis})
 })
+const style = ref({
+    amount: {
+        textAlign: 'center',
+        fontSize: '16px',
+        color: 'blue',
+        weight: 'bold'
+    }
+})
 </script>
 
 <template>
@@ -63,12 +67,12 @@ onMounted(async ()=>{
             <th>未支付</th>
         </tr></thead>
         <tbody><tr>
-            <td>{{Math.floor(scopeThis.initBox.deal) / 100}}</td>
-            <td>{{Math.floor(scopeThis.amountBox.sum) / 100}}</td>
-            <td>{{Math.floor(scopeThis.amountBox.succeeded) / 100}}</td>
-            <td>{{Math.floor(scopeThis.amountBox.started) / 100}}</td>
-            <td>{{Math.floor(scopeThis.amountBox.failed) / 100}}</td>
-            <td>{{Math.floor(scopeThis.amountBox.unpaid) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.initBox.deal) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.sum) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.succeeded) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.started) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.failed) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.unpaid) / 100}}</td>
         </tr></tbody>
     </table>
     

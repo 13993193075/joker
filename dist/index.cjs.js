@@ -47668,43 +47668,24 @@ var tableProps = {
             scopeThis
           });
         }
-      }, {
-        title: "新增",
-        hdlDisabled(_ref4) {
-          let {
-            scopeThis,
-            item,
-            index
-          } = _ref4;
-          return scopeThis.initBox.readOnly;
-        },
+      }]
+    }, {
+      title: "收银",
+      hdlDisabled(_ref4) {
+        let {
+          scopeThis,
+          item,
+          index
+        } = _ref4;
+        return scopeThis.initBox.readOnly;
+      },
+      menu: [{
+        title: "收银",
         handle(_ref5) {
           let {
             scopeThis,
             index
           } = _ref5;
-          withTable.popupInsertOne({
-            scopeThis
-          });
-        }
-      }]
-    }, {
-      title: "收银",
-      hdlDisabled(_ref6) {
-        let {
-          scopeThis,
-          item,
-          index
-        } = _ref6;
-        return scopeThis.initBox.readOnly;
-      },
-      menu: [{
-        title: "收银",
-        handle(_ref7) {
-          let {
-            scopeThis,
-            index
-          } = _ref7;
           scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business;
           scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code;
           // 支付金额合计
@@ -47720,11 +47701,11 @@ var tableProps = {
         }
       }, {
         title: "退款",
-        handle(_ref8) {
+        handle(_ref6) {
           let {
             scopeThis,
             index
-          } = _ref8;
+          } = _ref6;
           elementPlus.ElMessageBox.confirm('退款?', '警告', {
             confirmButtonText: '确认',
             cancelButtonText: '取消',
@@ -47750,11 +47731,11 @@ var tableProps = {
         }
       }, {
         title: "中止支付",
-        handle(_ref9) {
+        handle(_ref7) {
           let {
             scopeThis,
             index
-          } = _ref9;
+          } = _ref7;
           ly0request$1.ly0.storpro({
             storproName: "ly0d2.wxzf.setFail",
             data: {
@@ -47775,32 +47756,32 @@ var tableProps = {
     cols: [{
       label: '金额',
       show: 'expression',
-      hdlExpression(_ref0) {
+      hdlExpression(_ref8) {
         let {
           scopeThis,
           row
-        } = _ref0;
+        } = _ref8;
         return row.amount ? Math.floor(row.amount) / 100 : 0;
       },
       width: "75px"
     }, {
       label: '支付方式',
       show: 'expression',
-      hdlExpression(_ref1) {
+      hdlExpression(_ref9) {
         let {
           scopeThis,
           row
-        } = _ref1;
+        } = _ref9;
         return row.process_text + (row.process_code === '0' ? "/" + row.method_text : "");
       }
     }, {
       label: '支付状态',
       show: 'expression',
-      hdlExpression(_ref10) {
+      hdlExpression(_ref0) {
         let {
           scopeThis,
           row
-        } = _ref10;
+        } = _ref0;
         return row.status_text + "\n" + unclassified.dateFormat.dateFormat(row.time, 'yyyy/MM/dd hh:mm:ss');
       }
     }, {
@@ -47809,44 +47790,31 @@ var tableProps = {
       buttonGroup: [{
         text: "详细",
         size: "small",
-        hdlClick(_ref11) {
+        hdlClick(_ref1) {
           let {
             scopeThis,
             row
-          } = _ref11;
+          } = _ref1;
           withTable.popupDoc({
             scopeThis,
             row
           });
         }
       }, {
-        text: "修改",
-        size: "small",
-        hdlClick(_ref12) {
-          let {
-            scopeThis,
-            row
-          } = _ref12;
-          withTable.popupUpdateOne({
-            scopeThis,
-            row
-          });
-        }
-      }, {
         text: "删除",
-        hdlVisible(_ref13) {
+        hdlVisible(_ref10) {
           let {
             scopeThis,
             row
-          } = _ref13;
+          } = _ref10;
           return scopeThis.initBox.readOnly;
         },
         size: "small",
-        hdlClick(_ref14) {
+        hdlClick(_ref11) {
           let {
             scopeThis,
             row
-          } = _ref14;
+          } = _ref11;
           withTable.submitDeleteOne({
             scopeThis,
             row
@@ -47863,9 +47831,7 @@ var tableProps = {
 
 var storpro = {
   refresh: "ly0d2.record0.find",
-  insertOne: "ly0d2.record0.insertOne",
-  updateOne: "ly0d2.record0.updateOne",
-  deleteOne: "ly0d2.record0.deleteOne",
+  deleteOne: "ly0d2.record.deleteOne",
   getPgData: "ly0d2.record0.getPgData",
   getPayments: "ly0d2.wxzf.getPayments",
   setFail: "ly0d2.wxzf.setFail"
@@ -47895,140 +47861,6 @@ var find = {
           scopeThis
         } = _ref;
         await withTable.submitFind({
-          scopeThis
-        });
-      }
-    }
-  }
-};
-
-var insertOne = {
-  formProps: {
-    popup: {
-      switch: true,
-      visible: false,
-      title: "新增"
-    },
-    cols: [{
-      items: [{
-        inputType: "input",
-        label: "金额",
-        fieldName: "amount0",
-        style: {
-          width: "100px"
-        }
-      }, {
-        inputType: "select",
-        label: "用户自主支付方式",
-        fieldName: "method_code",
-        item_fieldLabel: "text",
-        item_fieldValue: "code",
-        hdlGetItems(_ref) {
-          let {
-            scopeThis
-          } = _ref;
-          return scopeThis.pgData.data.arrMethod;
-        },
-        style: {
-          width: "200px"
-        }
-      }, {
-        inputType: "input",
-        label: "备注",
-        fieldName: "note",
-        style: {
-          width: "400px"
-        }
-      }]
-    }],
-    submit: {
-      async handle(_ref2) {
-        let {
-          scopeThis
-        } = _ref2;
-        await withTable.submitInsertOne({
-          scopeThis
-        });
-      }
-    }
-  },
-  formData: {
-    _id: null,
-    id_business: null,
-    businesstype_code: "",
-    businesstype_text: "",
-    amount: 0,
-    amount0: 0,
-    process_code: "",
-    process_text: "",
-    method_code: "",
-    method_text: "",
-    status_code: "",
-    status_text: "",
-    time: null,
-    end: null,
-    note: "",
-    rec: "",
-    wxzf_appid: "",
-    wxzf_mchid: "",
-    wxzf_code_url: "",
-    wxzf_out_trade_no: "",
-    wxzf_transaction_id: "",
-    wxzf_trade_type: "",
-    wxzf_trade_state: "",
-    wxzf_trade_state_desc: "",
-    wxzf_bank_type: "",
-    wxzf_success_time: "",
-    wxzf_payer_openid: "",
-    wxzf_amount_total: 0
-  }
-};
-
-var updateOne = {
-  formProps: {
-    popup: {
-      switch: true,
-      visible: false,
-      title: "修改"
-    },
-    cols: [{
-      items: [{
-        inputType: "input",
-        label: "金额",
-        fieldName: "amount0",
-        style: {
-          width: "100px"
-        }
-      }, {
-        inputType: "select",
-        label: "用户自主支付方式",
-        fieldName: "method_code",
-        item_fieldLabel: "text",
-        item_fieldValue: "code",
-        hdlGetItems(_ref) {
-          let {
-            scopeThis
-          } = _ref;
-          return scopeThis.pgData.data.arrMethod;
-        },
-        style: {
-          width: "200px"
-        }
-      }, {
-        inputType: "input",
-        label: "备注",
-        fieldName: "note",
-        style: {
-          width: "400px"
-        }
-      }]
-    }],
-    submit: {
-      async handle(_ref2) {
-        let {
-          scopeThis
-        } = _ref2;
-        await withTable.submitUpdateOne({
           scopeThis
         });
       }
@@ -48356,8 +48188,6 @@ const scopeThis = vue.reactive({
     query: JSON.parse(JSON.stringify(query)),
     storpro,
     find,
-    insertOne,
-    updateOne,
     doc,
     pgData: {
         arrBusinessType: [],
@@ -48376,6 +48206,14 @@ vue.onMounted(async ()=>{
     scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business;
     scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code;
     await withTable.init({scopeThis});
+});
+const style = vue.ref({
+    amount: {
+        textAlign: 'center',
+        fontSize: '16px',
+        color: 'blue',
+        weight: 'bold'
+    }
 });
 
 return (_ctx, _cache) => {
@@ -48398,12 +48236,24 @@ return (_ctx, _cache) => {
       ], -1 /* CACHED */)),
       vue.createElementVNode("tbody", null, [
         vue.createElementVNode("tr", null, [
-          vue.createElementVNode("td", null, vue.toDisplayString(Math.floor(scopeThis.initBox.deal) / 100), 1 /* TEXT */),
-          vue.createElementVNode("td", null, vue.toDisplayString(Math.floor(scopeThis.amountBox.sum) / 100), 1 /* TEXT */),
-          vue.createElementVNode("td", null, vue.toDisplayString(Math.floor(scopeThis.amountBox.succeeded) / 100), 1 /* TEXT */),
-          vue.createElementVNode("td", null, vue.toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 1 /* TEXT */),
-          vue.createElementVNode("td", null, vue.toDisplayString(Math.floor(scopeThis.amountBox.failed) / 100), 1 /* TEXT */),
-          vue.createElementVNode("td", null, vue.toDisplayString(Math.floor(scopeThis.amountBox.unpaid) / 100), 1 /* TEXT */)
+          vue.createElementVNode("td", {
+            style: vue.normalizeStyle(style.value.amount)
+          }, vue.toDisplayString(Math.floor(scopeThis.initBox.deal) / 100), 5 /* TEXT, STYLE */),
+          vue.createElementVNode("td", {
+            style: vue.normalizeStyle(style.value.amount)
+          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.sum) / 100), 5 /* TEXT, STYLE */),
+          vue.createElementVNode("td", {
+            style: vue.normalizeStyle(style.value.amount)
+          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.succeeded) / 100), 5 /* TEXT, STYLE */),
+          vue.createElementVNode("td", {
+            style: vue.normalizeStyle(style.value.amount)
+          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 5 /* TEXT, STYLE */),
+          vue.createElementVNode("td", {
+            style: vue.normalizeStyle(style.value.amount)
+          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.failed) / 100), 5 /* TEXT, STYLE */),
+          vue.createElementVNode("td", {
+            style: vue.normalizeStyle(style.value.amount)
+          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.unpaid) / 100), 5 /* TEXT, STYLE */)
         ])
       ])
     ]),

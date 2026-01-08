@@ -26,15 +26,6 @@ export default {
                         handle({scopeThis, index}){
                             withTable.popupFind({scopeThis})
                         }
-                    },
-                    {
-                        title: "新增",
-                        hdlDisabled({scopeThis, item, index}){
-                            return scopeThis.initBox.readOnly
-                        },
-                        handle({scopeThis, index}){
-                            withTable.popupInsertOne({scopeThis})
-                        }
                     }
                 ]
             },
@@ -132,13 +123,6 @@ export default {
                         size: "small",
                         hdlClick({scopeThis, row}){
                             withTable.popupDoc({scopeThis, row})
-                        }
-                    },
-                    {
-                        text: "修改",
-                        size: "small",
-                        hdlClick({scopeThis, row}){
-                            withTable.popupUpdateOne({scopeThis, row})
                         }
                     },
                     {
