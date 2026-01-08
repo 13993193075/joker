@@ -4,99 +4,101 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 export default {
     // 置顶菜单
-    menu: [
-        {
-            title: "查询",
-            menu: [
-                {
-                    title: "全部",
-                    async handle({scopeThis, index}){
-                        await withTable.reload({scopeThis})
-                    }
-                },
-                {
-                    title: "刷新",
-                    async handle({scopeThis, index}){
-                        await withTable.refresh({scopeThis})
-                    }
-                },
-                {
-                    title: "查询",
-                    handle({scopeThis, index}){
-                        withTable.popupFind({scopeThis})
-                    }
-                },
-                {
-                    title: "新增",
-                    hdlDisabled({scopeThis, item, index}){
-                        return scopeThis.initBox.readOnly
+    menu: {
+        menu: [
+            {
+                title: "查询",
+                menu: [
+                    {
+                        title: "全部",
+                        async handle({scopeThis, index}){
+                            await withTable.reload({scopeThis})
+                        }
                     },
-                    handle({scopeThis, index}){
-                        withTable.popupInsertOne({scopeThis})
+                    {
+                        title: "刷新",
+                        async handle({scopeThis, index}){
+                            await withTable.refresh({scopeThis})
+                        }
+                    },
+                    {
+                        title: "查询",
+                        handle({scopeThis, index}){
+                            withTable.popupFind({scopeThis})
+                        }
+                    },
+                    {
+                        title: "新增",
+                        hdlDisabled({scopeThis, item, index}){
+                            return scopeThis.initBox.readOnly
+                        },
+                        handle({scopeThis, index}){
+                            withTable.popupInsertOne({scopeThis})
+                        }
                     }
-                }
-            ]
-        },
-        {
-            title: "收银",
-            hdlDisabled({scopeThis, item, index}){
-                return scopeThis.initBox.readOnly
+                ]
             },
-            menu: [
-                {
-                    title: "收银",
-                    handle({scopeThis, index}){
-                        scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business
-                        scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code
-                        // 支付金额合计
-                        scopeThis.cashBox.formData.amount = Math.floor(
-                            scopeThis.initBox.deal - // 订单金额（应收应付）
-                            scopeThis.amountBox.succeeded - // 支付成功
-                            scopeThis.amountBox.started // 支付中
-                        ) / 100
-                        scopeThis.cashBox.formData.wx_appid = scopeThis.initBox.wx_appid
-                        scopeThis.cashBox.formData.wx_mchid = scopeThis.initBox.wx_mchid
-                        scopeThis.cashBox.formProps.popup.visible = true
-                    }
+            {
+                title: "收银",
+                hdlDisabled({scopeThis, item, index}){
+                    return scopeThis.initBox.readOnly
                 },
-                {
-                    title: "退款",
-                    handle({scopeThis, index}){
-                        ElMessageBox.confirm('退款?', '警告', {
-                            confirmButtonText: '确认',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(()=>{
-                            ly0request.ly0.storpro({
-                                storproName: "ly0d2.wxzf.refund",
-                                data: {id_business: scopeThis.initBox.id_business}
+                menu: [
+                    {
+                        title: "收银",
+                        handle({scopeThis, index}){
+                            scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business
+                            scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code
+                            // 支付金额合计
+                            scopeThis.cashBox.formData.amount = Math.floor(
+                                scopeThis.initBox.deal - // 订单金额（应收应付）
+                                scopeThis.amountBox.succeeded - // 支付成功
+                                scopeThis.amountBox.started // 支付中
+                            ) / 100
+                            scopeThis.cashBox.formData.wx_appid = scopeThis.initBox.wx_appid
+                            scopeThis.cashBox.formData.wx_mchid = scopeThis.initBox.wx_mchid
+                            scopeThis.cashBox.formProps.popup.visible = true
+                        }
+                    },
+                    {
+                        title: "退款",
+                        handle({scopeThis, index}){
+                            ElMessageBox.confirm('退款?', '警告', {
+                                confirmButtonText: '确认',
+                                cancelButtonText: '取消',
+                                type: 'warning'
                             }).then(()=>{
-                                ElMessage("已退款")
+                                ly0request.ly0.storpro({
+                                    storproName: "ly0d2.wxzf.refund",
+                                    data: {id_business: scopeThis.initBox.id_business}
+                                }).then(()=>{
+                                    ElMessage("已退款")
+                                    withTable.refresh({scopeThis})
+                                })
+                            }).catch(err=>{
+                                ElMessage({type: 'info', message: '取消退款'})
+                            })
+                        }
+                    },
+                    {
+                        title: "中止支付",
+                        handle({scopeThis, index}){
+                            ly0request.ly0.storpro({
+                                storproName: "ly0d2.wxzf.setFail",
+                                data: {
+                                    mchid: scopeThis.initBox.mchid,
+                                    id_business: scopeThis.initBox.id_business
+                                }
+                            }).then(()=>{
+                                ElMessage("已中止支付")
                                 withTable.refresh({scopeThis})
                             })
-                        }).catch(err=>{
-                            ElMessage({type: 'info', message: '取消退款'})
-                        })
+                        }
                     }
-                },
-                {
-                    title: "中止支付",
-                    handle({scopeThis, index}){
-                        ly0request.ly0.storpro({
-                            storproName: "ly0d2.wxzf.setFail",
-                            data: {
-                                mchid: scopeThis.initBox.mchid,
-                                id_business: scopeThis.initBox.id_business
-                            }
-                        }).then(()=>{
-                            ElMessage("已中止支付")
-                            withTable.refresh({scopeThis})
-                        })
-                    }
-                }
-            ]
-        }
-    ],
+                ]
+            }
+        ],
+    },
     table: {
         cols: [
             {

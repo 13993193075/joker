@@ -23467,7 +23467,7 @@ return (_ctx, _cache) => {
 
 script$o.__file = "src/form/LabelBox.vue";
 
-const _hoisted_1$h = { key: 12 };
+const _hoisted_1$i = { key: 12 };
 const _hoisted_2$e = { key: 0 };
 const _hoisted_3$7 = { key: 13 };
 const _hoisted_4$5 = { key: 0 };
@@ -23904,7 +23904,7 @@ return (_ctx, _cache) => {
           }, 8 /* PROPS */, ["modelValue", "disabled", "onChange"]))
         : vue.createCommentVNode("v-if", true),
       (vue.unref(propsItem_box).inputType === 'button-group' && vue.unref(propsItem_box).box && vue.unref(propsItem_box).box.length > 0)
-        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$h, [
+        ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$i, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(propsItem_box).box, (item0, index0) => {
               return (vue.openBlock(), vue.createBlock(_component_el_button_group, {
                 key: index0,
@@ -24240,7 +24240,7 @@ return (_ctx, _cache) => {
 
 script$n.__file = "src/form/InputBox.vue";
 
-const _hoisted_1$g = { key: 0 };
+const _hoisted_1$h = { key: 0 };
 const _hoisted_2$d = ["colspan"];
 const _hoisted_3$6 = { key: 0 };
 const _hoisted_4$4 = ["colspan"];
@@ -24319,7 +24319,7 @@ return (_ctx, _cache) => {
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.items, (item0, index0) => {
                 return (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: index0 }, [
                   (item0.hdlVisible ? item0.hdlVisible({formData: vue.unref(formData_box), scopeThis: vue.unref(scopeThis_box)}) : true)
-                    ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$g, [
+                    ? (vue.openBlock(), vue.createElementBlock("tr", _hoisted_1$h, [
                         (!!item0.label)
                           ? (vue.openBlock(), vue.createElementBlock("td", {
                               key: 0,
@@ -41858,7 +41858,7 @@ return (_ctx, _cache) => {
 
 script$j.__file = "src/richtext/index.vue";
 
-const _hoisted_1$f = { style: {"text-align":"center"} };
+const _hoisted_1$g = { style: {"text-align":"center"} };
 
 
 var script$i = {
@@ -42019,7 +42019,7 @@ return (_ctx, _cache) => {
         vue.createElementVNode("div", {
           style: vue.normalizeStyle(style.line)
         }, null, 4 /* STYLE */),
-        vue.createElementVNode("div", _hoisted_1$f, [
+        vue.createElementVNode("div", _hoisted_1$g, [
           vue.createVNode(_component_el_button, {
             type: "success",
             round: "",
@@ -42042,7 +42042,7 @@ return (_ctx, _cache) => {
 
 script$i.__file = "src/table/PickCol.vue";
 
-const _hoisted_1$e = { style: {"padding":"10px"} };
+const _hoisted_1$f = { style: {"padding":"10px"} };
 const _hoisted_2$c = { key: 0 };
 const _hoisted_3$5 = ["onClick", "onMouseover"];
 const _hoisted_4$3 = ["href", "download"];
@@ -42242,7 +42242,7 @@ return (_ctx, _cache) => {
   const _component_el_pagination = vue.resolveComponent("el-pagination");
   const _directive_loading = vue.resolveDirective("loading");
 
-  return (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$e, [
+  return (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$f, [
     vue.createCommentVNode(" 标题线 "),
     (vue.unref(tableProps_box).titleLine.text)
       ? (vue.openBlock(), vue.createElementBlock("div", {
@@ -42720,7 +42720,7 @@ var ly0default = {
   }
 };
 
-const _hoisted_1$d = { class: "el-upload__tip" };
+const _hoisted_1$e = { class: "el-upload__tip" };
 const _hoisted_2$b = {
   key: 0,
   style: {"font-size":"xx-small"}
@@ -42835,7 +42835,7 @@ return (_ctx, _cache) => {
       limit: myProps_box.limit
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("span", _hoisted_1$d, " " + vue.toDisplayString(myProps_box.tip ?? "可以上传" + myProps_box.limit + "个文件"), 1 /* TEXT */)
+        vue.createElementVNode("span", _hoisted_1$e, " " + vue.toDisplayString(myProps_box.tip ?? "可以上传" + myProps_box.limit + "个文件"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_button, {
@@ -42874,7 +42874,7 @@ return (_ctx, _cache) => {
 
 script$f.__file = "src/upload/Upload.vue";
 
-const _hoisted_1$c = ["src"];
+const _hoisted_1$d = ["src"];
 const _hoisted_2$a = { key: 0 };
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
@@ -43017,7 +43017,7 @@ return (_ctx, _cache) => {
               src: vue.unref(fileList_box)[0].response.data.src,
               class: "avatar",
               style: vue.normalizeStyle(style.avatarImage)
-            }, null, 12 /* STYLE, PROPS */, _hoisted_1$c))
+            }, null, 12 /* STYLE, PROPS */, _hoisted_1$d))
           : (vue.openBlock(), vue.createBlock(_component_el_icon, {
               key: 1,
               class: "avatar-uploader-icon",
@@ -43055,7 +43055,7 @@ return (_ctx, _cache) => {
 script$e.__scopeId = "data-v-0b647a60";
 script$e.__file = "src/upload/Upload-avatar.vue";
 
-const _hoisted_1$b = ["src"];
+const _hoisted_1$c = ["src"];
 const _hoisted_2$9 = { key: 0 };
 const _hoisted_3$4 = { style: {"color":"blue"} };
 const _hoisted_4$2 = { key: 1 };
@@ -43193,7 +43193,7 @@ return (_ctx, _cache) => {
               class: "avatar",
               src: fileList_box.value[0].response.data.src,
               style: vue.normalizeStyle(style.avatarImage())
-            }, null, 12 /* STYLE, PROPS */, _hoisted_1$b))
+            }, null, 12 /* STYLE, PROPS */, _hoisted_1$c))
           : (vue.openBlock(), vue.createBlock(_component_el_icon, {
               key: 1,
               class: "avatar-uploader-icon",
@@ -43248,7 +43248,7 @@ return (_ctx, _cache) => {
 script$d.__scopeId = "data-v-6fc32e0e";
 script$d.__file = "src/upload/Upload-carplate.vue";
 
-const _hoisted_1$a = { class: "el-upload__tip" };
+const _hoisted_1$b = { class: "el-upload__tip" };
 const _hoisted_2$8 = {
   key: 0,
   style: {"font-size":"xx-small"}
@@ -43365,7 +43365,7 @@ return (_ctx, _cache) => {
       drag: ""
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("div", _hoisted_1$a, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个文件"), 1 /* TEXT */)
+        vue.createElementVNode("div", _hoisted_1$b, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个文件"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_icon, { class: "el-icon--upload" }, {
@@ -43405,7 +43405,7 @@ return (_ctx, _cache) => {
 
 script$c.__file = "src/upload/Upload-drag.vue";
 
-const _hoisted_1$9 = { class: "el-upload__tip" };
+const _hoisted_1$a = { class: "el-upload__tip" };
 const _hoisted_2$7 = {
   key: 0,
   style: {"font-size":"xx-small"}
@@ -43519,7 +43519,7 @@ return (_ctx, _cache) => {
       limit: myProps_box.limit
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("div", _hoisted_1$9, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"), 1 /* TEXT */)
+        vue.createElementVNode("div", _hoisted_1$a, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_button, {
@@ -43558,7 +43558,7 @@ return (_ctx, _cache) => {
 
 script$b.__file = "src/upload/Upload-picture.vue";
 
-const _hoisted_1$8 = { class: "el-upload__tip" };
+const _hoisted_1$9 = { class: "el-upload__tip" };
 const _hoisted_2$6 = ["src"];
 const _hoisted_3$3 = {
   key: 0,
@@ -43658,7 +43658,7 @@ return (_ctx, _cache) => {
       limit: myProps_box.limit
     }, {
       tip: vue.withCtx(() => [
-        vue.createElementVNode("div", _hoisted_1$8, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"), 1 /* TEXT */)
+        vue.createElementVNode("div", _hoisted_1$9, " " + vue.toDisplayString(myProps_box.tip || "可以上传" + myProps_box.limit + "个图片"), 1 /* TEXT */)
       ]),
       default: vue.withCtx(() => [
         vue.createVNode(_component_el_icon, null, {
@@ -43716,7 +43716,7 @@ var upload = {
   Upload_pictureCard: script$a
 };
 
-const _hoisted_1$7 = { style: {"width":"100%"} };
+const _hoisted_1$8 = { style: {"width":"100%"} };
 const _hoisted_2$5 = { style: {"width":"30%"} };
 
 // 遵循 Vue 3 v-model 规范，使用 modelValue
@@ -43969,7 +43969,7 @@ return (_ctx, _cache) => {
       "destroy-on-close": true
     }, {
       default: vue.withCtx(() => [
-        vue.createElementVNode("table", _hoisted_1$7, [
+        vue.createElementVNode("table", _hoisted_1$8, [
           vue.createElementVNode("tbody", null, [
             vue.createElementVNode("tr", null, [
               vue.createElementVNode("td", _hoisted_2$5, [
@@ -47473,7 +47473,7 @@ var handles = {
   }
 };
 
-const _hoisted_1$6 = { class: "amount" };
+const _hoisted_1$7 = { class: "amount" };
 
 
 var script$8 = {
@@ -47521,7 +47521,7 @@ return (_ctx, _cache) => {
             class: "qrcode",
             id: "qrcodejs2.ly0d2cash"
           }, null, -1 /* CACHED */)),
-          vue.createElementVNode("div", _hoisted_1$6, vue.toDisplayString('金额：¥' + vue.unref(qrcode$1).formData.amount), 1 /* TEXT */)
+          vue.createElementVNode("div", _hoisted_1$7, vue.toDisplayString('金额：¥' + vue.unref(qrcode$1).formData.amount), 1 /* TEXT */)
         ]),
         _: 1 /* STABLE */
       }),
@@ -47552,7 +47552,7 @@ return (_ctx, _cache) => {
 script$8.__scopeId = "data-v-4b8e1496";
 script$8.__file = "src/ly0d2cash/qrcode/Index.vue";
 
-const _hoisted_1$5 = { style: {"padding":"10px"} };
+const _hoisted_1$6 = { style: {"padding":"10px"} };
 
 
 var script$7 = {
@@ -47590,7 +47590,7 @@ vue.onMounted(()=>{
 return (_ctx, _cache) => {
   const _component_ly0Form = vue.resolveComponent("ly0Form");
 
-  return (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$5, [
+  return (vue.openBlock(), vue.createElementBlock("div", _hoisted_1$6, [
     vue.createVNode(_component_ly0Form, {
       modelValue: scopeThis.formData,
       "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((scopeThis.formData) = $event)),
@@ -47632,143 +47632,145 @@ var tableData = {
 
 var tableProps = {
   // 置顶菜单
-  menu: [{
-    title: "查询",
+  menu: {
     menu: [{
-      title: "全部",
-      async handle(_ref) {
-        let {
-          scopeThis,
-          index
-        } = _ref;
-        await withTable.reload({
-          scopeThis
-        });
-      }
-    }, {
-      title: "刷新",
-      async handle(_ref2) {
-        let {
-          scopeThis,
-          index
-        } = _ref2;
-        await withTable.refresh({
-          scopeThis
-        });
-      }
-    }, {
       title: "查询",
-      handle(_ref3) {
-        let {
-          scopeThis,
-          index
-        } = _ref3;
-        withTable.popupFind({
-          scopeThis
-        });
-      }
+      menu: [{
+        title: "全部",
+        async handle(_ref) {
+          let {
+            scopeThis,
+            index
+          } = _ref;
+          await withTable.reload({
+            scopeThis
+          });
+        }
+      }, {
+        title: "刷新",
+        async handle(_ref2) {
+          let {
+            scopeThis,
+            index
+          } = _ref2;
+          await withTable.refresh({
+            scopeThis
+          });
+        }
+      }, {
+        title: "查询",
+        handle(_ref3) {
+          let {
+            scopeThis,
+            index
+          } = _ref3;
+          withTable.popupFind({
+            scopeThis
+          });
+        }
+      }, {
+        title: "新增",
+        hdlDisabled(_ref4) {
+          let {
+            scopeThis,
+            item,
+            index
+          } = _ref4;
+          return scopeThis.initBox.readOnly;
+        },
+        handle(_ref5) {
+          let {
+            scopeThis,
+            index
+          } = _ref5;
+          withTable.popupInsertOne({
+            scopeThis
+          });
+        }
+      }]
     }, {
-      title: "新增",
-      hdlDisabled(_ref4) {
+      title: "收银",
+      hdlDisabled(_ref6) {
         let {
           scopeThis,
           item,
           index
-        } = _ref4;
+        } = _ref6;
         return scopeThis.initBox.readOnly;
       },
-      handle(_ref5) {
-        let {
-          scopeThis,
-          index
-        } = _ref5;
-        withTable.popupInsertOne({
-          scopeThis
-        });
-      }
-    }]
-  }, {
-    title: "收银",
-    hdlDisabled(_ref6) {
-      let {
-        scopeThis,
-        item,
-        index
-      } = _ref6;
-      return scopeThis.initBox.readOnly;
-    },
-    menu: [{
-      title: "收银",
-      handle(_ref7) {
-        let {
-          scopeThis,
-          index
-        } = _ref7;
-        scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business;
-        scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code;
-        // 支付金额合计
-        scopeThis.cashBox.formData.amount = Math.floor(scopeThis.initBox.deal -
-        // 订单金额（应收应付）
-        scopeThis.amountBox.succeeded -
-        // 支付成功
-        scopeThis.amountBox.started // 支付中
-        ) / 100;
-        scopeThis.cashBox.formData.wx_appid = scopeThis.initBox.wx_appid;
-        scopeThis.cashBox.formData.wx_mchid = scopeThis.initBox.wx_mchid;
-        scopeThis.cashBox.formProps.popup.visible = true;
-      }
-    }, {
-      title: "退款",
-      handle(_ref8) {
-        let {
-          scopeThis,
-          index
-        } = _ref8;
-        elementPlus.ElMessageBox.confirm('退款?', '警告', {
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+      menu: [{
+        title: "收银",
+        handle(_ref7) {
+          let {
+            scopeThis,
+            index
+          } = _ref7;
+          scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business;
+          scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code;
+          // 支付金额合计
+          scopeThis.cashBox.formData.amount = Math.floor(scopeThis.initBox.deal -
+          // 订单金额（应收应付）
+          scopeThis.amountBox.succeeded -
+          // 支付成功
+          scopeThis.amountBox.started // 支付中
+          ) / 100;
+          scopeThis.cashBox.formData.wx_appid = scopeThis.initBox.wx_appid;
+          scopeThis.cashBox.formData.wx_mchid = scopeThis.initBox.wx_mchid;
+          scopeThis.cashBox.formProps.popup.visible = true;
+        }
+      }, {
+        title: "退款",
+        handle(_ref8) {
+          let {
+            scopeThis,
+            index
+          } = _ref8;
+          elementPlus.ElMessageBox.confirm('退款?', '警告', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            ly0request$1.ly0.storpro({
+              storproName: "ly0d2.wxzf.refund",
+              data: {
+                id_business: scopeThis.initBox.id_business
+              }
+            }).then(() => {
+              elementPlus.ElMessage("已退款");
+              withTable.refresh({
+                scopeThis
+              });
+            });
+          }).catch(err => {
+            elementPlus.ElMessage({
+              type: 'info',
+              message: '取消退款'
+            });
+          });
+        }
+      }, {
+        title: "中止支付",
+        handle(_ref9) {
+          let {
+            scopeThis,
+            index
+          } = _ref9;
           ly0request$1.ly0.storpro({
-            storproName: "ly0d2.wxzf.refund",
+            storproName: "ly0d2.wxzf.setFail",
             data: {
+              mchid: scopeThis.initBox.mchid,
               id_business: scopeThis.initBox.id_business
             }
           }).then(() => {
-            elementPlus.ElMessage("已退款");
+            elementPlus.ElMessage("已中止支付");
             withTable.refresh({
               scopeThis
             });
           });
-        }).catch(err => {
-          elementPlus.ElMessage({
-            type: 'info',
-            message: '取消退款'
-          });
-        });
-      }
-    }, {
-      title: "中止支付",
-      handle(_ref9) {
-        let {
-          scopeThis,
-          index
-        } = _ref9;
-        ly0request$1.ly0.storpro({
-          storproName: "ly0d2.wxzf.setFail",
-          data: {
-            mchid: scopeThis.initBox.mchid,
-            id_business: scopeThis.initBox.id_business
-          }
-        }).then(() => {
-          elementPlus.ElMessage("已中止支付");
-          withTable.refresh({
-            scopeThis
-          });
-        });
-      }
+        }
+      }]
     }]
-  }],
+  },
   table: {
     cols: [{
       label: '金额',
@@ -48330,6 +48332,9 @@ var cashBox = {
   formProps
 };
 
+const _hoisted_1$5 = { style: {"width":"100%"} };
+
+
 var script$6 = {
   __name: 'main',
   props: {
@@ -48380,7 +48385,7 @@ return (_ctx, _cache) => {
 
   return (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
     vue.createCommentVNode(" 金额统计 "),
-    vue.createElementVNode("table", null, [
+    vue.createElementVNode("table", _hoisted_1$5, [
       _cache[3] || (_cache[3] = vue.createElementVNode("thead", null, [
         vue.createElementVNode("tr", null, [
           vue.createElementVNode("th", null, "订单金额（应收应付）"),
