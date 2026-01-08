@@ -47707,7 +47707,7 @@ var tableProps = {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            ly0request.ly0.storpro({
+            ly0request.storpro({
               storproName: "ly0d2.wxzf.refund",
               data: {
                 id_business: scopeThis.initBox.id_business
@@ -47732,7 +47732,7 @@ var tableProps = {
             scopeThis,
             index
           } = _ref7;
-          ly0request.ly0.storpro({
+          ly0request.storpro({
             storproName: "ly0d2.wxzf.setFail",
             data: {
               mchid: scopeThis.initBox.mchid,
