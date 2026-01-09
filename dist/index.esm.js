@@ -22894,7 +22894,7 @@ const currentPageChange = async _ref4 => {
     scopeThis
   } = _ref4;
   scopeThis.query.currentPage = currentPage;
-  await reload({
+  await refresh({
     scopeThis
   });
 };
@@ -42314,7 +42314,7 @@ return (_ctx, _cache) => {
       stripe: "",
       border: "",
       "element-loading-text": "tableProps_box.table.loading.text",
-      "element-loading-spinner": " tableProps_box.table.loading.spinner",
+      "element-loading-spinner": "tableProps_box.table.loading.spinner",
       "element-loading-background": "tableProps_box.table.loading.background",
       onCellMouseEnter: hdl.cellMouseEnter,
       onRowClick: hdl.rowClick,
@@ -42521,7 +42521,7 @@ return (_ctx, _cache) => {
     createVNode(_component_el_pagination, {
       total: unref(tableData_box).total,
       "page-size": unref(tableData_box).pageSize,
-      "page-sizes": [unref(tableData_box).pageSize],
+      "page-sizes": unref(tableData_box).pageSizes,
       "current-page": unref(tableData_box).currentPage,
       style: normalizeStyle(style.pagination),
       onSizeChange: hdl.pageSizeChange,

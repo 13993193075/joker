@@ -101,7 +101,7 @@ const pageSizeChange = async ({pageSize, scopeThis}) => {
 // 当前页码改变
 const currentPageChange = async ({currentPage, scopeThis}) => {
     scopeThis.query.currentPage = currentPage
-    await reload({scopeThis})
+    await refresh({scopeThis})
 }
 
 // 获取页面数据附加

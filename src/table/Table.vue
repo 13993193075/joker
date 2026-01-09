@@ -52,7 +52,7 @@
             border
             v-loading="tableProps_box.table.loading.visible"
             element-loading-text="tableProps_box.table.loading.text"
-            element-loading-spinner=" tableProps_box.table.loading.spinner"
+            element-loading-spinner="tableProps_box.table.loading.spinner"
             element-loading-background="tableProps_box.table.loading.background"
             @cell-mouse-enter="hdl.cellMouseEnter"
             @row-click="hdl.rowClick"
@@ -209,7 +209,7 @@
         <el-pagination
             :total="tableData_box.total"
             :page-size="tableData_box.pageSize"
-            :page-sizes="[tableData_box.pageSize]"
+            :page-sizes="tableData_box.pageSizes"
             :current-page="tableData_box.currentPage"
             :style="style.pagination"
             @size-change="hdl.pageSizeChange"
