@@ -52,7 +52,7 @@ import { ly0 as ly0request } from '../request/index.js'
 import {unclassified as beanUnclass} from '@yoooloo42/bean'
 
 // 数据刷新
-const refresh = async ({scopeThis, message}) => {
+const refresh = async ({scopeThis, noMessage}) => {
     scopeThis.tableProps.table.loading.visible = true
     const result = await ly0request.storpro({
         storproName: scopeThis.storpro.refresh,
@@ -73,11 +73,11 @@ const refresh = async ({scopeThis, message}) => {
             pageSize: scopeThis.query.pageSize,
             currentPage: scopeThis.query.currentPage
         })
-        if(!!message){
+        if(!noMessage){
             ElMessage('数据已刷新')
         }
     }else{
-        if(!!message){
+        if(!noMessage){
             ElMessage('数据刷新错误')
         }
     }
@@ -87,7 +87,7 @@ const refresh = async ({scopeThis, message}) => {
 // 数据重载
 const reload = async ({scopeThis}) => {
     beanUnclass.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit)
-    const result = await refresh({scopeThis})
+    const result = await refresh({scopeThis, noMessage: true})
     ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误')
 }
 

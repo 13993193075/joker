@@ -22826,7 +22826,7 @@ var unclassified = {
 const refresh = async _ref => {
   let {
     scopeThis,
-    message
+    noMessage
   } = _ref;
   scopeThis.tableProps.table.loading.visible = true;
   const result = await ly0request.storpro({
@@ -22848,11 +22848,11 @@ const refresh = async _ref => {
       pageSize: scopeThis.query.pageSize,
       currentPage: scopeThis.query.currentPage
     });
-    if (!!message) {
+    if (!noMessage) {
       ElMessage('数据已刷新');
     }
   } else {
-    if (!!message) {
+    if (!noMessage) {
       ElMessage('数据刷新错误');
     }
   }
@@ -22869,7 +22869,8 @@ const reload = async _ref2 => {
   } = _ref2;
   unclassified.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit);
   const result = await refresh({
-    scopeThis
+    scopeThis,
+    noMessage: true
   });
   ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误');
 };
