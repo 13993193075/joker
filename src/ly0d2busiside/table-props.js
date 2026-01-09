@@ -10,23 +10,17 @@ export default {
                 title: "查询",
                 menu: [
                     {
-                        title: "全部",
-                        async handle({scopeThis, index}){
-                            await withTable.reload({scopeThis})
-                        }
+                        text: "全部",
+                        hdlClick: withTable.reload
                     },
                     {
-                        title: "刷新",
-                        async handle({scopeThis, index}){
-                            await withTable.refresh({scopeThis})
-                        }
+                        text: "刷新",
+                        hdlClick: withTable.refresh
                     },
                     {
-                        title: "查询",
-                        handle({scopeThis, index}){
-                            withTable.popupFind({scopeThis})
-                        }
-                    }
+                        text: "查询",
+                        hdlClick: withTable.popupFind
+                    },
                 ]
             },
             {
@@ -91,6 +85,8 @@ export default {
         ],
     },
     table: {
+        hdlPageSizeChange: withTable.pageSizeChange,
+        hdlCurrentPageChange: withTable.currentPageChange,
         cols: [
             {
                 label: '金额',
