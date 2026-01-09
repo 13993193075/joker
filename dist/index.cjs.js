@@ -22887,7 +22887,7 @@ const pageSizeChange = async _ref3 => {
   } = _ref3;
   scopeThis.query.pageSize = pageSize;
   scopeThis.query.currentPage = 1;
-  await reload({
+  await refresh({
     scopeThis
   });
 };
@@ -42137,8 +42137,8 @@ const hdl = {
             return ''
         }
     },
+    // 页记录数改变
     async pageSizeChange(pageSize) {
-        // 页记录数改变
         tableData_box.pageSize = pageSize;
         tableData_box.currentPage = 1;
         if(tableProps_box.table.hdlPageSizeChange){
@@ -42626,6 +42626,7 @@ var ly0default$1 = {
       order: ""
     },
     pageSize: 10,
+    pageSizes: [10, 20, 30, 40],
     currentPage: 1
   }
 };

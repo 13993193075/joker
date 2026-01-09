@@ -307,8 +307,8 @@ const hdl = {
             return ''
         }
     },
+    // 页记录数改变
     async pageSizeChange(pageSize) {
-        // 页记录数改变
         tableData_box.pageSize = pageSize
         tableData_box.currentPage = 1
         if(tableProps_box.table.hdlPageSizeChange){

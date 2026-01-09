@@ -70,6 +70,7 @@ export default {
             order: ""
         },
         pageSize: 10,
+        pageSizes: [10, 20, 30, 40],
         currentPage: 1,
     }
 }

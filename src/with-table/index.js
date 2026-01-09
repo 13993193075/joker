@@ -95,7 +95,7 @@ const reload = async ({scopeThis}) => {
 const pageSizeChange = async ({pageSize, scopeThis}) => {
     scopeThis.query.pageSize = pageSize
     scopeThis.query.currentPage = 1
-    await reload({scopeThis})
+    await refresh({scopeThis})
 }
 
 // 当前页码改变
