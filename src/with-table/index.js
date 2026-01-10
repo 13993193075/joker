@@ -210,13 +210,11 @@ const submitInsertOne = async ({scopeThis}) => {
             scopeThis.formProps.popup.visible = false
             ElMessage('新增一条记录成功')
 
-            scopeThis.tableData.data = [result.dataNew]
-            scopeThis.tableData.total = 1
-            scopeThis.tableData.currentPage = 1
             scopeThis.query.formData = {
-                _id: result.dataNew._id
+                _id: result._id
             }
             scopeThis.query.currentPage = 1
+            await refresh({scopeThis})
         }else{
             if(result.message){
                 ElMessage(result.message)
