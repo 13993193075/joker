@@ -43772,9 +43772,6 @@ const popup = vue.reactive({
 
 vue.watch(() => props.modelValue,
     async (valNew, valOld) => {
-        // 只有当传入的值有效时才进行网络请求
-        if (!valNew) return;
-        
         const result2 = await request.ly0.storpro({
             noSession: true,
             storproName: 'ly0d3.gbt2260code2.init',
