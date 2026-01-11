@@ -86,7 +86,10 @@ const refresh = async ({scopeThis, noMessage}) => {
 
 // 数据重载
 const reload = async ({scopeThis}) => {
-    beanUnclass.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit)
+    beanUnclass.deepClone.replaceObject(
+        scopeThis.query,
+        JSON.parse(JSON.stringify(scopeThis.queryInit))
+    )
     const result = await refresh({scopeThis, noMessage: true})
     ElMessage(result.code === 0 ? '数据已重载' : '数据重载错误')
 }

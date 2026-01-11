@@ -22871,7 +22871,7 @@ const reload = async _ref2 => {
   let {
     scopeThis
   } = _ref2;
-  unclassified.deepClone.replaceObject(scopeThis.query, scopeThis.queryInit);
+  unclassified.deepClone.replaceObject(scopeThis.query, JSON.parse(JSON.stringify(scopeThis.queryInit)));
   const result = await refresh({
     scopeThis,
     noMessage: true
