@@ -23896,13 +23896,13 @@ return (_ctx, _cache) => {
               (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(propsItem_box).items, (item0, index0) => {
                 return (vue.openBlock(), vue.createBlock(_component_el_radio, {
                   key: index0,
-                  label: item0[vue.unref(propsItem_box).item_fieldValue]
+                  value: item0[vue.unref(propsItem_box).item_fieldValue]
                 }, {
                   default: vue.withCtx(() => [
                     vue.createTextVNode(vue.toDisplayString(item0[vue.unref(propsItem_box).item_fieldLabel]), 1 /* TEXT */)
                   ]),
                   _: 2 /* DYNAMIC */
-                }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["label"]))
+                }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["value"]))
               }), 128 /* KEYED_FRAGMENT */))
             ]),
             _: 1 /* STABLE */
@@ -24295,6 +24295,11 @@ const hdl = {
                 scopeThis: scopeThis_box
             });
         }
+    },
+    collapseChange({activeNames, item}){
+        if(item.hdlChange){
+            item.hdlChange(activeNames);
+        }
     }
 };
 
@@ -24352,7 +24357,8 @@ return (_ctx, _cache) => {
                                     ,
                                 modelValue: item0.activeNames,
                                 "onUpdate:modelValue": $event => ((item0.activeNames) = $event),
-                                style: vue.normalizeStyle(style.collapse.style)
+                                style: vue.normalizeStyle(style.collapse.style),
+                                onChange: activeNames=>{hdl.collapseChange({activeNames, item: item0});}
                               }, {
                                 default: vue.withCtx(() => [
                                   (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item0.items, (item1, index1) => {
@@ -24414,7 +24420,7 @@ return (_ctx, _cache) => {
                                   }), 128 /* KEYED_FRAGMENT */))
                                 ]),
                                 _: 2 /* DYNAMIC */
-                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style"]))
+                              }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["accordion", "modelValue", "onUpdate:modelValue", "style", "onChange"]))
                             : vue.createCommentVNode("v-if", true),
                           vue.createVNode(script$n, {
                             modelValue: vue.unref(formData_box),

@@ -20,6 +20,7 @@
                                     "
                                     v-model="item0.activeNames"
                                     :style="style.collapse.style"
+                                    @change="activeNames=>{hdl.collapseChange({activeNames, item: item0})}"
                                 >
                                     <template v-for="(item1, index1) in item0.items" :key="index1">
                                         <el-collapse-item
@@ -118,6 +119,11 @@ const hdl = {
                 formProps: formProps_box,
                 scopeThis: scopeThis_box
             })
+        }
+    },
+    collapseChange({activeNames, item}){
+        if(item.hdlChange){
+            item.hdlChange(activeNames)
         }
     }
 }

@@ -87,7 +87,7 @@
             @change="radioGroup.hdlChange"
         >
             <template v-for="(item0, index0) in propsItem_box.items" :key="index0">
-                <el-radio :label="item0[propsItem_box.item_fieldValue]">
+                <el-radio :value="item0[propsItem_box.item_fieldValue]">
                     {{ item0[propsItem_box.item_fieldLabel] }}
                 </el-radio>
             </template>
