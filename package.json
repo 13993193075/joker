@@ -1,6 +1,6 @@
 {
   "name": "@yoooloo42/joker",
-  "version": "1.0.281",
+  "version": "1.0.282",
   "description": "",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/13993193075/joker#readme",
   "dependencies": {
     "@vueup/vue-quill": "^1.2.0",
-    "@yoooloo42/bean": "^1.0.32",
+    "@yoooloo42/bean": "^1.0.33",
     "axios": "^1.13.2",
     "file-saver": "^2.0.5",
     "qrcode": "^1.5.4",
