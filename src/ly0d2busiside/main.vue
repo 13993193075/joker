@@ -5,7 +5,6 @@ import tableData from './table-data.js'
 import tableProps from './table-props.js'
 import storpro from './storpro.js'
 import query from './query.js'
-import find from './find.js'
 import doc from './doc.js'
 import amountBox from './amount-box.js'
 import cashBox from './cash-box.js'
@@ -25,7 +24,6 @@ const scopeThis = reactive({
     queryInit: query,
     query: JSON.parse(JSON.stringify(query)),
     storpro,
-    find,
     doc,
     pgData: {
         query: null,

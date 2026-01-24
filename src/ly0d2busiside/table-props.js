@@ -7,27 +7,8 @@ export default {
     menu: {
         menu: [
             {
-                title: "查询",
-                menu: [
-                    {
-                        title: "全部",
-                        hdlClick({scopeThis}){
-                            withTable.reload({scopeThis})
-                        }
-                    },
-                    {
-                        title: "刷新",
-                        hdlClick({scopeThis}){
-                            withTable.refresh({scopeThis})
-                        }
-                    },
-                    {
-                        title: "查询",
-                        hdlClick({scopeThis}){
-                            withTable.popupFind({scopeThis})
-                        }
-                    },
-                ]
+                title: "刷新",
+                handle: withTable.reload
             },
             {
                 title: "收银",
