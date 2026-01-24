@@ -44253,7 +44253,6 @@ function submit(_ref2) {
       }
       // 关闭收银窗口
       scopeThis.formProps.popup.visible = false;
-      scopeThis.formProps.popup.switch = false;
     });
   } else if (scopeThis.formData.process_code === "wxzf0") {
     // 微信支付.客户付款码付款
@@ -44279,7 +44278,6 @@ function submit(_ref2) {
       }
       // 关闭收银窗口
       scopeThis.formProps.popup.visible = false;
-      scopeThis.formProps.popup.switch = false;
     });
   } else if (scopeThis.formData.process_code === "wxzf2") {
     // 微信支付.商户二维码收款
@@ -44304,7 +44302,6 @@ function submit(_ref2) {
       }
       // 关闭收银窗口
       scopeThis.formProps.popup.visible = false;
-      scopeThis.formProps.popup.switch = false;
 
       // 弹出二维码窗口
       if (result.code === 0 && result.code_url) {
