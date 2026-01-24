@@ -68,17 +68,15 @@ const style = ref({
     <table style="width: 100%;">
         <thead><tr>
             <th>订单金额（应收应付）</th>
-            <th>支付金额合计</th>
-            <th>支付成功</th>
             <th>支付中</th>
+            <th>支付成功</th>
             <th>支付失败</th>
             <th>未支付</th>
         </tr></thead>
         <tbody><tr>
             <td :style="style.amount">{{Math.floor(scopeThis.initBox.deal) / 100}}</td>
-            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.sum) / 100}}</td>
-            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.succeeded) / 100}}</td>
             <td :style="style.amount">{{Math.floor(scopeThis.amountBox.started) / 100}}</td>
+            <td :style="style.amount">{{Math.floor(scopeThis.amountBox.succeeded) / 100}}</td>
             <td :style="style.amount">{{Math.floor(scopeThis.amountBox.failed) / 100}}</td>
             <td :style="style.amount">{{Math.floor(scopeThis.amountBox.unpaid) / 100}}</td>
         </tr></tbody>

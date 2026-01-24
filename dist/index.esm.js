@@ -48095,18 +48095,14 @@ var amountBox = {
     let {
       scopeThis
     } = _ref;
-    let unpaid = 0,
-      // 未支付
-      started = 0,
+    let started = 0,
       // 支付中
       succeeded = 0,
       // 支付成功
       failed = 0; // 支付失败
 
     scopeThis.tableData.data.forEach(i => {
-      if (i.status_code === '0') {
-        unpaid = unpaid + i.amount;
-      } else if (i.status_code === '1') {
+      if (i.status_code === '1') {
         started = started + i.amount;
       } else if (i.status_code === '2') {
         succeeded = succeeded + i.amount;
@@ -48115,11 +48111,11 @@ var amountBox = {
       }
     });
     return {
-      sum: succeeded + started + unpaid,
-      succeeded,
       started,
+      succeeded,
       failed,
-      unpaid
+      // 未支付
+      unpaid: scopeThis.initBox.deal - succeeded - started
     };
   }
 };
@@ -48201,9 +48197,8 @@ return (_ctx, _cache) => {
       _cache[3] || (_cache[3] = createElementVNode("thead", null, [
         createElementVNode("tr", null, [
           createElementVNode("th", null, "订单金额（应收应付）"),
-          createElementVNode("th", null, "支付金额合计"),
-          createElementVNode("th", null, "支付成功"),
           createElementVNode("th", null, "支付中"),
+          createElementVNode("th", null, "支付成功"),
           createElementVNode("th", null, "支付失败"),
           createElementVNode("th", null, "未支付")
         ])
@@ -48215,13 +48210,10 @@ return (_ctx, _cache) => {
           }, toDisplayString(Math.floor(scopeThis.initBox.deal) / 100), 5 /* TEXT, STYLE */),
           createElementVNode("td", {
             style: normalizeStyle(style.value.amount)
-          }, toDisplayString(Math.floor(scopeThis.amountBox.sum) / 100), 5 /* TEXT, STYLE */),
+          }, toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 5 /* TEXT, STYLE */),
           createElementVNode("td", {
             style: normalizeStyle(style.value.amount)
           }, toDisplayString(Math.floor(scopeThis.amountBox.succeeded) / 100), 5 /* TEXT, STYLE */),
-          createElementVNode("td", {
-            style: normalizeStyle(style.value.amount)
-          }, toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 5 /* TEXT, STYLE */),
           createElementVNode("td", {
             style: normalizeStyle(style.value.amount)
           }, toDisplayString(Math.floor(scopeThis.amountBox.failed) / 100), 5 /* TEXT, STYLE */),

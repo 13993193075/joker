@@ -1,14 +1,11 @@
 export default {
     fun({scopeThis}){
-        let unpaid = 0, // 未支付
-            started = 0, // 支付中
+        let started = 0, // 支付中
             succeeded = 0, // 支付成功
             failed = 0; // 支付失败
 
         scopeThis.tableData.data.forEach(i=>{
-            if(i.status_code === '0'){
-                unpaid = unpaid + i.amount
-            }else if(i.status_code === '1'){
+            if(i.status_code === '1'){
                 started = started + i.amount
             }else if(i.status_code === '2'){
                 succeeded = succeeded + i.amount
@@ -18,11 +15,11 @@ export default {
         })
 
         return {
-            sum: succeeded + started + unpaid,
-            succeeded,
             started,
+            succeeded,
             failed,
-            unpaid,
+            // 未支付
+            unpaid: scopeThis.initBox.deal - succeeded - started,
         }
     }
 }

@@ -48099,18 +48099,14 @@ var amountBox = {
     let {
       scopeThis
     } = _ref;
-    let unpaid = 0,
-      // 未支付
-      started = 0,
+    let started = 0,
       // 支付中
       succeeded = 0,
       // 支付成功
       failed = 0; // 支付失败
 
     scopeThis.tableData.data.forEach(i => {
-      if (i.status_code === '0') {
-        unpaid = unpaid + i.amount;
-      } else if (i.status_code === '1') {
+      if (i.status_code === '1') {
         started = started + i.amount;
       } else if (i.status_code === '2') {
         succeeded = succeeded + i.amount;
@@ -48119,11 +48115,11 @@ var amountBox = {
       }
     });
     return {
-      sum: succeeded + started + unpaid,
-      succeeded,
       started,
+      succeeded,
       failed,
-      unpaid
+      // 未支付
+      unpaid: scopeThis.initBox.deal - succeeded - started
     };
   }
 };
@@ -48205,9 +48201,8 @@ return (_ctx, _cache) => {
       _cache[3] || (_cache[3] = vue.createElementVNode("thead", null, [
         vue.createElementVNode("tr", null, [
           vue.createElementVNode("th", null, "订单金额（应收应付）"),
-          vue.createElementVNode("th", null, "支付金额合计"),
-          vue.createElementVNode("th", null, "支付成功"),
           vue.createElementVNode("th", null, "支付中"),
+          vue.createElementVNode("th", null, "支付成功"),
           vue.createElementVNode("th", null, "支付失败"),
           vue.createElementVNode("th", null, "未支付")
         ])
@@ -48219,13 +48214,10 @@ return (_ctx, _cache) => {
           }, vue.toDisplayString(Math.floor(scopeThis.initBox.deal) / 100), 5 /* TEXT, STYLE */),
           vue.createElementVNode("td", {
             style: vue.normalizeStyle(style.value.amount)
-          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.sum) / 100), 5 /* TEXT, STYLE */),
+          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 5 /* TEXT, STYLE */),
           vue.createElementVNode("td", {
             style: vue.normalizeStyle(style.value.amount)
           }, vue.toDisplayString(Math.floor(scopeThis.amountBox.succeeded) / 100), 5 /* TEXT, STYLE */),
-          vue.createElementVNode("td", {
-            style: vue.normalizeStyle(style.value.amount)
-          }, vue.toDisplayString(Math.floor(scopeThis.amountBox.started) / 100), 5 /* TEXT, STYLE */),
           vue.createElementVNode("td", {
             style: vue.normalizeStyle(style.value.amount)
           }, vue.toDisplayString(Math.floor(scopeThis.amountBox.failed) / 100), 5 /* TEXT, STYLE */),
