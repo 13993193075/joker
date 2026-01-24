@@ -60,6 +60,7 @@ export default {
     submit: {
         async handle({scopeThis}){
             await scopeThis.handles.submit({scopeThis})
-        }
+        },
+        submitted: false // 提交监听，用于支付记录的刷新
     }
 }

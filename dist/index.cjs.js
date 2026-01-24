@@ -16872,7 +16872,7 @@ var lookup = [];
 var revLookup = [];
 var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
 var inited = false;
-function init$2 () {
+function init$3 () {
   inited = true;
   var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
   for (var i = 0, len = code.length; i < len; ++i) {
@@ -16886,7 +16886,7 @@ function init$2 () {
 
 function toByteArray (b64) {
   if (!inited) {
-    init$2();
+    init$3();
   }
   var i, j, l, tmp, placeHolders, arr;
   var len = b64.length;
@@ -16945,7 +16945,7 @@ function encodeChunk (uint8, start, end) {
 
 function fromByteArray (uint8) {
   if (!inited) {
-    init$2();
+    init$3();
   }
   var tmp;
   var len = uint8.length;
@@ -22928,7 +22928,7 @@ const getPgData = async _ref5 => {
 };
 
 // 初始化
-const init$1 = async _ref6 => {
+const init$2 = async _ref6 => {
   let {
     scopeThis
   } = _ref6;
@@ -23136,7 +23136,7 @@ var withTable = {
   pageSizeChange,
   currentPageChange,
   getPgData,
-  init: init$1,
+  init: init$2,
   popupFind,
   popupInsertOne,
   popupUpdateOne,
@@ -44200,7 +44200,8 @@ var formProps = {
       await scopeThis.handles.submit({
         scopeThis
       });
-    }
+    },
+    submitted: false // 提交监听，用于支付记录的刷新
   }
 };
 
@@ -44219,7 +44220,7 @@ var qrcode$1 = {
 };
 
 const ly0session = ly0request$1.ly0sessionLoad();
-function init(_ref) {
+function init$1(_ref) {
   let {
     scopeThis
   } = _ref;
@@ -44257,6 +44258,8 @@ function submit(_ref2) {
       }
       // 关闭收银窗口
       scopeThis.formProps.popup.visible = false;
+      // 通知外部组件已提交
+      scopeThis.formProps.submitted = true;
     });
   } else if (scopeThis.formData.process_code === "wxzf0") {
     // 微信支付.客户付款码付款
@@ -44282,6 +44285,8 @@ function submit(_ref2) {
       }
       // 关闭收银窗口
       scopeThis.formProps.popup.visible = false;
+      // 通知外部组件已提交
+      scopeThis.formProps.submitted = true;
     });
   } else if (scopeThis.formData.process_code === "wxzf2") {
     // 微信支付.商户二维码收款
@@ -44306,6 +44311,8 @@ function submit(_ref2) {
       }
       // 关闭收银窗口
       scopeThis.formProps.popup.visible = false;
+      // 通知外部组件已提交
+      scopeThis.formProps.submitted = true;
 
       // 弹出二维码窗口
       if (result.code === 0 && result.code_url) {
@@ -44323,8 +44330,8 @@ function submit(_ref2) {
     elementPlus.ElMessage("未选择：系统内置支付流程");
   }
 }
-var handles$1 = {
-  init,
+var handles$2 = {
+  init: init$1,
   submit
 };
 
@@ -47399,7 +47406,7 @@ function requireBrowser () {
 
 var browserExports = requireBrowser();
 
-var handles = {
+var handles$1 = {
   async init(_ref) {
     let {
       scopeThis
@@ -47498,11 +47505,11 @@ const scopeThis = vue.reactive({
     props: props.myProps,
     // 第二块屏幕 - 客户付费窗口
     winPayAnother: null,
-    handles
+    handles: handles$1
 });
 
 vue.onMounted(()=>{
-    handles.init({scopeThis});
+    handles$1.init({scopeThis});
 });
 
 return (_ctx, _cache) => {
@@ -47518,7 +47525,7 @@ return (_ctx, _cache) => {
     "append-to-body": "",
     title: vue.unref(qrcode$1).popup.title,
     width: '600px',
-    "before-close": vue.unref(handles).beforeClose
+    "before-close": vue.unref(handles$1).beforeClose
   }, {
     default: vue.withCtx(() => [
       vue.createVNode(_component_el_row, { class: "qrcode-box" }, {
@@ -47537,7 +47544,7 @@ return (_ctx, _cache) => {
           vue.createVNode(_component_el_button, {
             type: "success",
             round: "",
-            onClick: vue.unref(handles).confirm
+            onClick: vue.unref(handles$1).confirm
           }, {
             default: vue.withCtx(() => [...(_cache[2] || (_cache[2] = [
               vue.createTextVNode("支付完成后，点击这里以确认", -1 /* CACHED */)
@@ -47580,7 +47587,7 @@ const props = __props;
 const scopeThis = vue.reactive({
     formData: unclassified.deepClone.deepDefaults(props.modelValue, formData),
     formProps: unclassified.deepClone.deepDefaults(props.myProps, formProps),
-    handles: handles$1,
+    handles: handles$2,
     pgData: {
         arrBusinessType: [],
         arrProcess: [],
@@ -48069,6 +48076,24 @@ var doc = {
   }
 };
 
+async function init(_ref) {
+  let {
+    scopeThis
+  } = _ref;
+  scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business;
+  scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code;
+  await withTable.init({
+    scopeThis
+  });
+  const txt = scopeThis.pgData.data.arrBusinessType.find(i => {
+    return i.code === scopeThis.initBox.businesstype_code;
+  }).text;
+  scopeThis.initBox.popup.title = '支付记录[' + txt + '] - 订单id: ' + scopeThis.initBox.id_business;
+}
+var handles = {
+  init
+};
+
 var amountBox = {
   fun(_ref) {
     let {
@@ -48141,6 +48166,7 @@ const scopeThis = vue.reactive({
             arrStatus: []
         }
     },
+    handles,
     initBox: props.myProps,
     amountBox: vue.computed(()=>{
         return amountBox.fun({scopeThis})
@@ -48149,13 +48175,14 @@ const scopeThis = vue.reactive({
 });
 
 vue.onMounted(async ()=>{
-    scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business;
-    scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code;
-    await withTable.init({scopeThis});
-    const txt = scopeThis.pgData.data.arrBusinessType.find(i=>{
-        return i.code === scopeThis.initBox.businesstype_code
-    }).text;
-    scopeThis.initBox.popup.title = '支付记录[' + txt + '] - 订单id: ' + scopeThis.initBox.id_business;
+    await scopeThis.handles.init({scopeThis});
+});
+
+vue.watch(() => scopeThis.cashBox.formProps.submitted, async (newVal) => {
+    if(!!newVal){
+        await scopeThis.handles.init({scopeThis});
+        scopeThis.cashBox.formProps.submitted = false;
+    }
 });
 
 const style = vue.ref({

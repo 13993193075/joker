@@ -34,6 +34,8 @@ function submit({scopeThis}){
             }
             // 关闭收银窗口
             scopeThis.formProps.popup.visible = false
+            // 通知外部组件已提交
+            scopeThis.formProps.submitted = true
         })
     } else if(scopeThis.formData.process_code === "wxzf0"){ // 微信支付.客户付款码付款
         ly0request.storpro({
@@ -58,6 +60,8 @@ function submit({scopeThis}){
             }
             // 关闭收银窗口
             scopeThis.formProps.popup.visible = false
+            // 通知外部组件已提交
+            scopeThis.formProps.submitted = true
         })
     } else if(scopeThis.formData.process_code === "wxzf2"){ // 微信支付.商户二维码收款
         ly0request.storpro({
@@ -81,6 +85,8 @@ function submit({scopeThis}){
             }
             // 关闭收银窗口
             scopeThis.formProps.popup.visible = false
+            // 通知外部组件已提交
+            scopeThis.formProps.submitted = true
 
             // 弹出二维码窗口
             if(result.code === 0 && result.code_url){

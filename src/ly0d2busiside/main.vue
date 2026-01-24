@@ -1,11 +1,11 @@
 <script setup>
-import {ref, reactive, computed, onMounted} from 'vue'
-import withTable from '../with-table/index.js'
+import {ref, reactive, computed, onMounted, watch} from 'vue'
 import tableData from './table-data.js'
 import tableProps from './table-props.js'
 import storpro from './storpro.js'
 import query from './query.js'
 import doc from './doc.js'
+import handles from './handles.js'
 import amountBox from './amount-box.js'
 import cashBox from './cash-box.js'
 
@@ -34,6 +34,7 @@ const scopeThis = reactive({
             arrStatus: []
         }
     },
+    handles,
     initBox: props.myProps,
     amountBox: computed(()=>{
         return amountBox.fun({scopeThis})
@@ -42,13 +43,14 @@ const scopeThis = reactive({
 })
 
 onMounted(async ()=>{
-    scopeThis.queryInit.formData.id_business = scopeThis.initBox.id_business
-    scopeThis.queryInit.formData.businesstype_code = scopeThis.initBox.businesstype_code
-    await withTable.init({scopeThis})
-    const txt = scopeThis.pgData.data.arrBusinessType.find(i=>{
-        return i.code === scopeThis.initBox.businesstype_code
-    }).text
-    scopeThis.initBox.popup.title = '支付记录[' + txt + '] - 订单id: ' + scopeThis.initBox.id_business
+    await scopeThis.handles.init({scopeThis})
+})
+
+watch(() => scopeThis.cashBox.formProps.submitted, async (newVal) => {
+    if(!!newVal){
+        await scopeThis.handles.init({scopeThis})
+        scopeThis.cashBox.formProps.submitted = false
+    }
 })
 
 const style = ref({
