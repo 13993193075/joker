@@ -10,15 +10,15 @@ export default {
                 title: "查询",
                 menu: [
                     {
-                        text: "全部",
+                        title: "全部",
                         hdlClick: withTable.reload
                     },
                     {
-                        text: "刷新",
+                        title: "刷新",
                         hdlClick: withTable.refresh
                     },
                     {
-                        text: "查询",
+                        title: "查询",
                         hdlClick: withTable.popupFind
                     },
                 ]
