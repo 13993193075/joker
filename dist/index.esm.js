@@ -47642,31 +47642,52 @@ var tableProps = {
       title: "查询",
       menu: [{
         title: "全部",
-        hdlClick: withTable.reload
+        hdlClick(_ref) {
+          let {
+            scopeThis
+          } = _ref;
+          withTable.reload({
+            scopeThis
+          });
+        }
       }, {
         title: "刷新",
-        hdlClick: withTable.refresh
+        hdlClick(_ref2) {
+          let {
+            scopeThis
+          } = _ref2;
+          withTable.refresh({
+            scopeThis
+          });
+        }
       }, {
         title: "查询",
-        hdlClick: withTable.popupFind
+        hdlClick(_ref3) {
+          let {
+            scopeThis
+          } = _ref3;
+          withTable.popupFind({
+            scopeThis
+          });
+        }
       }]
     }, {
       title: "收银",
-      hdlDisabled(_ref) {
+      hdlDisabled(_ref4) {
         let {
           scopeThis,
           item,
           index
-        } = _ref;
+        } = _ref4;
         return scopeThis.initBox.readOnly;
       },
       menu: [{
         title: "收银",
-        handle(_ref2) {
+        handle(_ref5) {
           let {
             scopeThis,
             index
-          } = _ref2;
+          } = _ref5;
           scopeThis.cashBox.formData.id_business = scopeThis.initBox.id_business;
           scopeThis.cashBox.formData.businesstype_code = scopeThis.initBox.businesstype_code;
           // 支付金额合计
@@ -47682,11 +47703,11 @@ var tableProps = {
         }
       }, {
         title: "退款",
-        handle(_ref3) {
+        handle(_ref6) {
           let {
             scopeThis,
             index
-          } = _ref3;
+          } = _ref6;
           ElMessageBox.confirm('退款?', '警告', {
             confirmButtonText: '确认',
             cancelButtonText: '取消',
@@ -47712,11 +47733,11 @@ var tableProps = {
         }
       }, {
         title: "中止支付",
-        handle(_ref4) {
+        handle(_ref7) {
           let {
             scopeThis,
             index
-          } = _ref4;
+          } = _ref7;
           ly0request.storpro({
             storproName: "ly0d2.wxzf.setFail",
             data: {
@@ -47739,32 +47760,32 @@ var tableProps = {
     cols: [{
       label: '金额',
       show: 'expression',
-      hdlExpression(_ref5) {
+      hdlExpression(_ref8) {
         let {
           scopeThis,
           row
-        } = _ref5;
+        } = _ref8;
         return row.amount ? Math.floor(row.amount) / 100 : 0;
       },
       width: "75px"
     }, {
       label: '支付方式',
       show: 'expression',
-      hdlExpression(_ref6) {
+      hdlExpression(_ref9) {
         let {
           scopeThis,
           row
-        } = _ref6;
+        } = _ref9;
         return row.process_text + (row.process_code === '0' ? "/" + row.method_text : "");
       }
     }, {
       label: '支付状态',
       show: 'expression',
-      hdlExpression(_ref7) {
+      hdlExpression(_ref0) {
         let {
           scopeThis,
           row
-        } = _ref7;
+        } = _ref0;
         return row.status_text + "\n" + unclassified.dateFormat.dateFormat(row.time, 'yyyy/MM/dd hh:mm:ss');
       }
     }, {
@@ -47773,11 +47794,11 @@ var tableProps = {
       buttonGroup: [{
         text: "详细",
         size: "small",
-        hdlClick(_ref8) {
+        hdlClick(_ref1) {
           let {
             scopeThis,
             row
-          } = _ref8;
+          } = _ref1;
           withTable.popupDoc({
             scopeThis,
             row
@@ -47785,19 +47806,19 @@ var tableProps = {
         }
       }, {
         text: "删除",
-        hdlVisible(_ref9) {
+        hdlVisible(_ref10) {
           let {
             scopeThis,
             row
-          } = _ref9;
+          } = _ref10;
           return scopeThis.initBox.readOnly;
         },
         size: "small",
-        hdlClick(_ref0) {
+        hdlClick(_ref11) {
           let {
             scopeThis,
             row
-          } = _ref0;
+          } = _ref11;
           withTable.submitDeleteOne({
             scopeThis,
             row

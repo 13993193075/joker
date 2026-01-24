@@ -11,15 +11,21 @@ export default {
                 menu: [
                     {
                         title: "全部",
-                        hdlClick: withTable.reload
+                        hdlClick({scopeThis}){
+                            withTable.reload({scopeThis})
+                        }
                     },
                     {
                         title: "刷新",
-                        hdlClick: withTable.refresh
+                        hdlClick({scopeThis}){
+                            withTable.refresh({scopeThis})
+                        }
                     },
                     {
                         title: "查询",
-                        hdlClick: withTable.popupFind
+                        hdlClick({scopeThis}){
+                            withTable.popupFind({scopeThis})
+                        }
                     },
                 ]
             },
